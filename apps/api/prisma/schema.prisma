@@ -1,0 +1,310 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  PATIENT
+  DOCTOR
+  HOSPITAL_ADMIN
+  SUPER_ADMIN
+}
+
+enum DoctorStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+}
+
+enum HospitalType {
+  PUBLIC
+  PRIVATE
+  CLINIC
+}
+
+enum ResourceType {
+  ICU_BED
+  CCU_BED
+  GENERAL_BED
+  CABIN
+  OPERATION_THEATER
+}
+
+enum AmbulanceType {
+  ICU
+  AC
+  NON_AC
+  FREEZER
+}
+
+enum AmbulanceStatus {
+  AVAILABLE
+  BUSY
+  ON_THE_WAY
+  MAINTENANCE
+}
+
+enum ConsultationType {
+  PHYSICAL
+  ONLINE
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  MISSED
+}
+
+enum QueueStatus {
+  WAITING
+  CALLED
+  IN_CONSULTATION
+  COMPLETED
+  SKIPPED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+model User {
+  id            String         @id @default(uuid())
+  firebaseUid   String         @unique
+  email         String         @unique
+  phone         String?
+  fullName      String
+  role          UserRole
+  avatarUrl     String?
+  isVerified    Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  patient       Patient?
+  doctor        Doctor?
+  hospitalAdmin HospitalAdmin?
+  notifications Notification[]
+}
+
+model Patient {
+  id            String        @id @default(uuid())
+  userId        String        @unique
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dateOfBirth   DateTime?
+  bloodGroup    String?
+  height        Float?
+  weight        Float?
+  bloodPressure String?
+  heartRate     Int?
+  allergies     String[]
+  conditions    String[]
+
+  appointments  Appointment[]
+  documents     Document[]
+  vitals        Vitals[]
+  reviews       Review[]
+}
+
+model Doctor {
+  id                      String       @id @default(uuid())
+  userId                  String       @unique
+  user                    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bmdcNumber              String       @unique
+  specialization          String
+  subSpecialization       String?
+  experienceYears         Int
+  degrees                 String[]
+  languages               String[]
+  consultationFeeOnline   Float
+  consultationFeePhysical Float
+  isAvailable             Boolean      @default(true)
+  isTelemedicineEnabled   Boolean      @default(false)
+  rating                  Float        @default(0)
+  status                  DoctorStatus @default(PENDING)
+
+  hospitalId              String
+  hospital                Hospital     @relation(fields: [hospitalId], references: [id])
+
+  appointments            Appointment[]
+  slots                   DoctorSlot[]
+  queues                  Queue[]
+  prescriptions           Prescription[]
+  reviews                 Review[]
+}
+
+model Hospital {
+  id          String             @id @default(uuid())
+  name        String
+  address     String
+  city        String
+  phone       String
+  email       String             @unique
+  type        HospitalType
+  isApproved  Boolean            @default(false)
+
+  doctors     Doctor[]
+  resources   HospitalResource[]
+  ambulances  Ambulance[]
+  admins      HospitalAdmin[]
+}
+
+model HospitalAdmin {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hospitalId String
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+}
+
+model HospitalResource {
+  id             String       @id @default(uuid())
+  hospitalId     String
+  hospital       Hospital     @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  type           ResourceType
+  totalCount     Int
+  availableCount Int
+  ward           String?
+  pricePerDay    Float?
+  updatedAt      DateTime     @updatedAt
+}
+
+model Ambulance {
+  id          String          @id @default(uuid())
+  hospitalId  String
+  hospital    Hospital        @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  driverName  String
+  phone       String
+  plateNumber String          @unique
+  type        AmbulanceType
+  status      AmbulanceStatus @default(AVAILABLE)
+  rating      Float           @default(0)
+  location    String?
+}
+
+model DoctorSlot {
+  id               String           @id @default(uuid())
+  doctorId         String
+  doctor           Doctor           @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  dayOfWeek        Int              // 0=Sun ... 6=Sat
+  startTime        String           // "09:00"
+  endTime          String           // "13:00"
+  slotDuration     Int              @default(15) // minutes
+  consultationType ConsultationType
+  isActive         Boolean          @default(true)
+  maxPatients      Int              @default(20)
+}
+
+model Appointment {
+  id               String            @id @default(uuid())
+  patientId        String
+  patient          Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId         String
+  doctor           Doctor            @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointmentDate  DateTime
+  appointmentTime  String
+  consultationType ConsultationType
+  status           AppointmentStatus @default(PENDING)
+  paymentStatus    PaymentStatus     @default(UNPAID)
+  reasonForVisit   String?
+  queueNumber      Int?
+
+  prescription     Prescription?
+  queue            Queue?
+  payment          Payment?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  appointmentId String        @unique
+  appointment   Appointment   @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  amount        Float
+  method        String        // BKASH, NAGAD, ROCKET, CARD
+  transactionId String
+  senderNumber  String
+  status        PaymentStatus @default(PAID)
+  createdAt     DateTime      @default(now())
+}
+
+model Queue {
+  id            String        @id @default(uuid())
+  doctorId      String
+  doctor        Doctor        @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointmentId String        @unique
+  appointment   Appointment   @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  position      Int
+  status        QueueStatus   @default(WAITING)
+  estimatedTime DateTime?
+  calledAt      DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime      @default(now())
+}
+
+model Prescription {
+  id            String      @id @default(uuid())
+  doctorId      String
+  doctor        Doctor      @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  diagnosis     String
+  medicines     Json
+  notes         String?
+  isPrivate     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+}
+
+model Document {
+  id         String   @id @default(uuid())
+  patientId  String
+  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  title      String
+  fileUrl    String
+  fileType   String
+  isPrivate  Boolean  @default(false)
+  uploadedAt DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  doctorId  String
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Vitals {
+  id            String   @id @default(uuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  bloodPressure String?
+  heartRate     Int?
+  weight        Float?
+  temperature   Float?
+  oxygenLevel   Float?
+  recordedAt    DateTime @default(now())
+}
+

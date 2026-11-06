@@ -1,0 +1,44 @@
+{
+  "app_name": "MediSheba BD",
+  "tagline": "Modern Healthcare & Live Queue Management in Bangladesh",
+  "nav": {
+    "home": "Home",
+    "doctors": "Find Doctors",
+    "hospitals": "Hospitals & Beds",
+    "ambulances": "Ambulances",
+    "login": "Sign In",
+    "register": "Register",
+    "dashboard": "Dashboard",
+    "logout": "Log Out"
+  },
+  "roles": {
+    "patient": "Patient",
+    "doctor": "Doctor",
+    "hospital_admin": "Hospital Admin",
+    "super_admin": "Super Admin"
+  },
+  "queue": {
+    "current_serving": "Currently Serving",
+    "your_position": "Your Serial Number",
+    "estimated_wait": "Estimated Wait Time",
+    "status": "Queue Status",
+    "waiting": "Waiting",
+    "called": "Called to Room",
+    "in_consultation": "In Consultation",
+    "completed": "Completed"
+  },
+  "payment": {
+    "title": "Payment Checkout (Demo)",
+    "select_method": "Select Payment Channel",
+    "enter_number": "Sender Account Number",
+    "trx_id": "Transaction ID (TrxID)",
+    "confirm": "Confirm & Book Slot",
+    "success": "Demo Payment Successful!"
+  },
+  "ai": {
+    "title": "Llama Health Assistant",
+    "placeholder": "Ask about symptoms, doctor recommendations, or hospital advice...",
+    "disclaimer": "AI provides preliminary guidance and does not replace certified doctors."
+  }
+}
+
