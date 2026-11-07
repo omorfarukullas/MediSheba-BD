@@ -15,37 +15,37 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  // Primary (blue filled): "Do this". One per content area.
+  // Primary Forest Button: Filled CTA for demos, explores, and form submits
   primary:
-    'bg-accent hover:bg-accent-hover active:bg-accent-pressed text-white border-[1.5px] border-transparent',
-  // Secondary (outlined): "Another choice" / "Go back".
+    'bg-[#0f3e17] hover:bg-[#0c2f10] active:bg-[#071d0b] text-[#fffefc] border-[1.5px] border-transparent font-normal',
+  // Secondary (outlined Cream): Another choice / Go back
   secondary:
-    'bg-canvas hover:bg-subtle active:bg-border text-ink border-[1.5px] border-ink',
-  // Danger (red outlined): "Delete" / "Cancel".
+    'bg-[#fffefc] hover:bg-[#e1f4df] active:bg-[#cfe7d3] text-[#0f3e17] border-[1.5px] border-[#0f3e17] font-normal',
+  // Danger (red outlined): Delete / Cancel
   danger:
-    'bg-canvas hover:bg-danger-bg active:bg-danger-border text-danger-text border-[1.5px] border-danger-text',
+    'bg-[#fffefc] hover:bg-[#fef3f2] active:bg-[#fecdca] text-[#b42318] border-[1.5px] border-[#b42318] font-normal',
   // Ghost (Compact staff only)
   ghost:
-    'bg-transparent hover:bg-subtle text-text-2 hover:text-ink border-[1.5px] border-transparent',
+    'bg-transparent hover:bg-[#e1f4df] text-[#222222] hover:text-[#0f3e17] border-[1.5px] border-transparent font-normal',
   // Compatibility aliases
   outline:
-    'bg-canvas hover:bg-subtle active:bg-border text-ink border-[1.5px] border-ink',
+    'bg-[#fffefc] hover:bg-[#e1f4df] active:bg-[#cfe7d3] text-[#0f3e17] border-[1.5px] border-[#0f3e17] font-normal',
   bone:
-    'bg-subtle hover:bg-border text-ink border-[1.5px] border-transparent',
+    'bg-[#e1f4df] hover:bg-[#cfe7d3] text-[#0f3e17] border-[1.5px] border-transparent font-normal',
   orange:
-    'bg-canvas hover:bg-warning-bg active:bg-warning-border text-warning-text border-[1.5px] border-warning-border',
+    'bg-[#fffefc] hover:bg-[#fffbed] active:bg-[#fde68a] text-[#8c4e04] border-[1.5px] border-[#8c4e04] font-normal',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  // Comfort (Default): 48px height, 16px text (BN 17px), 10px 24px padding, min 120px
-  comfort: 'min-h-[48px] min-w-[120px] px-6 py-2.5 text-base font-medium rounded-lg gap-2',
-  default: 'min-h-[48px] min-w-[120px] px-6 py-2.5 text-base font-medium rounded-lg gap-2',
-  md: 'min-h-[48px] min-w-[120px] px-6 py-2.5 text-base font-medium rounded-lg gap-2',
-  lg: 'min-h-[52px] min-w-[130px] px-7 py-3 text-base font-medium rounded-lg gap-2.5',
-  // Compact (Staff tables): 40px height, 14px text (BN 15px), 8px 16px padding, min 88px
-  compact: 'min-h-[40px] min-w-[88px] px-4 py-2 text-sm font-medium rounded-lg gap-2',
-  // Small (inside table rows): 32px height, 4px 12px padding
-  sm: 'min-h-[32px] min-w-0 px-3 py-1 text-xs font-medium rounded-lg gap-1.5',
+  // Comfort (Default): 48px height, 14px radius, 14px 21px padding
+  comfort: 'min-h-[48px] min-w-[120px] px-5 py-3 text-[14px] md:text-[15px] rounded-[14px] gap-2',
+  default: 'min-h-[48px] min-w-[120px] px-5 py-3 text-[14px] md:text-[15px] rounded-[14px] gap-2',
+  md: 'min-h-[48px] min-w-[120px] px-5 py-3 text-[14px] md:text-[15px] rounded-[14px] gap-2',
+  lg: 'min-h-[54px] min-w-[130px] px-7 py-3.5 text-[16px] rounded-[14px] gap-2.5',
+  // Compact (Staff tables): 40px height, 14px radius
+  compact: 'min-h-[40px] min-w-[88px] px-4 py-2 text-[13px] md:text-[14px] rounded-[14px] gap-2',
+  // Small (inside table rows): 32px height
+  sm: 'min-h-[32px] min-w-0 px-3 py-1 text-[12px] rounded-[10px] gap-1.5',
 };
 
 export function Button({

@@ -30,7 +30,7 @@ export function LanguageToggle({ className = '' }: { className?: string }) {
     <div
       role="group"
       aria-label={t('lang.label')}
-      className={`inline-flex rounded-lg bg-[#f4f4f2] p-0.5 select-none ${className}`}
+      className={`inline-flex rounded-full bg-[#e1f4df] p-0.5 select-none ${className}`}
     >
       {OPTIONS.map((o) => (
         <button
@@ -39,10 +39,10 @@ export function LanguageToggle({ className = '' }: { className?: string }) {
           type="button"
           aria-pressed={lang === o.id}
           onClick={() => setLanguage(o.id)}
-          className={`h-8 min-w-[56px] px-3 rounded-md border text-[13px] font-medium transition-colors cursor-pointer ${
+          className={`h-7 sm:h-8 min-w-[52px] sm:min-w-[56px] px-3 rounded-full border text-[13px] font-medium transition-colors cursor-pointer ${
             lang === o.id
-              ? 'bg-[#ffffff] text-[#111111] border-[#d6d3d1]'
-              : 'border-transparent text-[#57534e] hover:text-[#111111]'
+              ? 'bg-[#fffefc] text-[#0f3e17] border-[#b1dbb8]'
+              : 'border-transparent text-[#222222] hover:text-[#0f3e17]'
           }`}
         >
           {o.label}

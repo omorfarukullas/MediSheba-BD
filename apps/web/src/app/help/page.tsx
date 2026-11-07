@@ -14,8 +14,7 @@ import {
   Phone,
   MapPin,
   ArrowRight,
-  ShieldCheck,
-  AlertTriangle
+  ShieldCheck
 } from 'lucide-react';
 
 export function HelpPage() {
@@ -44,112 +43,115 @@ export function HelpPage() {
   ];
 
   return (
-    <div className="max-w-[1120px] mx-auto space-y-6">
+    <div className="max-w-[1120px] mx-auto space-y-7">
       {/* ─── Page Header ─── */}
       <div className="space-y-1">
-        <h1 className="text-[28px] font-semibold text-ink leading-tight">
+        <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]/80">
+          {lang === 'bn' ? 'সহায়তা ও নির্দেশিকা' : 'Help & Documentation'}
+        </div>
+        <h1 className="font-serif text-[32px] sm:text-[38px] font-light text-[#0f3e17] tracking-tight leading-tight">
           {t('help.title', 'Help & Support')}
         </h1>
-        <p className="text-sm text-text-2">
+        <p className="text-[14px] text-[#222222]/70">
           {t('help.desc', 'Step-by-step guidance on booking, medical records, and live chamber queue.')}
         </p>
       </div>
 
-      {/* ─── Emergency Safety Strip (Section 9.10) ─── */}
+      {/* ─── Emergency Safety Strip ─── */}
       <AlertBanner
         variant="danger"
         message={t('help.emergencyNotice', 'In case of urgent medical emergency, call 999 immediately. Do not rely on web appointments.')}
       />
 
-      {/* ─── 3 Quick Step Cards (Section 9.10) ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* ─── 3 Quick Step Cards (Keylime Wash / Cream Paper layers) ─── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Step 1 */}
-        <Card padding="md" className="space-y-3">
-          <div className="w-8 h-8 rounded-lg bg-ink text-white grid place-items-center text-sm font-semibold">
+        <div className="bg-[#e1f4df] p-6 rounded-[14px] space-y-3">
+          <div className="w-8 h-8 rounded-[7px] bg-[#0f3e17] text-[#fffefc] grid place-items-center text-xs font-semibold">
             1
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-ink">
+            <h3 className="font-serif text-lg font-light text-[#0f3e17]">
               {t('help.step1Title', '1. Book an appointment')}
             </h3>
-            <p className="text-xs text-text-2 leading-relaxed">
+            <p className="text-xs text-[#222222]/70 leading-relaxed">
               {t('help.step1Desc', 'Search by doctor or specialty, choose a time slot, and confirm in 3 simple steps.')}
             </p>
           </div>
           <Link to="/patient/doctors" className="inline-block pt-1">
-            <span className="text-xs font-medium text-accent hover:underline flex items-center gap-1">
+            <span className="text-xs font-medium text-[#0f3e17] hover:underline flex items-center gap-1">
               <span>{lang === 'bn' ? 'ডাক্তার খুঁজুন' : 'Find Doctors'}</span>
               <ArrowRight className="w-3 h-3" />
             </span>
           </Link>
-        </Card>
+        </div>
 
         {/* Step 2 */}
-        <Card padding="md" className="space-y-3">
-          <div className="w-8 h-8 rounded-lg bg-ink text-white grid place-items-center text-sm font-semibold">
+        <div className="bg-[#cfe7d3] p-6 rounded-[14px] space-y-3">
+          <div className="w-8 h-8 rounded-[7px] bg-[#0f3e17] text-[#fffefc] grid place-items-center text-xs font-semibold">
             2
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-ink">
+            <h3 className="font-serif text-lg font-light text-[#0f3e17]">
               {t('help.step2Title', '2. View prescriptions & records')}
             </h3>
-            <p className="text-xs text-text-2 leading-relaxed">
+            <p className="text-xs text-[#222222]/70 leading-relaxed">
               {t('help.step2Desc', 'Access your digital medicine list, dosage instructions, and lab reports from any device.')}
             </p>
           </div>
           <Link to="/patient/documents" className="inline-block pt-1">
-            <span className="text-xs font-medium text-accent hover:underline flex items-center gap-1">
+            <span className="text-xs font-medium text-[#0f3e17] hover:underline flex items-center gap-1">
               <span>{lang === 'bn' ? 'রেকর্ড ভল্ট' : 'Open Vault'}</span>
               <ArrowRight className="w-3 h-3" />
             </span>
           </Link>
-        </Card>
+        </div>
 
         {/* Step 3 */}
-        <Card padding="md" className="space-y-3">
-          <div className="w-8 h-8 rounded-lg bg-ink text-white grid place-items-center text-sm font-semibold">
+        <div className="bg-[#b1dbb8] p-6 rounded-[14px] space-y-3">
+          <div className="w-8 h-8 rounded-[7px] bg-[#0f3e17] text-[#fffefc] grid place-items-center text-xs font-semibold">
             3
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-ink">
+            <h3 className="font-serif text-lg font-light text-[#0f3e17]">
               {t('help.step3Title', '3. Live chamber token tracking')}
             </h3>
-            <p className="text-xs text-text-2 leading-relaxed">
+            <p className="text-xs text-[#222222]/70 leading-relaxed">
               {t('help.step3Desc', 'Check your serial and estimated consultation time live to avoid hospital waiting.')}
             </p>
           </div>
           <Link to="/patient/appointments" className="inline-block pt-1">
-            <span className="text-xs font-medium text-accent hover:underline flex items-center gap-1">
+            <span className="text-xs font-medium text-[#0f3e17] hover:underline flex items-center gap-1">
               <span>{lang === 'bn' ? 'সিরিয়াল পর্যবেক্ষণ' : 'Check Serial'}</span>
               <ArrowRight className="w-3 h-3" />
             </span>
           </Link>
-        </Card>
+        </div>
       </div>
 
       {/* ─── Accordion FAQ ─── */}
-      <Card padding="md" className="space-y-4">
-        <h2 className="text-base font-semibold text-ink">
+      <Card variant="default" padding="lg" className="space-y-4">
+        <h2 className="font-serif text-xl font-light text-[#0f3e17]">
           {t('help.faqTitle', 'Frequently Asked Questions')}
         </h2>
 
-        <div className="divide-y divide-border">
+        <div className="divide-y divide-[#efeeeb]">
           {faqs.map((faq, idx) => (
-            <div key={idx} className="py-3">
+            <div key={idx} className="py-4">
               <button
                 type="button"
                 onClick={() => toggleFaq(idx)}
-                className="w-full flex items-center justify-between text-left text-sm font-medium text-ink hover:text-accent transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between text-left text-[15px] font-normal text-[#0f3e17] hover:text-[#0c2f10] transition-colors cursor-pointer"
               >
                 <span>{faq.q}</span>
                 {expandedFaq === idx ? (
-                  <ChevronUp className="w-4 h-4 text-text-3 shrink-0" />
+                  <ChevronUp className="w-4 h-4 text-[#0f3e17] shrink-0" />
                 ) : (
-                  <ChevronDown className="w-4 h-4 text-text-3 shrink-0" />
+                  <ChevronDown className="w-4 h-4 text-[#222222]/50 shrink-0" />
                 )}
               </button>
               {expandedFaq === idx && (
-                <div className="pt-2 text-xs text-text-2 leading-relaxed">
+                <div className="pt-2 text-xs text-[#222222]/70 leading-relaxed">
                   {faq.a}
                 </div>
               )}
@@ -159,39 +161,39 @@ export function HelpPage() {
       </Card>
 
       {/* ─── Clinic Contact & Opening Hours ─── */}
-      <Card padding="md" className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-border">
+      <Card variant="default" padding="lg" className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#efeeeb]">
           <div>
-            <h3 className="text-base font-semibold text-ink">
+            <h3 className="font-serif text-xl font-light text-[#0f3e17]">
               {t('visit.title', 'Visit us')}
             </h3>
-            <p className="text-xs text-text-3">
+            <p className="text-xs text-[#222222]/60 mt-0.5">
               {t('visit.hoursVal', 'Sat - Thu: 9:00 AM - 9:00 PM (Friday Closed)')}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <a href="tel:01700000000">
-              <Button variant="secondary" size="compact" leftIcon={<Phone className="w-3.5 h-3.5" />}>
+              <Button variant="secondary" size="md" leftIcon={<Phone className="w-3.5 h-3.5" />}>
                 {t('cta.call', 'Call us')}
               </Button>
             </a>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-text-2">
-          <div className="flex items-start gap-2">
-            <MapPin className="w-4 h-4 text-text-3 shrink-0 mt-0.5" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[#222222]/70">
+          <div className="flex items-start gap-2.5">
+            <MapPin className="w-4 h-4 text-[#0f3e17] shrink-0 mt-0.5" />
             <div>
-              <div className="font-semibold text-ink">{t('visit.address', 'Address')}</div>
-              <div>{t('visit.addressVal', 'Dhanmondi 27, Dhaka 1209, Bangladesh')}</div>
+              <div className="font-medium text-[#0f3e17]">{t('visit.address', 'Address')}</div>
+              <div className="mt-0.5">{t('visit.addressVal', 'Dhanmondi 27, Dhaka 1209, Bangladesh')}</div>
             </div>
           </div>
-          <div className="flex items-start gap-2">
-            <Phone className="w-4 h-4 text-text-3 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2.5">
+            <Phone className="w-4 h-4 text-[#0f3e17] shrink-0 mt-0.5" />
             <div>
-              <div className="font-semibold text-ink">{t('visit.phone', 'Phone')}</div>
-              <div>01700-000000 / 01800-000000</div>
+              <div className="font-medium text-[#0f3e17]">{t('visit.phone', 'Phone')}</div>
+              <div className="mt-0.5">01700-000000 / 01800-000000</div>
             </div>
           </div>
         </div>

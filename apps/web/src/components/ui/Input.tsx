@@ -31,13 +31,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5 text-left font-sans">
         {label && (
-          <label htmlFor={inputId} className="block text-[14px] font-medium text-ink">
+          <label htmlFor={inputId} className="block text-[13px] font-medium text-[#0f3e17]">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className={`absolute ${isComfort ? 'left-3.5' : 'left-3'} flex items-center pointer-events-none text-text-3 [&>svg]:w-5 [&>svg]:h-5`}>
+            <div className={`absolute ${isComfort ? 'left-3.5' : 'left-3'} flex items-center pointer-events-none text-[#5a6e5e] [&>svg]:w-5 [&>svg]:h-5`}>
               {leftIcon}
             </div>
           )}
@@ -45,11 +45,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={[
-              'w-full bg-canvas text-ink placeholder:text-text-3',
+              'w-full bg-[#fffefc] text-[#222222] placeholder:text-[#5a6e5e]/70',
               isComfort ? 'h-12 text-base px-4' : 'h-10 text-sm px-3',
-              'rounded-lg border border-border-strong transition-colors duration-150',
-              'focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent',
-              'disabled:opacity-50 disabled:bg-subtle disabled:cursor-not-allowed',
+              'rounded-[14px] border border-[#efeeeb] transition-colors duration-150',
+              'focus:outline-none focus:ring-2 focus:ring-[#0f3e17] focus:border-[#0f3e17]',
+              'disabled:opacity-50 disabled:bg-[#e1f4df] disabled:cursor-not-allowed',
               leftIcon ? (isComfort ? 'pl-11' : 'pl-9') : '',
               rightIcon ? (isComfort ? 'pr-11' : 'pr-9') : '',
               error ? 'border-danger-text focus:ring-danger-text focus:border-danger-text' : '',
@@ -60,7 +60,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className={`absolute ${isComfort ? 'right-3.5' : 'right-3'} flex items-center text-text-3 [&>svg]:w-5 [&>svg]:h-5`}>
+            <div className={`absolute ${isComfort ? 'right-3.5' : 'right-3'} flex items-center text-[#5a6e5e] [&>svg]:w-5 [&>svg]:h-5`}>
               {rightIcon}
             </div>
           )}
@@ -72,7 +72,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
         {!error && helperText && (
-          <p className="text-[12px] text-text-3 mt-1">{helperText}</p>
+          <p className="text-[12px] text-[#5a6e5e] mt-1">{helperText}</p>
         )}
       </div>
     );

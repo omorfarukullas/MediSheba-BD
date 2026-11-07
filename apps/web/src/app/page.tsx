@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguageStore } from '../stores/language.store';
 import { useAuthStore, getRoleDashboardUrl } from '../stores/auth.store';
@@ -6,7 +6,6 @@ import { LanguageToggle } from '../components/shared/LanguageToggle';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
-import { AlertBanner } from '../components/ui/AlertBanner';
 import {
   Calendar,
   Clock,
@@ -17,8 +16,10 @@ import {
   ShieldCheck,
   CreditCard,
   ArrowRight,
-  ExternalLink,
-  ChevronRight
+  Activity,
+  Stethoscope,
+  ChevronRight,
+  AlertTriangle
 } from 'lucide-react';
 
 export function PublicLandingPage() {
@@ -27,8 +28,8 @@ export function PublicLandingPage() {
   const navigate = useNavigate();
   const [selectedDept, setSelectedDept] = useState('all');
 
-  // Section 9.0: Signed-in users who open / are sent to /dashboard
-  React.useEffect(() => {
+  // Ease Health / Section 9.0: Signed-in users who open / are sent to /dashboard
+  useEffect(() => {
     if (user && profile) {
       navigate(getRoleDashboardUrl(profile.role), { replace: true });
     }
@@ -86,24 +87,28 @@ export function PublicLandingPage() {
     : doctors.filter((d) => d.deptKey === selectedDept);
 
   return (
-    <div className="min-h-screen bg-canvas text-ink flex flex-col font-sans antialiased pb-20 sm:pb-0">
-      {/* ─── Top Bar (64px, Section 9.0) ─── */}
-      <header className="h-16 border-b border-border px-4 sm:px-8 flex items-center justify-between bg-canvas sticky top-0 z-30">
+    <div className="min-h-screen bg-[#fffefc] text-[#222222] flex flex-col font-sans antialiased pb-20 sm:pb-0">
+      {/* ─── Top Bar (Ease Health Navigation) ─── */}
+      <header className="h-16 border-b border-[#efeeeb] px-4 sm:px-8 flex items-center justify-between bg-[#fffefc] sticky top-0 z-30">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-ink text-white grid place-items-center text-sm font-semibold">
+          <div className="w-8 h-8 rounded-[7px] bg-[#0f3e17] text-[#fffefc] grid place-items-center text-sm font-semibold">
             M
           </div>
-          <span className="text-base font-semibold text-ink tracking-tight">
+          <span className="font-serif text-lg font-normal text-[#0f3e17] tracking-tight">
             {t('app_name')}
           </span>
         </Link>
 
         <div className="flex items-center gap-3">
-          {/* One-click LanguageToggle */}
+          {/* One-click LanguageToggle (Pill in Keylime Wash) */}
           <LanguageToggle />
 
           <a href="tel:01700000000" className="hidden sm:inline-flex">
-            <Button variant="secondary" size="compact" leftIcon={<Phone className="w-4 h-4" />}>
+            <Button
+              variant="secondary"
+              size="compact"
+              leftIcon={<Phone className="w-4 h-4 text-[#0f3e17]" />}
+            >
               {t('landing.callUs')}
             </Button>
           </a>
@@ -131,20 +136,34 @@ export function PublicLandingPage() {
         </div>
       </header>
 
-      {/* ─── SECTION 1: HERO (Section 9.0) ─── */}
-      <section className="bg-canvas border-b border-border py-12 sm:py-20 px-4 sm:px-8">
-        <div className="max-w-[1120px] mx-auto">
-          <div className="max-w-2xl space-y-4">
-            <h1 className="text-3xl sm:text-[44px] font-semibold text-ink tracking-tight leading-[1.15]">
-              {t('landing.h1')}
-            </h1>
-            <p className="text-base sm:text-lg text-text-2 leading-relaxed max-w-xl">
-              {t('landing.sub')}
-            </p>
+      {/* ─── SECTION 1: HERO (Two-Column Botanical Layout) ─── */}
+      <section className="py-8 sm:py-14 px-4 sm:px-8">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* Left Panel: Keylime Wash Panel with Serif Headline + Actions */}
+          <div className="lg:col-span-7 rounded-[14px] bg-[#e1f4df] p-7 sm:p-12 flex flex-col justify-between space-y-6">
+            <div className="space-y-4">
+              <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+                {lang === 'bn' ? 'সহজ স্বাস্থ্য সেবা নেটওয়ার্ক' : 'BOTANICAL CLINICAL DESK'}
+              </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
+              <h1 className="font-serif text-3xl sm:text-[52px] font-light text-[#0f3e17] leading-[1.08] tracking-tight">
+                {t('landing.h1')}
+              </h1>
+
+              <p className="text-base sm:text-lg text-[#222222] font-normal leading-relaxed max-w-xl">
+                {t('landing.sub')}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4">
               <Link to="/patient/doctors" className="w-full sm:w-auto">
-                <Button variant="primary" size="comfort" fullWidth className="sm:w-auto">
+                <Button
+                  variant="primary"
+                  size="comfort"
+                  fullWidth
+                  className="sm:w-auto"
+                  rightIcon={<ArrowRight className="w-4 h-4 text-[#fffefc]" />}
+                >
                   {t('action.book')}
                 </Button>
               </Link>
@@ -154,79 +173,142 @@ export function PublicLandingPage() {
                   size="comfort"
                   fullWidth
                   className="sm:w-auto"
-                  leftIcon={<Phone className="w-5 h-5 text-ink" />}
+                  leftIcon={<Phone className="w-4 h-4 text-[#0f3e17]" />}
                 >
                   {t('landing.call')}
                 </Button>
               </a>
             </div>
           </div>
+
+          {/* Right Panel: Slate Hush Cool Counterpart with Floating Product Preview Cards */}
+          <div className="lg:col-span-5 rounded-[14px] bg-[#b6ced5] p-6 sm:p-8 flex flex-col justify-between space-y-4">
+            <div className="flex items-center justify-between pb-1 border-b border-[#0f3e17]/10">
+              <span className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+                {lang === 'bn' ? 'লাইভ চেম্বার ট্র্যাকার' : 'LIVE CLINIC DESK'}
+              </span>
+              <span className="h-2 w-2 rounded-full bg-[#0f3e17] animate-pulse" />
+            </div>
+
+            <div className="space-y-3">
+              {/* Product Preview Card 1: Token Serial */}
+              <div className="rounded-[14px] bg-[#fffefc] p-5 space-y-2 border border-transparent">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-[#5a6e5e] uppercase tracking-wider">
+                    {lang === 'bn' ? 'বর্তমান সিরিয়াল' : 'Now Serving'}
+                  </span>
+                  <Badge variant="success">✓ {lang === 'bn' ? 'লাইভ রুম' : 'In Consultation'}</Badge>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <div className="font-serif text-3xl font-light text-[#0f3e17]">Token #18</div>
+                  <div className="text-xs text-[#5a6e5e]">Room 402 · DMC</div>
+                </div>
+              </div>
+
+              {/* Product Preview Card 2: Doctor Card */}
+              <div className="rounded-[14px] bg-[#fffefc] p-5 space-y-2 border border-transparent">
+                <div className="flex items-center justify-between">
+                  <div className="font-medium text-sm text-[#222222]">
+                    {lang === 'bn' ? 'অধ্যাপক ডা. মোঃ রফিকুল ইসলাম' : 'Prof. Dr. Md. Rafiqul Islam'}
+                  </div>
+                  <span className="text-xs font-semibold text-[#0f3e17]">5:00 PM</span>
+                </div>
+                <p className="text-xs text-[#5a6e5e]">
+                  {lang === 'bn' ? 'মেডিসিন ও হৃদরোগ বিশেষজ্ঞ' : 'Cardiology Specialist'}
+                </p>
+              </div>
+
+              {/* Product Preview Card 3: Vault Record */}
+              <div className="rounded-[14px] bg-[#fffefc] p-5 flex items-center justify-between border border-transparent">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#e1f4df] flex items-center justify-center text-[#0f3e17]">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-[#222222]">
+                      {lang === 'bn' ? 'ডিজিটাল প্রেসক্রিপশন ভল্ট' : 'Digital Prescription Vault'}
+                    </div>
+                    <div className="text-[11px] text-[#5a6e5e]">
+                      {lang === 'bn' ? 'শুধুমাত্র অনুমোদিত ডাক্তার' : 'Doctor Access Protected'}
+                    </div>
+                  </div>
+                </div>
+                <Badge variant="neutral">EHR</Badge>
+              </div>
+            </div>
+
+            <div className="pt-2 text-center text-xs text-[#0f3e17]/80">
+              {lang === 'bn' ? 'এনক্রিপ্টেড ও বিএমডিসি নিবন্ধিত' : 'Encrypted & BMDC Verified Network'}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ─── SECTION 2: HOW IT WORKS (Section 9.0) ─── */}
-      <section className="bg-sidebar border-b border-border py-12 sm:py-16 px-4 sm:px-8">
-        <div className="max-w-[1120px] mx-auto space-y-8">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-semibold text-ink">
+      {/* ─── SECTION 2: HOW IT WORKS (Sage & Mint Surface Rhythm) ─── */}
+      <section className="py-12 sm:py-20 px-4 sm:px-8 border-t border-[#efeeeb] bg-[#f9fbf8]">
+        <div className="max-w-[1200px] mx-auto space-y-10">
+          <div className="max-w-xl space-y-2">
+            <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+              {lang === 'bn' ? 'কার্যপদ্ধতি' : 'THREE-STEP PROCESS'}
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-light text-[#0f3e17] tracking-tight">
               {t('how.title')}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Step 1 */}
-            <Card padding="lg" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center font-semibold text-sm">
+            <div className="rounded-[14px] bg-[#fffefc] border border-[#efeeeb] p-7 sm:p-9 space-y-5">
+              <div className="flex items-center justify-between">
+                <div className="w-9 h-9 rounded-full bg-[#0f3e17] text-[#fffefc] flex items-center justify-center font-serif text-base font-light">
                   1
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-subtle flex items-center justify-center text-text-2">
-                  <Calendar className="w-5 h-5 text-ink" />
+                <div className="w-10 h-10 rounded-[10px] bg-[#e1f4df] flex items-center justify-center text-[#0f3e17]">
+                  <Calendar className="w-5 h-5" />
                 </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-ink">{t('how.step1')}</h3>
-                <p className="text-sm text-text-2 mt-1 leading-relaxed">{t('how.step1Sub')}</p>
+              <div className="space-y-1.5">
+                <h3 className="font-serif text-xl font-light text-[#0f3e17]">{t('how.step1')}</h3>
+                <p className="text-sm text-[#222222] leading-relaxed">{t('how.step1Sub')}</p>
               </div>
-            </Card>
+            </div>
 
             {/* Step 2 */}
-            <Card padding="lg" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center font-semibold text-sm">
+            <div className="rounded-[14px] bg-[#fffefc] border border-[#efeeeb] p-7 sm:p-9 space-y-5">
+              <div className="flex items-center justify-between">
+                <div className="w-9 h-9 rounded-full bg-[#0f3e17] text-[#fffefc] flex items-center justify-center font-serif text-base font-light">
                   2
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-subtle flex items-center justify-center text-text-2">
-                  <Clock className="w-5 h-5 text-ink" />
+                <div className="w-10 h-10 rounded-[10px] bg-[#e1f4df] flex items-center justify-center text-[#0f3e17]">
+                  <Clock className="w-5 h-5" />
                 </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-ink">{t('how.step2')}</h3>
-                <p className="text-sm text-text-2 mt-1 leading-relaxed">{t('how.step2Sub')}</p>
+              <div className="space-y-1.5">
+                <h3 className="font-serif text-xl font-light text-[#0f3e17]">{t('how.step2')}</h3>
+                <p className="text-sm text-[#222222] leading-relaxed">{t('how.step2Sub')}</p>
               </div>
-            </Card>
+            </div>
 
             {/* Step 3 */}
-            <Card padding="lg" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center font-semibold text-sm">
+            <div className="rounded-[14px] bg-[#fffefc] border border-[#efeeeb] p-7 sm:p-9 space-y-5">
+              <div className="flex items-center justify-between">
+                <div className="w-9 h-9 rounded-full bg-[#0f3e17] text-[#fffefc] flex items-center justify-center font-serif text-base font-light">
                   3
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-subtle flex items-center justify-center text-text-2">
-                  <CheckCircle2 className="w-5 h-5 text-ink" />
+                <div className="w-10 h-10 rounded-[10px] bg-[#e1f4df] flex items-center justify-center text-[#0f3e17]">
+                  <CheckCircle2 className="w-5 h-5" />
                 </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-ink">{t('how.step3')}</h3>
-                <p className="text-sm text-text-2 mt-1 leading-relaxed">{t('how.step3Sub')}</p>
+              <div className="space-y-1.5">
+                <h3 className="font-serif text-xl font-light text-[#0f3e17]">{t('how.step3')}</h3>
+                <p className="text-sm text-[#222222] leading-relaxed">{t('how.step3Sub')}</p>
               </div>
-            </Card>
+            </div>
           </div>
 
-          {/* Repeat Primary Action */}
           <div className="pt-2 text-center sm:text-left">
             <Link to="/patient/doctors">
-              <Button variant="primary" size="comfort">
+              <Button variant="primary" size="comfort" rightIcon={<ArrowRight className="w-4 h-4 text-[#fffefc]" />}>
                 {t('action.book')}
               </Button>
             </Link>
@@ -234,255 +316,261 @@ export function PublicLandingPage() {
         </div>
       </section>
 
-      {/* ─── SECTION 3: WHAT YOU CAN DO (Section 9.0) ─── */}
-      <section className="bg-canvas border-b border-border py-12 sm:py-16 px-4 sm:px-8">
-        <div className="max-w-[1120px] mx-auto space-y-8">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-semibold text-ink">
+      {/* ─── SECTION 3: WHAT YOU CAN DO (Keylime Soft Cards) ─── */}
+      <section className="py-12 sm:py-20 px-4 sm:px-8 border-t border-[#efeeeb] bg-[#fffefc]">
+        <div className="max-w-[1200px] mx-auto space-y-10">
+          <div className="max-w-xl space-y-2">
+            <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+              {lang === 'bn' ? 'সিস্টেম মডিউল' : 'CLINICAL ECOSYSTEM'}
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-light text-[#0f3e17] tracking-tight">
               {t('svc.title')}
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1: Appointments */}
             <Link to="/patient/appointments" className="block group">
-              <Card padding="lg" className="h-full space-y-4 hover:border-border-strong transition-colors">
-                <div className="w-12 h-12 rounded-full bg-subtle flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-ink" />
+              <div className="h-full rounded-[14px] bg-[#e1f4df] p-7 space-y-5 transition-transform duration-150 group-hover:-translate-y-0.5">
+                <div className="w-12 h-12 rounded-full bg-[#fffefc] flex items-center justify-center text-[#0f3e17]">
+                  <Calendar className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="text-base font-semibold text-ink group-hover:underline">
+                <div className="space-y-1">
+                  <h3 className="font-serif text-xl font-light text-[#0f3e17] group-hover:underline">
                     {t('svc.appts')}
                   </h3>
-                  <p className="text-sm text-text-2 mt-1 leading-relaxed">
+                  <p className="text-sm text-[#222222] leading-relaxed">
                     {t('svc.apptsSub')}
                   </p>
                 </div>
-              </Card>
+              </div>
             </Link>
 
             {/* Card 2: Prescriptions */}
             <Link to="/patient/documents" className="block group">
-              <Card padding="lg" className="h-full space-y-4 hover:border-border-strong transition-colors">
-                <div className="w-12 h-12 rounded-full bg-subtle flex items-center justify-center">
-                  <FileText className="w-6 h-6 text-ink" />
+              <div className="h-full rounded-[14px] bg-[#e1f4df] p-7 space-y-5 transition-transform duration-150 group-hover:-translate-y-0.5">
+                <div className="w-12 h-12 rounded-full bg-[#fffefc] flex items-center justify-center text-[#0f3e17]">
+                  <FileText className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="text-base font-semibold text-ink group-hover:underline">
+                <div className="space-y-1">
+                  <h3 className="font-serif text-xl font-light text-[#0f3e17] group-hover:underline">
                     {t('svc.rx')}
                   </h3>
-                  <p className="text-sm text-text-2 mt-1 leading-relaxed">
+                  <p className="text-sm text-[#222222] leading-relaxed">
                     {t('svc.rxSub')}
                   </p>
                 </div>
-              </Card>
+              </div>
             </Link>
 
             {/* Card 3: Reports */}
             <Link to="/patient/documents" className="block group">
-              <Card padding="lg" className="h-full space-y-4 hover:border-border-strong transition-colors">
-                <div className="w-12 h-12 rounded-full bg-subtle flex items-center justify-center">
-                  <ShieldCheck className="w-6 h-6 text-ink" />
+              <div className="h-full rounded-[14px] bg-[#e1f4df] p-7 space-y-5 transition-transform duration-150 group-hover:-translate-y-0.5">
+                <div className="w-12 h-12 rounded-full bg-[#fffefc] flex items-center justify-center text-[#0f3e17]">
+                  <ShieldCheck className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="text-base font-semibold text-ink group-hover:underline">
+                <div className="space-y-1">
+                  <h3 className="font-serif text-xl font-light text-[#0f3e17] group-hover:underline">
                     {t('svc.reports')}
                   </h3>
-                  <p className="text-sm text-text-2 mt-1 leading-relaxed">
+                  <p className="text-sm text-[#222222] leading-relaxed">
                     {t('svc.reportsSub')}
                   </p>
                 </div>
-              </Card>
+              </div>
             </Link>
 
             {/* Card 4: Bills */}
             <Link to="/patient/resources" className="block group">
-              <Card padding="lg" className="h-full space-y-4 hover:border-border-strong transition-colors">
-                <div className="w-12 h-12 rounded-full bg-subtle flex items-center justify-center">
-                  <CreditCard className="w-6 h-6 text-ink" />
+              <div className="h-full rounded-[14px] bg-[#e1f4df] p-7 space-y-5 transition-transform duration-150 group-hover:-translate-y-0.5">
+                <div className="w-12 h-12 rounded-full bg-[#fffefc] flex items-center justify-center text-[#0f3e17]">
+                  <CreditCard className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="text-base font-semibold text-ink group-hover:underline">
+                <div className="space-y-1">
+                  <h3 className="font-serif text-xl font-light text-[#0f3e17] group-hover:underline">
                     {t('svc.bills')}
                   </h3>
-                  <p className="text-sm text-text-2 mt-1 leading-relaxed">
+                  <p className="text-sm text-[#222222] leading-relaxed">
                     {t('svc.billsSub')}
                   </p>
                 </div>
-              </Card>
+              </div>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ─── SECTION 4: OUR DOCTORS (Section 9.0) ─── */}
-      <section className="bg-sidebar border-b border-border py-12 sm:py-16 px-4 sm:px-8">
-        <div className="max-w-[1120px] mx-auto space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h2 className="text-2xl font-semibold text-ink">
-              {t('doctors.title')}
-            </h2>
-
-            {/* Department Filter Chips (Scroll sideways on mobile) */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
-              {departments.map((dept) => {
-                const isSelected = selectedDept === dept.id;
-                return (
-                  <button
-                    key={dept.id}
-                    onClick={() => setSelectedDept(dept.id)}
-                    className={`h-10 px-4 rounded-full text-xs font-medium whitespace-nowrap transition-colors border cursor-pointer ${
-                      isSelected
-                        ? 'bg-accent-tint text-accent border-accent font-semibold'
-                        : 'bg-canvas text-text-2 border-border hover:border-border-strong hover:text-ink'
-                    }`}
-                  >
-                    {dept.label}
-                  </button>
-                );
-              })}
+      {/* ─── SECTION 4: OUR DOCTORS ─── */}
+      <section className="py-12 sm:py-20 px-4 sm:px-8 border-t border-[#efeeeb] bg-[#f9fbf8]">
+        <div className="max-w-[1200px] mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+                {lang === 'bn' ? 'বিশেষজ্ঞ চিকিৎসক' : 'VERIFIED SPECIALISTS'}
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-light text-[#0f3e17] tracking-tight">
+                {t('doctors.title')}
+              </h2>
             </div>
+
+            <Link to="/patient/doctors">
+              <Button variant="secondary" size="compact" rightIcon={<ChevronRight className="w-4 h-4" />}>
+                {t('doctors.seeAll')}
+              </Button>
+            </Link>
+          </div>
+
+          {/* Department Chips (Pills in Cream Paper) */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {departments.map((dept) => {
+              const isSelected = selectedDept === dept.id;
+              return (
+                <button
+                  key={dept.id}
+                  onClick={() => setSelectedDept(dept.id)}
+                  className={`h-9 px-4 rounded-full text-xs font-medium whitespace-nowrap transition-colors border cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#0f3e17] text-[#fffefc] border-[#0f3e17]'
+                      : 'bg-[#fffefc] text-[#222222] border-[#efeeeb] hover:border-[#b1dbb8]'
+                  }`}
+                >
+                  {dept.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* 4 Doctor Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredDoctors.map((doc) => (
-              <Card key={doc.id} padding="lg" className="flex flex-col justify-between space-y-4 bg-canvas">
+              <div
+                key={doc.id}
+                className="rounded-[14px] bg-[#fffefc] border border-[#efeeeb] p-6 flex flex-col justify-between space-y-4 hover:border-[#b1dbb8] transition-colors"
+              >
                 <div className="space-y-3">
-                  <div className="w-14 h-14 rounded-full bg-subtle border border-border flex items-center justify-center font-semibold text-base text-ink">
-                    {doc.initials}
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-[14px] bg-[#e1f4df] text-[#0f3e17] font-serif text-base font-light grid place-items-center">
+                      {doc.initials}
+                    </div>
+                    <Badge variant="accent">✓ Verified</Badge>
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-ink">{doc.name}</h3>
-                    <p className="text-xs text-text-2 font-medium mt-0.5">{doc.dept}</p>
-                    <p className="text-xs text-text-3 mt-0.5">{doc.hospital}</p>
-                  </div>
-                  <div className="pt-2 border-t border-border text-xs text-text-3">
-                    <span className="text-text-2 font-medium">{lang === 'bn' ? 'পরবর্তী খালি:' : 'Next free:'}</span> {doc.nextFree}
+                    <h3 className="font-serif text-lg font-light text-[#0f3e17] leading-snug">
+                      {doc.name}
+                    </h3>
+                    <p className="text-xs text-[#222222] font-medium mt-0.5">{doc.dept}</p>
+                    <p className="text-xs text-[#5a6e5e] mt-0.5">{doc.hospital}</p>
                   </div>
                 </div>
 
-                <div className="pt-2">
-                  <Link to="/patient/doctors" className="block w-full">
+                <div className="pt-3 border-t border-[#efeeeb] space-y-3">
+                  <div className="text-xs text-[#5a6e5e]">
+                    <span className="font-semibold text-[#0f3e17]">{doc.nextFree}</span>
+                  </div>
+                  <Link to="/patient/doctors" className="block">
                     <Button variant="secondary" size="compact" fullWidth>
-                      {lang === 'bn' ? 'সিরিয়াল নিন' : 'Book'}
+                      {t('action.book')}
                     </Button>
                   </Link>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="pt-2 text-center">
-            <Link to="/patient/doctors">
-              <Button variant="secondary" size="comfort">
-                {t('doctors.seeAll')}
+      {/* ─── SECTION 5: VISIT US & EMERGENCY ─── */}
+      <section className="py-12 sm:py-20 px-4 sm:px-8 border-t border-[#efeeeb] bg-[#fffefc]">
+        <div className="max-w-[1200px] mx-auto space-y-8">
+          <div className="max-w-xl space-y-2">
+            <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+              {lang === 'bn' ? 'ঠিকানা ও জরুরি সেবা' : 'LOCATION & 24/7 SUPPORT'}
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-light text-[#0f3e17] tracking-tight">
+              {t('visit.title')}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Opening hours */}
+            <div className="rounded-[14px] bg-[#e1f4df] p-7 space-y-3">
+              <div className="flex items-center gap-2.5 text-[#0f3e17]">
+                <Clock className="w-5 h-5" />
+                <h3 className="font-serif text-lg font-light text-[#0f3e17]">{t('visit.hours')}</h3>
+              </div>
+              <p className="text-sm text-[#222222] leading-relaxed">{t('visit.hoursVal')}</p>
+            </div>
+
+            {/* Address */}
+            <div className="rounded-[14px] bg-[#e1f4df] p-7 space-y-3">
+              <div className="flex items-center gap-2.5 text-[#0f3e17]">
+                <MapPin className="w-5 h-5" />
+                <h3 className="font-serif text-lg font-light text-[#0f3e17]">{t('visit.address')}</h3>
+              </div>
+              <p className="text-sm text-[#222222] leading-relaxed">{t('visit.addressVal')}</p>
+            </div>
+
+            {/* Phone */}
+            <div className="rounded-[14px] bg-[#e1f4df] p-7 space-y-3">
+              <div className="flex items-center gap-2.5 text-[#0f3e17]">
+                <Phone className="w-5 h-5" />
+                <h3 className="font-serif text-lg font-light text-[#0f3e17]">{t('visit.phone')}</h3>
+              </div>
+              <p className="text-sm text-[#222222] leading-relaxed">01700-000000 / 01800-000000</p>
+            </div>
+          </div>
+
+          {/* Emergency 999 Hotline Banner */}
+          <div className="rounded-[14px] bg-[#fef3f2] border border-[#fecdca] p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#b42318] text-white flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-semibold text-sm text-[#b42318]">{t('emergency.hotline')}</div>
+                <div className="text-xs text-[#b42318]/90">{t('emergency.note')}</div>
+              </div>
+            </div>
+            <Link to="/emergency">
+              <Button variant="danger" size="compact">
+                {lang === 'bn' ? 'জরুরি অ্যাম্বুলেন্স ডাকুন' : 'Dispatch Ambulance'}
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ─── SECTION 5: VISIT US (Section 9.0) ─── */}
-      <section className="bg-canvas border-b border-border py-12 sm:py-16 px-4 sm:px-8">
-        <div className="max-w-[1120px] mx-auto space-y-8">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-semibold text-ink">
-              {t('visit.title')}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Opening Hours */}
-            <Card padding="lg" className="space-y-3">
-              <div className="flex items-center gap-2 text-text-3 text-xs font-semibold uppercase tracking-wider">
-                <Clock className="w-4 h-4 text-ink" />
-                <span>{t('visit.hours')}</span>
-              </div>
-              <p className="text-sm font-medium text-ink">
-                {t('visit.hoursVal')}
-              </p>
-            </Card>
-
-            {/* Address */}
-            <Card padding="lg" className="space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-text-3 text-xs font-semibold uppercase tracking-wider">
-                  <MapPin className="w-4 h-4 text-ink" />
-                  <span>{t('visit.address')}</span>
-                </div>
-                <p className="text-sm font-medium text-ink mt-2">
-                  {t('visit.addressVal')}
-                </p>
-              </div>
-              <div className="pt-2">
-                <a
-                  href="https://maps.google.com/?q=Dhanmondi+27+Dhaka"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <Button variant="secondary" size="compact" leftIcon={<ExternalLink className="w-3.5 h-3.5" />}>
-                    {t('visit.directions')}
-                  </Button>
-                </a>
-              </div>
-            </Card>
-
-            {/* Phone */}
-            <Card padding="lg" className="space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-text-3 text-xs font-semibold uppercase tracking-wider">
-                  <Phone className="w-4 h-4 text-ink" />
-                  <span>{t('visit.phone')}</span>
-                </div>
-                <p className="text-sm font-medium text-ink mt-2">
-                  +880 1700-000000 / 02-9876543
-                </p>
-              </div>
-              <div className="pt-2">
-                <a href="tel:01700000000" className="block">
-                  <Button variant="secondary" size="compact" leftIcon={<Phone className="w-3.5 h-3.5" />}>
-                    {t('landing.callUs')}
-                  </Button>
-                </a>
-              </div>
-            </Card>
-          </div>
-
-          {/* Clinical Safety Emergency Strip (Danger style, not dismissible) */}
-          <AlertBanner
-            variant="danger"
-            message={t('emergency.note')}
-          />
-        </div>
-      </section>
-
-      {/* ─── SECTION 6: FOOTER (Section 9.0) ─── */}
-      <footer className="bg-sidebar py-8 px-4 sm:px-8 border-t border-border">
-        <div className="max-w-[1120px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-2">
-          <div className="flex items-center gap-6">
-            <span>© {new Date().getFullYear()} MediSheba BD</span>
-            <Link to="/help" className="hover:text-ink">{t('footer.privacy')}</Link>
-            <Link to="/help" className="hover:text-ink">{t('footer.help')}</Link>
-          </div>
-
+      {/* ─── SECTION 6: FOOTER (Clean Botanical Cream) ─── */}
+      <footer className="border-t border-[#efeeeb] bg-[#fffefc] py-10 px-4 sm:px-8">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5a6e5e]">
           <div className="flex items-center gap-3">
+            <span className="font-serif text-base text-[#0f3e17] font-normal">{t('app_name')}</span>
+            <span>·</span>
+            <span>© {new Date().getFullYear()} MediSheba BD</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <Link to="/help" className="hover:text-[#0f3e17] transition-colors">
+              {t('footer.help')}
+            </Link>
+            <Link to="/help" className="hover:text-[#0f3e17] transition-colors">
+              {t('footer.privacy')}
+            </Link>
             <LanguageToggle />
           </div>
         </div>
       </footer>
 
-      {/* ─── Mobile Sticky Bottom Bar (Fixed at bottom on phones, Section 9.0) ─── */}
-      <div className="fixed bottom-0 left-0 right-0 sm:hidden z-40 bg-canvas border-t border-border p-3 flex items-center gap-3">
+      {/* ─── Mobile Sticky Bottom Bar (Cream Paper with 14px Forest Button) ─── */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#fffefc] border-t border-[#efeeeb] p-3 flex items-center gap-3">
         <Link to="/patient/doctors" className="flex-1">
-          <Button variant="primary" size="compact" fullWidth>
+          <Button variant="primary" size="comfort" fullWidth>
             {t('action.book')}
           </Button>
         </Link>
         <a href="tel:01700000000" className="shrink-0">
-          <Button variant="secondary" size="compact" leftIcon={<Phone className="w-4 h-4" />}>
-            {lang === 'bn' ? 'কল' : 'Call'}
+          <Button variant="secondary" size="comfort" leftIcon={<Phone className="w-4 h-4 text-[#0f3e17]" />}>
+            {t('landing.callUs')}
           </Button>
         </a>
       </div>

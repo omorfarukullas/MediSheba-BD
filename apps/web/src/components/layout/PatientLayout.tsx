@@ -53,16 +53,16 @@ export function PatientLayout() {
       : t('nav.dashboard');
 
   return (
-    <div className="flex min-h-screen bg-[#ffffff] font-sans text-[#111111]">
-      {/* ─── NavSidebar (240px, #f7f7f5, 1px right border) ─── */}
-      <aside className="hidden lg:flex w-[240px] shrink-0 bg-[#f7f7f5] border-r border-[#e7e5e4] p-4 flex-col justify-between select-none">
+    <div className="flex min-h-screen bg-[#fffefc] font-sans text-[#222222]">
+      {/* ─── NavSidebar (240px, Ease Health Botanical Surface #f9fbf8) ─── */}
+      <aside className="hidden lg:flex w-[240px] shrink-0 bg-[#f9fbf8] border-r border-[#efeeeb] p-4 flex-col justify-between select-none">
         <div className="space-y-4">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-3 px-1 h-10">
-            <div className="w-7 h-7 rounded-lg bg-[#111111] text-white grid place-items-center text-xs font-semibold">
+            <div className="w-8 h-8 rounded-[7px] bg-[#0f3e17] text-[#fffefc] grid place-items-center text-xs font-semibold">
               M
             </div>
-            <span className="text-[16px] font-semibold text-[#111111]">
+            <span className="font-serif text-[17px] font-normal text-[#0f3e17] tracking-tight">
               {t('app_name')}
             </span>
           </Link>
@@ -71,7 +71,7 @@ export function PatientLayout() {
           <Link to="/patient/doctors" className="block">
             <button
               type="button"
-              className="w-full h-10 rounded-lg bg-[#2f4bc0] hover:bg-[#233a9e] active:bg-[#1c2f80] text-white text-[14px] font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="w-full h-11 rounded-[14px] bg-[#0f3e17] hover:bg-[#0c2f10] active:bg-[#071d0b] text-[#fffefc] text-[14px] font-normal flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>{t('action.book')}</span>
@@ -80,17 +80,17 @@ export function PatientLayout() {
 
           {/* Group: Workspace */}
           <div>
-            <div className="px-3 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#78716c]">
+            <div className="eyebrow px-3 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]/80">
               {t('groups.workspace')}
             </div>
             <nav className="space-y-0.5">
               <NavLink
                 to="/patient/dashboard"
                 className={({ isActive }) =>
-                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                  `flex items-center gap-3 h-10 px-3 rounded-[10px] text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
-                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                      ? 'bg-[#e1f4df] text-[#0f3e17] font-medium'
+                      : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
                   }`
                 }
               >
@@ -101,10 +101,10 @@ export function PatientLayout() {
               <NavLink
                 to="/patient/appointments"
                 className={({ isActive }) =>
-                  `flex items-center justify-between h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                  `flex items-center justify-between h-10 px-3 rounded-[10px] text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
-                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                      ? 'bg-[#e1f4df] text-[#0f3e17] font-medium'
+                      : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
                   }`
                 }
               >
@@ -112,7 +112,7 @@ export function PatientLayout() {
                   <Calendar className="w-[18px] h-[18px] shrink-0" />
                   <span>{t('nav.appointments')}</span>
                 </div>
-                <span className="bg-[#f4f4f2] text-[#78716c] text-[12px] px-2 py-0.5 rounded-full font-medium">
+                <span className="bg-[#e1f4df] text-[#0f3e17] text-[11px] px-2 py-0.5 rounded-full font-medium">
                   Live
                 </span>
               </NavLink>
@@ -121,17 +121,17 @@ export function PatientLayout() {
 
           {/* Group: Care */}
           <div>
-            <div className="px-3 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#78716c]">
+            <div className="eyebrow px-3 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]/80">
               {t('groups.care')}
             </div>
             <nav className="space-y-0.5">
               <NavLink
                 to="/patient/documents"
                 className={({ isActive }) =>
-                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                  `flex items-center gap-3 h-10 px-3 rounded-[10px] text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
-                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                      ? 'bg-[#e1f4df] text-[#0f3e17] font-medium'
+                      : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
                   }`
                 }
               >
@@ -142,10 +142,10 @@ export function PatientLayout() {
               <NavLink
                 to="/patient/telemedicine"
                 className={({ isActive }) =>
-                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                  `flex items-center gap-3 h-10 px-3 rounded-[10px] text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
-                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                      ? 'bg-[#e1f4df] text-[#0f3e17] font-medium'
+                      : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
                   }`
                 }
               >
@@ -156,10 +156,10 @@ export function PatientLayout() {
               <NavLink
                 to="/patient/vitals"
                 className={({ isActive }) =>
-                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                  `flex items-center gap-3 h-10 px-3 rounded-[10px] text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
-                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                      ? 'bg-[#e1f4df] text-[#0f3e17] font-medium'
+                      : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
                   }`
                 }
               >
@@ -170,10 +170,10 @@ export function PatientLayout() {
               <NavLink
                 to="/patient/resources"
                 className={({ isActive }) =>
-                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                  `flex items-center gap-3 h-10 px-3 rounded-[10px] text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
-                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                      ? 'bg-[#e1f4df] text-[#0f3e17] font-medium'
+                      : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
                   }`
                 }
               >
@@ -185,10 +185,10 @@ export function PatientLayout() {
         </div>
 
         {/* Bottom Zone: Help, Settings, Emergency, User Row */}
-        <div className="space-y-1 pt-4 border-t border-[#e7e5e4]">
+        <div className="space-y-1 pt-4 border-t border-[#efeeeb]">
           <Link
             to="/emergency"
-            className="flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] text-[#b42318] hover:bg-[#fef3f2] font-medium transition-colors"
+            className="flex items-center gap-3 h-9 px-3 rounded-[10px] text-[13px] text-[#b42318] hover:bg-[#fef3f2] font-medium transition-colors"
           >
             <span>{t('nav.emergency')}</span>
           </Link>
@@ -196,8 +196,8 @@ export function PatientLayout() {
           <NavLink
             to="/patient/help"
             className={({ isActive }) =>
-              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
-                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              `flex items-center gap-3 h-9 px-3 rounded-[10px] text-[13px] transition-colors ${
+                isActive ? 'bg-[#e1f4df] text-[#0f3e17] font-medium' : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
               }`
             }
           >
@@ -208,8 +208,8 @@ export function PatientLayout() {
           <NavLink
             to="/patient/settings"
             className={({ isActive }) =>
-              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
-                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              `flex items-center gap-3 h-9 px-3 rounded-[10px] text-[13px] transition-colors ${
+                isActive ? 'bg-[#e1f4df] text-[#0f3e17] font-medium' : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
               }`
             }
           >
@@ -217,16 +217,16 @@ export function PatientLayout() {
             <span>{t('nav.settings', 'Settings')}</span>
           </NavLink>
 
-          <div className="pt-2 mt-2 border-t border-[#e7e5e4] flex items-center justify-between">
+          <div className="pt-2 mt-2 border-t border-[#efeeeb] flex items-center justify-between">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-8 h-8 rounded-full bg-[#f4f4f2] border border-[#e7e5e4] grid place-items-center text-xs font-semibold text-[#111111]">
+              <div className="w-8 h-8 rounded-full bg-[#e1f4df] border border-[#b1dbb8] grid place-items-center text-xs font-serif text-[#0f3e17]">
                 {(profile?.fullName || user?.displayName || 'P').slice(0, 2).toUpperCase()}
               </div>
               <div className="leading-tight overflow-hidden">
-                <div className="text-[13px] font-medium text-[#111111] truncate">
+                <div className="text-[13px] font-medium text-[#222222] truncate">
                   {profile?.fullName || user?.displayName || 'Patient'}
                 </div>
-                <div className="text-[11px] text-[#78716c] truncate">
+                <div className="text-[11px] text-[#5a6e5e] truncate">
                   {t('patient.profile')}
                 </div>
               </div>
@@ -234,7 +234,7 @@ export function PatientLayout() {
 
             <button
               onClick={handleLogout}
-              className="p-1.5 text-[#78716c] hover:text-[#111111] hover:bg-[#f4f4f2] rounded-md transition-colors"
+              className="p-1.5 text-[#5a6e5e] hover:text-[#0f3e17] hover:bg-[#e1f4df] rounded-[7px] transition-colors cursor-pointer"
               title={t('action.signOut')}
             >
               <LogOut className="w-4 h-4" />
@@ -244,50 +244,50 @@ export function PatientLayout() {
       </aside>
 
       {/* ─── Main Content Container ─── */}
-      <div className="flex-1 min-w-0 flex flex-col bg-[#ffffff]">
-        {/* Top Bar (56px high, white, 1px bottom border) */}
-        <header className="h-14 border-b border-[#e7e5e4] px-4 sm:px-6 lg:px-8 flex items-center justify-between bg-[#ffffff] sticky top-0 z-20">
+      <div className="flex-1 min-w-0 flex flex-col bg-[#fffefc]">
+        {/* Top Bar (56px high, cream, border-b) */}
+        <header className="h-14 border-b border-[#efeeeb] px-4 sm:px-6 lg:px-8 flex items-center justify-between bg-[#fffefc] sticky top-0 z-20">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]"
+              className="lg:hidden p-2 rounded-[7px] text-[#222222] hover:bg-[#e1f4df] hover:text-[#0f3e17]"
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
             </button>
 
-            {/* Breadcrumb (Section 5) */}
-            <nav className="flex items-center gap-1.5 text-[14px] text-[#78716c]">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-1.5 text-[13px] text-[#5a6e5e]">
               <span>{t('app_name')}</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#d6d3d1]" />
-              <span className="text-[#111111] font-medium">{pageTitle}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#b1dbb8]" />
+              <span className="font-serif text-[#0f3e17] text-sm">{pageTitle}</span>
             </nav>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* One-Click LanguageToggle (Section 6.1) */}
+            {/* One-Click LanguageToggle */}
             <LanguageToggle />
 
-            {/* Call us secondary button (Section 5) */}
+            {/* Call us secondary button */}
             <a href="tel:01700000000" className="hidden sm:inline-flex">
               <button
                 type="button"
-                className="h-8 px-3 rounded-lg border-[1.5px] border-[#111111] bg-white hover:bg-[#f4f4f2] active:bg-[#e7e5e4] text-[#111111] text-[13px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="h-8 px-3 rounded-full border-[1.5px] border-[#0f3e17] bg-[#fffefc] hover:bg-[#e1f4df] text-[#0f3e17] text-[13px] font-normal inline-flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <Phone className="w-3.5 h-3.5 text-[#111111]" />
+                <Phone className="w-3.5 h-3.5 text-[#0f3e17]" />
                 <span>{t('landing.callUs', 'Call us')}</span>
               </button>
             </a>
 
-            <div className="w-8 h-8 rounded-full bg-[#f4f4f2] border border-[#e7e5e4] grid place-items-center text-xs font-semibold text-[#111111]">
+            <div className="w-8 h-8 rounded-full bg-[#e1f4df] border border-[#b1dbb8] grid place-items-center text-xs font-serif text-[#0f3e17]">
               {(profile?.fullName || user?.displayName || 'P').slice(0, 2).toUpperCase()}
             </div>
           </div>
         </header>
 
-        {/* Page Content Well (Max 1120px, Section 4 & 8) */}
-        <main className="p-4 sm:p-6 lg:p-8 max-w-[1120px] w-full mx-auto space-y-6 flex-1">
+        {/* Page Content Well */}
+        <main className="p-4 sm:p-6 lg:p-8 max-w-[1200px] w-full mx-auto space-y-6 flex-1">
           <Outlet />
         </main>
       </div>

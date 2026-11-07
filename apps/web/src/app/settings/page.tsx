@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useLanguageStore, useTranslation, SupportedLanguage } from '../../stores/language.store';
+import React, { useState } from 'react';
+import { useLanguageStore, useTranslation } from '../../stores/language.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { Badge } from '../../components/ui/Badge';
 import { LanguageToggle } from '../../components/shared/LanguageToggle';
 import {
   Globe,
@@ -19,7 +18,7 @@ import {
 
 export function SettingsPage() {
   const { t } = useTranslation();
-  const { lang, setLanguage } = useLanguageStore();
+  const { lang } = useLanguageStore();
   const { user, profile, logout } = useAuthStore();
 
   const [banglaDigits, setBanglaDigits] = useState<boolean>(() => {
@@ -95,35 +94,38 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="max-w-[1120px] mx-auto space-y-6">
+    <div className="max-w-[1120px] mx-auto space-y-7">
       {/* ─── Page Header ─── */}
       <div className="space-y-1">
-        <h1 className="text-[28px] font-semibold text-ink leading-tight">
+        <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]/80">
+          {lang === 'bn' ? 'ব্যবহারকারী পছন্দসমূহ' : 'Preferences & Setup'}
+        </div>
+        <h1 className="font-serif text-[32px] sm:text-[38px] font-light text-[#0f3e17] tracking-tight leading-tight">
           {t('settings.title', 'Settings')}
         </h1>
-        <p className="text-sm text-text-2">
+        <p className="text-[14px] text-[#222222]/70">
           {t('settings.desc', 'Manage language, display density, and account preferences.')}
         </p>
       </div>
 
       {/* Floating Save Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-ink text-white text-xs font-medium rounded-lg flex items-center gap-2 border border-border-strong animate-fade-in">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 bg-[#0f3e17] text-[#fffefc] text-xs font-medium rounded-full flex items-center gap-2 border border-[#0c2f10] shadow-none">
+          <CheckCircle2 className="w-4 h-4 text-[#b1dbb8]" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       <div className="space-y-4">
         {/* 1. Language Row */}
-        <Card padding="md" className="space-y-3">
+        <Card variant="default" padding="lg" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <div className="text-sm font-semibold text-ink flex items-center gap-2">
-                <Globe className="w-4 h-4 text-text-3" />
+              <div className="text-[15px] font-medium text-[#0f3e17] flex items-center gap-2">
+                <Globe className="w-4 h-4 text-[#0f3e17]" />
                 <span>{t('settings.language', 'Language')}</span>
               </div>
-              <p className="text-xs text-text-3">
+              <p className="text-xs text-[#222222]/60">
                 {lang === 'bn' ? 'বাংলা এবং ইংরেজির মধ্যে তাৎক্ষণিক পরিবর্তন করুন' : 'Instant toggle between English and Bengali'}
               </p>
             </div>
@@ -132,13 +134,13 @@ export function SettingsPage() {
         </Card>
 
         {/* 2. Bangla Digits Row */}
-        <Card padding="md" className="space-y-3">
+        <Card variant="default" padding="lg" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <div className="text-sm font-semibold text-ink">
+              <div className="text-[15px] font-medium text-[#0f3e17]">
                 {t('settings.banglaDigits', 'Use Bangla digits (০–৯)')}
               </div>
-              <p className="text-xs text-text-3">
+              <p className="text-xs text-[#222222]/60">
                 {t('settings.banglaDigitsDesc', 'Display numbers in Bangla script where applicable')}
               </p>
             </div>
@@ -147,12 +149,12 @@ export function SettingsPage() {
               role="switch"
               aria-checked={banglaDigits}
               onClick={() => handleBanglaDigitsToggle(!banglaDigits)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                banglaDigits ? 'bg-accent' : 'bg-border-strong'
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                banglaDigits ? 'bg-[#0f3e17]' : 'bg-[#efeeeb]'
               }`}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-none ring-0 transition duration-200 ease-in-out ${
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#fffefc] transition duration-200 ease-in-out ${
                   banglaDigits ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
@@ -161,25 +163,25 @@ export function SettingsPage() {
         </Card>
 
         {/* 3. Text Size Row */}
-        <Card padding="md" className="space-y-3">
+        <Card variant="default" padding="lg" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <div className="text-sm font-semibold text-ink flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-text-3" />
+              <div className="text-[15px] font-medium text-[#0f3e17] flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-[#0f3e17]" />
                 <span>{t('settings.textSize', 'Text size')}</span>
               </div>
-              <p className="text-xs text-text-3">
+              <p className="text-xs text-[#222222]/60">
                 {t('settings.textSizeDesc', 'Increase font size for improved reading comfort (+2px)')}
               </p>
             </div>
-            <div className="inline-flex rounded-lg bg-subtle p-0.5">
+            <div className="inline-flex rounded-full bg-[#e1f4df] p-1">
               <button
                 type="button"
                 onClick={() => handleTextSizeChange('normal')}
-                className={`h-8 px-3 rounded-md text-xs font-medium transition-colors ${
+                className={`h-8 px-4 rounded-full text-xs font-medium transition-colors ${
                   textSize === 'normal'
-                    ? 'bg-canvas text-ink border border-border-strong'
-                    : 'text-text-2 hover:text-ink'
+                    ? 'bg-[#fffefc] text-[#0f3e17] border border-[#efeeeb]'
+                    : 'text-[#222222]/70 hover:text-[#0f3e17]'
                 }`}
               >
                 {t('settings.normal', 'Normal')}
@@ -187,10 +189,10 @@ export function SettingsPage() {
               <button
                 type="button"
                 onClick={() => handleTextSizeChange('large')}
-                className={`h-8 px-3 rounded-md text-xs font-medium transition-colors ${
+                className={`h-8 px-4 rounded-full text-xs font-medium transition-colors ${
                   textSize === 'large'
-                    ? 'bg-canvas text-ink border border-border-strong'
-                    : 'text-text-2 hover:text-ink'
+                    ? 'bg-[#fffefc] text-[#0f3e17] border border-[#efeeeb]'
+                    : 'text-[#222222]/70 hover:text-[#0f3e17]'
                 }`}
               >
                 {t('settings.large', 'Large')}
@@ -200,25 +202,25 @@ export function SettingsPage() {
         </Card>
 
         {/* 4. Week Starts On */}
-        <Card padding="md" className="space-y-3">
+        <Card variant="default" padding="lg" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <div className="text-sm font-semibold text-ink flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-text-3" />
+              <div className="text-[15px] font-medium text-[#0f3e17] flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-[#0f3e17]" />
                 <span>{t('settings.weekStartsOn', 'Week starts on')}</span>
               </div>
-              <p className="text-xs text-text-3">
+              <p className="text-xs text-[#222222]/60">
                 {t('settings.weekStartsOnDesc', 'First day of the week in appointment calendars')}
               </p>
             </div>
-            <div className="inline-flex rounded-lg bg-subtle p-0.5">
+            <div className="inline-flex rounded-full bg-[#e1f4df] p-1">
               <button
                 type="button"
                 onClick={() => handleWeekStartChange('saturday')}
-                className={`h-8 px-3 rounded-md text-xs font-medium transition-colors ${
+                className={`h-8 px-4 rounded-full text-xs font-medium transition-colors ${
                   weekStartsOn === 'saturday'
-                    ? 'bg-canvas text-ink border border-border-strong'
-                    : 'text-text-2 hover:text-ink'
+                    ? 'bg-[#fffefc] text-[#0f3e17] border border-[#efeeeb]'
+                    : 'text-[#222222]/70 hover:text-[#0f3e17]'
                 }`}
               >
                 {t('settings.saturday', 'Saturday')}
@@ -226,10 +228,10 @@ export function SettingsPage() {
               <button
                 type="button"
                 onClick={() => handleWeekStartChange('sunday')}
-                className={`h-8 px-3 rounded-md text-xs font-medium transition-colors ${
+                className={`h-8 px-4 rounded-full text-xs font-medium transition-colors ${
                   weekStartsOn === 'sunday'
-                    ? 'bg-canvas text-ink border border-border-strong'
-                    : 'text-text-2 hover:text-ink'
+                    ? 'bg-[#fffefc] text-[#0f3e17] border border-[#efeeeb]'
+                    : 'text-[#222222]/70 hover:text-[#0f3e17]'
                 }`}
               >
                 {t('settings.sunday', 'Sunday')}
@@ -238,124 +240,85 @@ export function SettingsPage() {
           </div>
         </Card>
 
-        {/* 5. Reminders */}
-        <Card padding="md" className="space-y-4">
-          <div className="space-y-0.5 pb-2 border-b border-border">
-            <div className="text-sm font-semibold text-ink flex items-center gap-2">
-              <Bell className="w-4 h-4 text-text-3" />
-              <span>{t('settings.reminders', 'Appointment Reminders')}</span>
-            </div>
-            <p className="text-xs text-text-3">
-              {lang === 'bn' ? 'সিরিয়াল ও অ্যাপয়েন্টমেন্ট সম্পর্কিত জরুরি বিজ্ঞপ্তি' : 'SMS and email notifications prior to consultation'}
-            </p>
+        {/* 5. SMS & Notification Preferences */}
+        <Card variant="default" padding="lg" className="space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#efeeeb]">
+            <Bell className="w-4 h-4 text-[#0f3e17]" />
+            <h3 className="font-serif text-lg font-light text-[#0f3e17]">
+              {lang === 'bn' ? 'বিজ্ঞপ্তি ও নোটিফিকেশন' : 'Notifications & Alerts'}
+            </h3>
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-ink">{t('settings.smsReminders', 'SMS notification alerts')}</span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={smsReminders}
-              onClick={() => handleSmsToggle(!smsReminders)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                smsReminders ? 'bg-accent' : 'bg-border-strong'
-              }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-none ring-0 transition duration-200 ease-in-out ${
-                  smsReminders ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-ink">{t('settings.emailReminders', 'Email reminder updates')}</span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={emailReminders}
-              onClick={() => handleEmailToggle(!emailReminders)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                emailReminders ? 'bg-accent' : 'bg-border-strong'
-              }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-none ring-0 transition duration-200 ease-in-out ${
-                  emailReminders ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
-          </div>
-        </Card>
-
-        {/* 6. Privacy & Auto Sign-out */}
-        <Card padding="md" className="space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="space-y-0.5">
-              <div className="text-sm font-semibold text-ink flex items-center gap-2">
-                <Shield className="w-4 h-4 text-text-3" />
-                <span>{t('settings.autoSignOut', 'Auto sign-out after inactivity')}</span>
+          <div className="divide-y divide-[#efeeeb]">
+            <div className="py-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium text-[#0f3e17]">SMS Reminders</div>
+                <div className="text-xs text-[#222222]/60">Receive SMS for upcoming chamber queue numbers</div>
               </div>
-              <p className="text-xs text-text-3">
-                {t('settings.autoSignOutDesc', 'Automatically secure your account session (minutes)')}
-              </p>
-            </div>
-            <div className="inline-flex rounded-lg bg-subtle p-0.5">
-              {[15, 30, 60].map((mins) => (
-                <button
-                  key={mins}
-                  type="button"
-                  onClick={() => handleAutoSignOutChange(mins)}
-                  className={`h-8 px-3 rounded-md text-xs font-medium transition-colors ${
-                    autoSignOutMinutes === mins
-                      ? 'bg-canvas text-ink border border-border-strong'
-                      : 'text-text-2 hover:text-ink'
+              <button
+                type="button"
+                role="switch"
+                aria-checked={smsReminders}
+                onClick={() => handleSmsToggle(!smsReminders)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  smsReminders ? 'bg-[#0f3e17]' : 'bg-[#efeeeb]'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#fffefc] transition duration-200 ease-in-out ${
+                    smsReminders ? 'translate-x-5' : 'translate-x-0'
                   }`}
-                >
-                  {mins} {lang === 'bn' ? 'মিনিট' : 'min'}
-                </button>
-              ))}
+                />
+              </button>
+            </div>
+
+            <div className="py-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium text-[#0f3e17]">Email Updates</div>
+                <div className="text-xs text-[#222222]/60">Receive clinical summary and prescription copies via email</div>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={emailReminders}
+                onClick={() => handleEmailToggle(!emailReminders)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  emailReminders ? 'bg-[#0f3e17]' : 'bg-[#efeeeb]'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#fffefc] transition duration-200 ease-in-out ${
+                    emailReminders ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
             </div>
           </div>
         </Card>
 
-        {/* 7. Account Summary */}
-        <Card padding="md" className="space-y-4">
-          <div className="space-y-0.5 pb-2 border-b border-border">
-            <div className="text-sm font-semibold text-ink flex items-center gap-2">
-              <User className="w-4 h-4 text-text-3" />
-              <span>{t('settings.account', 'Account details')}</span>
-            </div>
+        {/* 6. Account & Security */}
+        <Card variant="default" padding="lg" className="space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#efeeeb]">
+            <Shield className="w-4 h-4 text-[#0f3e17]" />
+            <h3 className="font-serif text-lg font-light text-[#0f3e17]">
+              {lang === 'bn' ? 'নিরাপত্তা ও সেশন' : 'Security & Session'}
+            </h3>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div className="flex items-center justify-between py-2">
             <div>
-              <div className="text-xs text-text-3">{lang === 'bn' ? 'নাম' : 'Full Name'}</div>
-              <div className="font-medium text-ink mt-0.5">
-                {profile?.fullName || user?.displayName || 'MediSheba User'}
-              </div>
+              <div className="text-sm font-medium text-[#0f3e17]">Auto Sign-Out Idle Timer</div>
+              <div className="text-xs text-[#222222]/60">Automatically locks patient portal when inactive</div>
             </div>
-            <div>
-              <div className="text-xs text-text-3">{lang === 'bn' ? 'ইমেইল' : 'Email Address'}</div>
-              <div className="font-medium text-ink mt-0.5">
-                {user?.email || 'user@medisheba.com'}
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-2 flex items-center justify-between border-t border-border">
-            <span className="text-xs text-text-3">
-              {lang === 'bn' ? 'নিরাপদ হেলথ সেশন' : 'Secure Healthcare Session'}
-            </span>
-            <Button
-              variant="danger"
-              size="compact"
-              leftIcon={<LogOut className="w-3.5 h-3.5" />}
-              onClick={logout}
+            <select
+              value={autoSignOutMinutes}
+              onChange={(e) => handleAutoSignOutChange(Number(e.target.value))}
+              className="h-10 px-3 text-xs border border-[#efeeeb] rounded-[10px] bg-[#fffefc] text-[#0f3e17] focus:outline-none focus:ring-1 focus:ring-[#0f3e17]"
             >
-              {t('action.signOut', 'Sign Out')}
-            </Button>
+              <option value={15}>15 minutes</option>
+              <option value={30}>30 minutes</option>
+              <option value={60}>60 minutes</option>
+            </select>
           </div>
         </Card>
       </div>

@@ -3,72 +3,95 @@
 @tailwind utilities;
 
 :root {
-  /* Neutrals */
-  --color-canvas: #ffffff;
-  --color-sidebar: #f7f7f5;
-  --color-subtle: #f4f4f2;
-  --color-border: #e7e5e4;
-  --color-border-strong: #d6d3d1;
-  --color-ink: #111111;
-  --color-text-2: #57534e;
-  --color-text-3: #78716c;
+  /* Ease Health Botanical Tokens */
+  --color-forest-ink: #0f3e17;
+  --color-forest-shadow: #0c2f10;
+  --color-sage-mist: #b1dbb8;
+  --color-keylime-wash: #e1f4df;
+  --color-mint-veil: #cfe7d3;
+  --color-slate-hush: #b6ced5;
+  --color-cream-paper: #fffefc;
+  --color-charcoal: #222222;
+  --color-border-mist: #efeeeb;
 
-  /* Accent (7:1 contrast) */
-  --color-accent: #2f4bc0;
-  --color-accent-hover: #233a9e;
-  --color-accent-pressed: #1c2f80;
-  --color-accent-tint: #eef2ff;
+  /* Aliased Canvas & Surface Levels */
+  --color-canvas: #fffefc;
+  --color-sidebar: #f9fbf8;
+  --color-subtle: #e1f4df;
+  --color-border: #efeeeb;
+  --color-border-strong: #b1dbb8;
+  --color-ink: #0f3e17;
+  --color-text-2: #222222;
+  --color-text-3: #5a6e5e;
 
-  /* Status (statuses & clinical alerts only) */
+  /* Primary Action & Accent */
+  --color-accent: #0f3e17;
+  --color-accent-hover: #0c2f10;
+  --color-accent-pressed: #071d0b;
+  --color-accent-tint: #e1f4df;
+
+  /* Clinical Status */
   --color-danger-text: #b42318;
   --color-danger-bg: #fef3f2;
   --color-danger-border: #fecdca;
 
-  --color-success-text: #067647;
-  --color-success-bg: #ecfdf3;
-  --color-success-border: #abefc6;
+  --color-success-text: #0f3e17;
+  --color-success-bg: #e1f4df;
+  --color-success-border: #b1dbb8;
 
-  --color-warning-text: #b54708;
-  --color-warning-bg: #fffaeb;
-  --color-warning-border: #fedf89;
+  --color-warning-text: #8c4e04;
+  --color-warning-bg: #fffbed;
+  --color-warning-border: #fde68a;
 
-  /* Fonts */
-  --font-sans: 'Inter', 'Noto Sans Bengali', 'Hind Siliguri', ui-sans-serif, system-ui, sans-serif;
-  --font-bn: 'Noto Sans Bengali', 'Hind Siliguri', 'Kalpurush', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  /* Typography Families */
+  --font-faire-octave: 'Cormorant Garamond', 'Noto Serif Bengali', 'Playfair Display', Georgia, serif;
+  --font-suisse-intl: 'Inter', 'Noto Sans Bengali', 'Suisse Intl', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-suisse-intl);
+  --font-serif: var(--font-faire-octave);
+  --font-bn: 'Noto Sans Bengali', 'Noto Serif Bengali', 'Kalpurush', ui-sans-serif, system-ui, sans-serif;
 
-  /* Type scale (English) */
-  --text-caption: 12px;
+  /* Type scale */
+  --text-caption: 11px;
   --text-body: 14px;
   --text-body-lg: 16px;
-  --text-title: 20px;
-  --text-heading: 28px;
-  --text-stat: 28px;
+  --text-title: 22px;
+  --text-heading: 32px;
+  --text-stat: 32px;
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
+  /* Spacing Scale */
+  --spacing-4: 4px;
+  --spacing-7: 7px;
+  --spacing-9: 9px;
+  --spacing-11: 11px;
+  --spacing-14: 14px;
+  --spacing-18: 18px;
+  --spacing-21: 21px;
+  --spacing-28: 28px;
+  --spacing-35: 35px;
+  --spacing-42: 42px;
+  --spacing-49: 49px;
+  --spacing-56: 56px;
+  --spacing-70: 70px;
 
   /* Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-pill: 9999px;
+  --radius-nav: 7px;
+  --radius-sm: 7px;
+  --radius-md: 14px;
+  --radius-cards: 14px;
+  --radius-buttons: 14px;
+  --radius-pill: 999px;
+  --radius-full: 9999px;
 
   /* Layout */
   --sidebar-width: 240px;
   --sidebar-width-collapsed: 64px;
   --topbar-height: 56px;
-  --page-max-width: 1120px;
+  --page-max-width: 1200px;
 }
 
 html {
   font-family: var(--font-sans);
-  color: var(--color-ink);
+  color: var(--color-text-2);
   background: var(--color-canvas);
 }
 
@@ -77,13 +100,37 @@ body {
   font-size: var(--text-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  background-color: var(--color-cream-paper);
 }
 
-/* Bangla Typography Rules (Section 3) */
+/* Display Serif Headings (weight 300) */
+h1, h2, h3 {
+  font-family: var(--font-faire-octave);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  color: var(--color-forest-ink);
+}
+
+/* Eyebrow Label Utility */
+.eyebrow {
+  font-family: var(--font-suisse-intl);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-forest-ink);
+}
+
+/* Bangla Typography Rules */
 :lang(bn) {
-  font-family: var(--font-bn);
   letter-spacing: 0 !important;
   text-transform: none !important;
+}
+
+:lang(bn) h1, :lang(bn) h2, :lang(bn) h3 {
+  font-family: 'Noto Serif Bengali', 'Cormorant Garamond', serif;
+  font-weight: 400;
+  letter-spacing: 0 !important;
 }
 
 body:lang(bn),
@@ -92,7 +139,7 @@ html:lang(bn) body {
   line-height: 1.7;
 }
 
-/* Text Size Option: Large (+2px) (Section 7.0 & 9.9) */
+/* Text Size Option: Large (+2px) */
 html.text-size-large body {
   font-size: 16px;
 }
@@ -101,22 +148,17 @@ html.text-size-large body:lang(bn) {
   font-size: 17px;
 }
 
-/* Strict Zero-Shadow Policy (Section 0 Hard Rule 2) */
+/* Strict Zero-Shadow Policy */
 *,
 ::before,
 ::after {
   box-shadow: none !important;
 }
 
-/* Accessible Focus Ring (Section 4) */
+/* Accessible Focus Ring */
 :focus-visible {
-  outline: 2px solid var(--color-accent) !important;
+  outline: 2px solid var(--color-forest-ink) !important;
   outline-offset: 2px !important;
-}
-
-h1, h2, h3, h4 {
-  font-weight: 600;
-  color: var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {

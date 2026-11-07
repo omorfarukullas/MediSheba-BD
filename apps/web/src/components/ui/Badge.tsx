@@ -23,55 +23,55 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantStyles: Record<string, { badge: string; dot: string }> = {
-  // Neutral: subtle gray pill
+  // Neutral: Cream Paper pill with subtle border
   neutral: {
-    badge: 'bg-[#f4f4f2] text-[#57534e] border border-[#e7e5e4]',
-    dot: 'bg-[#78716c]',
+    badge: 'bg-[#fffefc] text-[#0f3e17] border border-[#efeeeb]',
+    dot: 'bg-[#0f3e17]',
   },
-  // Success: confirmed, paid, normal
+  // Success: Keylime wash pill with sage border
   success: {
-    badge: 'bg-[#ecfdf3] text-[#067647] border border-[#abefc6]',
-    dot: 'bg-[#067647]',
+    badge: 'bg-[#e1f4df] text-[#0f3e17] border border-[#b1dbb8]',
+    dot: 'bg-[#0f3e17]',
   },
-  // Warning: pending, due soon, check
+  // Warning: soft honey/amber
   warning: {
-    badge: 'bg-[#fffaeb] text-[#b54708] border border-[#fedf89]',
-    dot: 'bg-[#b54708]',
+    badge: 'bg-[#fffbed] text-[#8c4e04] border border-[#fde68a]',
+    dot: 'bg-[#8c4e04]',
   },
-  // Danger: allergy, drug conflict, overdue
+  // Danger: clinical alert red
   danger: {
     badge: 'bg-[#fef3f2] text-[#b42318] border border-[#fecdca]',
     dot: 'bg-[#b42318]',
   },
-  // Accent: selected category / department filter
+  // Accent: Keylime wash / Forest Ink
   accent: {
-    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
-    dot: 'bg-[#2f4bc0]',
+    badge: 'bg-[#e1f4df] text-[#0f3e17] border border-[#b1dbb8]',
+    dot: 'bg-[#0f3e17]',
   },
   info: {
-    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
-    dot: 'bg-[#2f4bc0]',
+    badge: 'bg-[#b6ced5]/30 text-[#0f3e17] border border-[#b6ced5]',
+    dot: 'bg-[#0f3e17]',
   },
   // Fallbacks
   orange: {
-    badge: 'bg-[#fffaeb] text-[#b54708] border border-[#fedf89]',
-    dot: 'bg-[#b54708]',
+    badge: 'bg-[#fffbed] text-[#8c4e04] border border-[#fde68a]',
+    dot: 'bg-[#8c4e04]',
   },
   indigo: {
-    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
-    dot: 'bg-[#2f4bc0]',
+    badge: 'bg-[#b6ced5]/40 text-[#0f3e17] border border-[#b6ced5]',
+    dot: 'bg-[#0f3e17]',
   },
   lime: {
-    badge: 'bg-[#ecfdf3] text-[#067647] border border-[#abefc6]',
-    dot: 'bg-[#067647]',
+    badge: 'bg-[#e1f4df] text-[#0f3e17] border border-[#b1dbb8]',
+    dot: 'bg-[#0f3e17]',
   },
   lavender: {
-    badge: 'bg-[#f4f4f2] text-[#57534e] border border-[#e7e5e4]',
-    dot: 'bg-[#78716c]',
+    badge: 'bg-[#cfe7d3] text-[#0f3e17] border border-[#b1dbb8]',
+    dot: 'bg-[#0f3e17]',
   },
   ice: {
-    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
-    dot: 'bg-[#2f4bc0]',
+    badge: 'bg-[#b6ced5]/30 text-[#0f3e17] border border-[#b6ced5]',
+    dot: 'bg-[#0f3e17]',
   },
 };
 

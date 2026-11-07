@@ -12,10 +12,8 @@ import {
   FileText,
   FileBadge,
   ArrowRight,
-  Activity,
   CheckCircle2,
-  CalendarCheck,
-  Stethoscope
+  Phone
 } from 'lucide-react';
 
 export function PatientDashboardPage() {
@@ -26,21 +24,25 @@ export function PatientDashboardPage() {
   const patientName = profile?.fullName || user?.displayName || (lang === 'bn' ? 'রোগী' : 'Patient');
 
   return (
-    <div className="max-w-[1120px] mx-auto space-y-6">
+    <div className="max-w-[1120px] mx-auto space-y-7">
       {/* ─── Page Header ─── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] font-semibold text-ink leading-tight">
+          <div className="eyebrow mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]/80">
+            {lang === 'bn' ? 'ব্যক্তিগত স্বাস্থ্য ড্যাশবোর্ড' : 'Personal Care Portal'}
+          </div>
+          <h1 className="font-serif text-[32px] sm:text-[38px] font-light text-[#0f3e17] tracking-tight leading-tight">
             {lang === 'bn' ? `স্বাগতম, ${patientName}` : `Welcome back, ${patientName}`}
           </h1>
-          <p className="text-sm text-text-2 mt-1">
+          <p className="text-[14px] text-[#222222]/70 mt-1">
             {t('patient.dashboard_desc', 'Your health at a glance.')}
           </p>
         </div>
         <div>
           <Link to="/patient/doctors">
-            <Button variant="primary" leftIcon={<Calendar className="w-4 h-4" />}>
-              {t('patient.book_appointment', 'Book appointment')}
+            <Button variant="primary" size="lg" leftIcon={<Calendar className="w-4 h-4" />}>
+              <span>{t('patient.book_appointment', 'Book appointment')}</span>
+              <ArrowRight className="w-4 h-4 ml-1.5" />
             </Button>
           </Link>
         </div>
@@ -70,22 +72,22 @@ export function PatientDashboardPage() {
         />
       </div>
 
-      {/* ─── Primary Block: Next Appointment / Active Chamber Serial ─── */}
-      <Card padding="lg" className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+      {/* ─── Primary Block: Next Appointment (Keylime Wash Tinted Card) ─── */}
+      <Card variant="keylime" padding="lg" className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#0f3e17]/15">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-accent">
-                {lang === 'bn' ? 'আসন্ন ভিজিট' : 'Next Appointment'}
+              <span className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+                {lang === 'bn' ? 'আসন্ন চেম্বার ভিজিট' : 'Next Chamber Visit'}
               </span>
               <Badge variant="success" icon={<CheckCircle2 className="w-3 h-3" />}>
                 {t('status.confirmed', 'Confirmed')}
               </Badge>
             </div>
-            <h2 className="text-xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl sm:text-[26px] font-light text-[#0f3e17] tracking-tight">
               {lang === 'bn' ? 'অধ্যাপক ডা. মোঃ রফিকুল ইসলাম' : 'Prof. Dr. Md. Rafiqul Islam'}
             </h2>
-            <p className="text-sm text-text-3">
+            <p className="text-[14px] text-[#222222]/70">
               {lang === 'bn'
                 ? 'মেডিসিন ও হৃদরোগ বিশেষজ্ঞ · ঢাকা মেডিকেল কলেজ ও হাসপাতাল (কক্ষ ৪০২)'
                 : 'Cardiology Specialist · Dhaka Medical College & Hospital (Room 402)'}
@@ -93,7 +95,7 @@ export function PatientDashboardPage() {
           </div>
           <div className="flex items-center gap-2">
             <Link to="/patient/appointments">
-              <Button variant="secondary" size="compact" leftIcon={<Clock className="w-3.5 h-3.5" />}>
+              <Button variant="secondary" size="md" leftIcon={<Clock className="w-3.5 h-3.5" />}>
                 {lang === 'bn' ? 'সিরিয়াল ট্র্যাকার' : 'Live Queue'}
               </Button>
             </Link>
@@ -102,33 +104,33 @@ export function PatientDashboardPage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-2">
           <div>
-            <div className="text-xs text-text-3">{lang === 'bn' ? 'তারিখ' : 'Date'}</div>
-            <div className="text-sm font-semibold text-ink mt-0.5">
+            <div className="text-xs text-[#222222]/60">{lang === 'bn' ? 'তারিখ' : 'Date'}</div>
+            <div className="text-[15px] font-medium text-[#0f3e17] mt-0.5">
               {lang === 'bn' ? 'আজ, ৯ নভেম্বর ২০২৪' : 'Today, Nov 9'}
             </div>
           </div>
           <div>
-            <div className="text-xs text-text-3">{lang === 'bn' ? 'সময়' : 'Time'}</div>
-            <div className="text-sm font-semibold text-ink mt-0.5">05:00 PM</div>
+            <div className="text-xs text-[#222222]/60">{lang === 'bn' ? 'সময়' : 'Time'}</div>
+            <div className="text-[15px] font-medium text-[#0f3e17] mt-0.5">05:00 PM</div>
           </div>
           <div>
-            <div className="text-xs text-text-3">{lang === 'bn' ? 'আপনার সিরিয়াল' : 'Your Serial'}</div>
-            <div className="text-sm font-semibold text-accent mt-0.5">#18</div>
+            <div className="text-xs text-[#222222]/60">{lang === 'bn' ? 'আপনার সিরিয়াল' : 'Your Serial'}</div>
+            <div className="font-serif text-2xl font-light text-[#0f3e17] mt-0.5">#18</div>
           </div>
           <div>
-            <div className="text-xs text-text-3">{lang === 'bn' ? 'বর্তমান সিরিয়াল' : 'Now Serving'}</div>
-            <div className="text-sm font-semibold text-ink mt-0.5">#14</div>
+            <div className="text-xs text-[#222222]/60">{lang === 'bn' ? 'বর্তমান সিরিয়াল' : 'Now Serving'}</div>
+            <div className="font-serif text-2xl font-light text-[#0f3e17]/80 mt-0.5">#14</div>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#0f3e17]/15">
           <Link to="/patient/appointments">
-            <Button variant="ghost" size="compact">
+            <Button variant="ghost" size="sm">
               {t('action.cancel', 'Cancel')}
             </Button>
           </Link>
           <Link to="/patient/appointments">
-            <Button variant="secondary" size="compact">
+            <Button variant="secondary" size="sm">
               {lang === 'bn' ? 'সময় পরিবর্তন' : 'Reschedule'}
             </Button>
           </Link>
@@ -138,52 +140,52 @@ export function PatientDashboardPage() {
       {/* ─── Two-Column Section: Recent Prescriptions & Latest Records ─── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Recent Prescriptions */}
-        <Card padding="md" className="space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
+        <Card variant="default" padding="lg" className="space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#efeeeb]">
             <div className="flex items-center gap-2">
-              <FileBadge className="w-4 h-4 text-text-3" />
-              <h3 className="text-base font-semibold text-ink">
+              <FileBadge className="w-4 h-4 text-[#0f3e17]" />
+              <h3 className="font-serif text-lg font-light text-[#0f3e17]">
                 {t('patient.recent_prescriptions', 'Recent prescriptions')}
               </h3>
             </div>
             <Link
               to="/patient/documents"
-              className="text-xs font-medium text-accent hover:underline flex items-center gap-1"
+              className="text-xs font-medium text-[#0f3e17] hover:underline flex items-center gap-1"
             >
               <span>{t('action.view_all', 'View all')}</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
-          <div className="divide-y divide-border">
-            <div className="py-2.5 flex items-center justify-between">
+          <div className="divide-y divide-[#efeeeb]">
+            <div className="py-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-ink">
+                <div className="text-[14px] font-medium text-[#0f3e17]">
                   {lang === 'bn' ? 'ডা. ফারহানা আহমেদ' : 'Dr. Farhana Ahmed'}
                 </div>
-                <div className="text-xs text-text-3">
+                <div className="text-xs text-[#222222]/60 mt-0.5">
                   {lang === 'bn' ? 'উচ্চ রক্তচাপ পর্যবেক্ষণ · ২রা নভেম্বর' : 'Hypertension Checkup · 2 Nov 2024'}
                 </div>
               </div>
               <Badge variant="neutral">3 {lang === 'bn' ? 'ওষুধ' : 'Meds'}</Badge>
             </div>
-            <div className="py-2.5 flex items-center justify-between">
+            <div className="py-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-ink">
+                <div className="text-[14px] font-medium text-[#0f3e17]">
                   {lang === 'bn' ? 'অধ্যাপক ডা. মোঃ রফিকুল ইসলাম' : 'Prof. Dr. Md. Rafiqul Islam'}
                 </div>
-                <div className="text-xs text-text-3">
+                <div className="text-xs text-[#222222]/60 mt-0.5">
                   {lang === 'bn' ? 'নিয়মিত পরামর্শ · ১৫ই অক্টোবর' : 'Routine Consultation · 15 Oct 2024'}
                 </div>
               </div>
               <Badge variant="neutral">2 {lang === 'bn' ? 'ওষুধ' : 'Meds'}</Badge>
             </div>
-            <div className="py-2.5 flex items-center justify-between">
+            <div className="py-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-ink">
+                <div className="text-[14px] font-medium text-[#0f3e17]">
                   {lang === 'bn' ? 'ডা. তানভীর হাসান চৌধুরী' : 'Dr. Tanvir Hasan Chowdhury'}
                 </div>
-                <div className="text-xs text-text-3">
+                <div className="text-xs text-[#222222]/60 mt-0.5">
                   {lang === 'bn' ? 'অর্থোপেডিক ফলো-আপ · ২৮শে আগস্ট' : 'Orthopedic Follow-up · 28 Aug 2024'}
                 </div>
               </div>
@@ -193,56 +195,56 @@ export function PatientDashboardPage() {
         </Card>
 
         {/* Latest Records */}
-        <Card padding="md" className="space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
+        <Card variant="default" padding="lg" className="space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#efeeeb]">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-text-3" />
-              <h3 className="text-base font-semibold text-ink">
+              <FileText className="w-4 h-4 text-[#0f3e17]" />
+              <h3 className="font-serif text-lg font-light text-[#0f3e17]">
                 {t('patient.latest_records', 'Latest records')}
               </h3>
             </div>
             <Link
               to="/patient/documents"
-              className="text-xs font-medium text-accent hover:underline flex items-center gap-1"
+              className="text-xs font-medium text-[#0f3e17] hover:underline flex items-center gap-1"
             >
               <span>{t('action.view_all', 'View all')}</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
-          <div className="divide-y divide-border">
-            <div className="py-2.5 flex items-center justify-between">
+          <div className="divide-y divide-[#efeeeb]">
+            <div className="py-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-ink">
+                <div className="text-[14px] font-medium text-[#0f3e17]">
                   {lang === 'bn' ? 'লিপিড প্রোফাইল টেস্ট রিপোর্ট' : 'Lipid Profile Test Report'}
                 </div>
-                <div className="text-xs text-text-3">
+                <div className="text-xs text-[#222222]/60 mt-0.5">
                   {lang === 'bn' ? 'ল্যাব টেস্ট · ৩রা নভেম্বর' : 'Lab Test · 3 Nov 2024'}
                 </div>
               </div>
-              <span className="text-xs text-text-3">PDF (1.2 MB)</span>
+              <span className="text-xs text-[#222222]/60">PDF (1.2 MB)</span>
             </div>
-            <div className="py-2.5 flex items-center justify-between">
+            <div className="py-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-ink">
+                <div className="text-[14px] font-medium text-[#0f3e17]">
                   {lang === 'bn' ? 'ইসিজি রিপোর্ট (১২-লিড)' : 'ECG Report (12-Lead)'}
                 </div>
-                <div className="text-xs text-text-3">
+                <div className="text-xs text-[#222222]/60 mt-0.5">
                   {lang === 'bn' ? 'ডায়াগনস্টিক · ১৫ই অক্টোবর' : 'Diagnostics · 15 Oct 2024'}
                 </div>
               </div>
-              <span className="text-xs text-text-3">PDF (840 KB)</span>
+              <span className="text-xs text-[#222222]/60">PDF (840 KB)</span>
             </div>
-            <div className="py-2.5 flex items-center justify-between">
+            <div className="py-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-ink">
+                <div className="text-[14px] font-medium text-[#0f3e17]">
                   {lang === 'bn' ? 'সিবিসি রক্তের রিপোর্ট' : 'CBC Complete Blood Count'}
                 </div>
-                <div className="text-xs text-text-3">
+                <div className="text-xs text-[#222222]/60 mt-0.5">
                   {lang === 'bn' ? 'ল্যাব টেস্ট · ২৮শে আগস্ট' : 'Lab Test · 28 Aug 2024'}
                 </div>
               </div>
-              <span className="text-xs text-text-3">PDF (620 KB)</span>
+              <span className="text-xs text-[#222222]/60">PDF (620 KB)</span>
             </div>
           </div>
         </Card>
