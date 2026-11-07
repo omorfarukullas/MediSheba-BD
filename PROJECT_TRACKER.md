@@ -121,3 +121,31 @@ Phase 5: Production Build & Verification [██████████] 100% (
 - ✅ `@medisheba/api`: Typecheck 0 errors, Production TSC build succeeded (`dist/`).
 - ✅ `@medisheba/web`: Typecheck 0 errors, Vite production build succeeded (`dist/index.html`, `dist/assets/`).
 - ✅ Navigation bar updated with direct access to: Home, Doctors, Live Serial, Beds & Tests, Emergency 999, My Records, Telemedicine, Doctor Portal, Hospital Admin, and AI Assistant.
+
+---
+
+## 🎨 UI Redesign & Modernization (Active Track)
+
+- [x] **Phase 1: Shared UI Component Library (`apps/web/src/components/ui/`)**
+  - [x] `Button.tsx`: Variants (`primary`, `secondary`, `danger`, `ghost`, `outline`), sizes (`sm`, `md`, `lg`), loading spinner, icons, fullWidth.
+  - [x] `Card.tsx`: Variants (`default`, `muted`, `interactive`, `accent`), `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`.
+  - [x] `Badge.tsx`: Status variants (`success`, `warning`, `danger`, `info`, `neutral`, `accent`), with optional pulsing indicator dot.
+  - [x] `Spinner.tsx`: Sizes (`sm`, `md`, `lg`, `xl`), label support, color variants.
+  - [x] `Skeleton.tsx`: Shapes (`circular`, `rectangular`, `rounded`) + `SkeletonCard` composite placeholder.
+  - [x] `Input.tsx`: Styled text/email/password input with icon slots, validation error message, helper text.
+  - [x] `Modal.tsx`: Accessible dialog with backdrop blur, keyboard escape handler, body scroll lock, size options.
+  - [x] `EmptyState.tsx`: Icon + title + message + call-to-action button for empty or error views.
+  - [x] `Avatar.tsx`: Image avatar with fallback to initials, size scale, status indicators (`online`, `busy`, `offline`).
+  - [x] `StatusDot.tsx`: Live pulse dot with variant colors and labels.
+  - [x] Barrel export file `index.ts`.
+- [ ] **Phase 2: React Router & Role-Based Navigation Routing**
+- [ ] **Phase 3: Per-Role Layout Shells (Sidebar + Mobile Bottom Navigation)**
+- [ ] **Phase 4: Public Landing Page Revamp**
+- [ ] **Phase 5: Patient Portal Migration to Real tRPC Data**
+- [ ] **Phase 6: Doctor Portal Dedicated Views**
+- [ ] **Phase 7: Hospital Admin Dedicated Views**
+- [ ] **Phase 8: Role Onboarding & Auth Flow**
+- [ ] **Phase 9: Eliminate Hardcoded Mock Data**
+- [ ] **Phase 10: Error Boundaries & Suspense Skeletons**
+- [ ] **Phase 11: Mobile Polish & Emergency Persistent FAB**
+- [ ] **Phase 12: App.tsx Monolith Cleanup**
