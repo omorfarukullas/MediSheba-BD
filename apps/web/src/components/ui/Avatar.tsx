@@ -16,9 +16,9 @@ const sizeClasses = {
 };
 
 const statusClasses = {
-  online: 'bg-emerald-500',
-  busy: 'bg-amber-500',
-  offline: 'bg-zinc-400',
+  online: 'bg-[#c6ff94] ring-[#000000]',
+  busy: 'bg-[#ff6808] ring-[#ffffff]',
+  offline: 'bg-[#d1d5db] ring-[#ffffff]',
 };
 
 export function Avatar({
@@ -48,9 +48,9 @@ export function Avatar({
     >
       <div
         className={[
-          'rounded-full overflow-hidden flex items-center justify-center font-bold font-display border border-rule/60',
+          'rounded-full overflow-hidden flex items-center justify-center font-medium border border-[#e5e7eb]',
           sizeClasses[size],
-          showImage ? 'bg-panel' : 'bg-accent/15 text-accent',
+          showImage ? 'bg-[#ffffff]' : 'bg-[#ebdcff] text-[#000000]',
         ]
           .filter(Boolean)
           .join(' ')}
@@ -70,8 +70,8 @@ export function Avatar({
       {status && (
         <span
           className={[
-            'absolute bottom-0 right-0 block rounded-full ring-2 ring-panel',
-            size === 'sm' ? 'w-2 h-2' : size === 'xl' ? 'w-4 h-4 ring-[3px]' : 'w-3 h-3',
+            'absolute bottom-0 right-0 block rounded-full ring-2',
+            size === 'sm' ? 'w-2.5 h-2.5' : 'w-3 h-3',
             statusClasses[status],
           ].join(' ')}
           aria-label={`Status: ${status}`}
@@ -80,4 +80,3 @@ export function Avatar({
     </div>
   );
 }
-

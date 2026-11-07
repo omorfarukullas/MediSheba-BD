@@ -75,12 +75,15 @@ export function PatientDoctorsPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-ink tracking-tight">
-          {lang === 'bn' ? 'বিশেষজ্ঞ চিকিৎসক খুঁজুন ও সিরিয়াল নিন' : 'Find Doctors & Book Serial'}
+    <div className="space-y-6 font-sans">
+      <div className="space-y-1">
+        <div className="text-[11px] font-bold uppercase tracking-[0.025em] text-[#6e6d6c]">
+          BMDC Verified Directory
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-medium text-[#000000] tracking-tight">
+          {lang === 'bn' ? 'বিশেষজ্ঞ চিকিৎসক খুঁজুন ও সিরিয়াল নিন' : 'Find Specialists & Book Queue Serial'}
         </h1>
-        <p className="text-[14px] text-ink-secondary">
+        <p className="text-[14px] text-[#6e6d6c]">
           {lang === 'bn'
             ? 'বিএমডিসি অনুমোদিত চিকিৎসকদের তালিকা থেকে বেছে নিন এবং সরাসরি সিরিয়াল বুক করুন'
             : 'Explore certified specialist physicians across leading hospitals in Bangladesh'}
@@ -88,16 +91,16 @@ export function PatientDoctorsPage() {
       </div>
 
       {bookedDoctor && (
-        <div className="p-4 rounded-panel bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between text-emerald-800">
+        <div className="p-4 rounded-[16px] bg-[#ebdcff] border border-[#c293f1] flex items-center justify-between text-[#000000]">
           <div className="flex items-center gap-2.5">
-            <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
-            <span className="text-[14px] font-semibold">
+            <CheckCircle className="w-5 h-5 text-[#4570ff] shrink-0" />
+            <span className="text-[14px] font-medium">
               {lang === 'bn'
                 ? 'আপনার সিরিয়াল বুকিং সফল হয়েছে! লাইভ সিরিয়াল ট্র্যাকারে গিয়ে আপনার সিরিয়াল নম্বর দেখুন।'
                 : 'Appointment booked successfully! Check your token number in the Live Serial Tracker.'}
             </span>
           </div>
-          <Button size="sm" variant="outline" onClick={() => setBookedDoctor(null)}>
+          <Button size="sm" variant="bone" onClick={() => setBookedDoctor(null)}>
             Dismiss
           </Button>
         </div>
@@ -112,23 +115,23 @@ export function PatientDoctorsPage() {
                 ? 'ডাক্তার, বিভাগ বা হাসপাতালের নাম দিয়ে খুঁজুন...'
                 : 'Search by doctor name, specialty, or hospital...'
             }
-            leftIcon={<Search className="w-4 h-4 text-ink-secondary" />}
+            leftIcon={<Search className="w-4 h-4 text-[#6e6d6c]" />}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Specialty Filter Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      {/* Specialty Filter Chips: 9999px radius pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
         {specialties.map((spec) => (
           <button
             key={spec.id}
             onClick={() => setSelectedSpecialty(spec.id)}
-            className={`px-3.5 py-1.5 rounded-full text-[13px] font-semibold whitespace-nowrap transition duration-interaction ${
+            className={`px-4 py-1.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
               selectedSpecialty === spec.id
-                ? 'bg-accent text-on-accent shadow-xs'
-                : 'bg-panel border border-rule text-ink-secondary hover:text-ink hover:bg-ground-muted'
+                ? 'bg-[#4570ff] text-white'
+                : 'bg-[#f1f0ec] text-[#555555] hover:text-[#000000] hover:bg-[#e5e7eb]'
             }`}
           >
             {spec.label}
@@ -136,10 +139,10 @@ export function PatientDoctorsPage() {
         ))}
       </div>
 
-      {/* Doctor Cards Grid */}
+      {/* Doctor Cards Grid: #ffffff, 20px radius, 1px solid #e5e7eb */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((doc) => (
-          <Card key={doc.id} className="flex flex-col justify-between space-y-4">
+          <Card key={doc.id} variant="default" padding="md" className="flex flex-col justify-between space-y-4">
             <div className="space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
@@ -149,30 +152,30 @@ export function PatientDoctorsPage() {
                   />
                   <Badge variant="neutral" size="sm">BMDC {doc.bmdc}</Badge>
                 </div>
-                <div className="font-display font-bold text-accent text-lg">
+                <div className="font-medium text-[#4570ff] text-lg">
                   ৳{doc.fee}
                 </div>
               </div>
 
               <div>
-                <h3 className="font-display font-bold text-lg text-ink tracking-tight">
+                <h3 className="font-medium text-lg text-[#000000] tracking-tight">
                   {doc.name}
                 </h3>
-                <div className="text-[12px] font-semibold text-accent mt-0.5">
+                <div className="text-[12px] font-medium text-[#ff6808] mt-0.5">
                   {doc.degrees}
                 </div>
-                <div className="text-[13px] text-ink font-medium mt-1">
+                <div className="text-[13px] text-[#000000] font-medium mt-1">
                   {doc.specialty}
                 </div>
               </div>
 
-              <div className="space-y-1.5 text-[12px] text-ink-secondary pt-1 border-t border-rule/60">
+              <div className="space-y-1.5 text-[12px] text-[#6e6d6c] pt-2 border-t border-[#e5e7eb]">
                 <div className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-accent shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-[#4570ff] shrink-0" />
                   <span className="truncate">{doc.hospital}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Clock className="w-3.5 h-3.5 text-[#000000] shrink-0" />
                   <span>Next: {doc.nextSlot}</span>
                 </div>
               </div>
@@ -191,4 +194,3 @@ export function PatientDoctorsPage() {
     </div>
   );
 }
-

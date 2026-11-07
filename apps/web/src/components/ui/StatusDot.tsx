@@ -12,29 +12,29 @@ export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 const variantStyles: Record<StatusDotVariant, { bg: string; pingBg: string; text: string }> = {
   online: {
-    bg: 'bg-emerald-500',
-    pingBg: 'bg-emerald-400',
-    text: 'text-emerald-700 dark:text-emerald-400',
+    bg: 'bg-[#4570ff]',
+    pingBg: 'bg-[#4570ff]',
+    text: 'text-[#000000]',
   },
   busy: {
-    bg: 'bg-amber-500',
-    pingBg: 'bg-amber-400',
-    text: 'text-amber-700 dark:text-amber-400',
+    bg: 'bg-[#ff6808]',
+    pingBg: 'bg-[#ff6808]',
+    text: 'text-[#ff6808]',
   },
   offline: {
-    bg: 'bg-zinc-400',
-    pingBg: 'bg-zinc-300',
-    text: 'text-zinc-500',
+    bg: 'bg-[#d1d5db]',
+    pingBg: 'bg-[#d1d5db]',
+    text: 'text-[#6e6d6c]',
   },
   warning: {
-    bg: 'bg-amber-500',
-    pingBg: 'bg-amber-400',
-    text: 'text-amber-600',
+    bg: 'bg-[#ff6808]',
+    pingBg: 'bg-[#ff6808]',
+    text: 'text-[#ff6808]',
   },
   danger: {
-    bg: 'bg-red-500',
-    pingBg: 'bg-red-400',
-    text: 'text-red-600',
+    bg: 'bg-[#ff6808]',
+    pingBg: 'bg-[#ff6808]',
+    text: 'text-[#ff6808]',
   },
 };
 
@@ -62,7 +62,7 @@ export function StatusDot({
       <span className="relative flex shrink-0">
         {ping && (
           <span
-            className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${styles.pingBg}`}
+            className={`absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping ${styles.pingBg}`}
           />
         )}
         <span
@@ -77,4 +77,3 @@ export function StatusDot({
     </span>
   );
 }
-

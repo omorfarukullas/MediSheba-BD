@@ -13,15 +13,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
 
     return (
-      <div className="w-full space-y-1.5 text-left">
+      <div className="w-full space-y-1.5 text-left font-sans">
         {label && (
-          <label htmlFor={inputId} className="block text-[13px] font-semibold text-ink">
+          <label htmlFor={inputId} className="block text-[13px] font-medium text-[#000000]">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3.5 flex items-center pointer-events-none text-ink-secondary">
+            <div className="absolute left-3.5 flex items-center pointer-events-none text-[#6e6d6c]">
               {leftIcon}
             </div>
           )}
@@ -29,14 +29,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={[
-              'w-full border rounded-panel bg-ground text-ink text-[14px]',
-              'transition duration-interaction placeholder:text-ink-secondary/50',
-              'focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/15',
-              'disabled:opacity-60 disabled:bg-ground-muted disabled:cursor-not-allowed',
+              'w-full bg-[#ffffff] text-[#000000] text-[14px] placeholder:text-[#6e6d6c]/60',
+              'rounded-[12px] border border-[#e5e7eb] transition-colors duration-150',
+              'focus:outline-none focus:border-[#4570ff] focus:ring-1 focus:ring-[#4570ff]',
+              'disabled:opacity-50 disabled:bg-[#f1f0ec] disabled:cursor-not-allowed',
               leftIcon ? 'pl-10' : 'pl-3.5',
               rightIcon ? 'pr-10' : 'pr-3.5',
               'py-2.5',
-              error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/15' : 'border-rule',
+              error ? 'border-[#ff6808] focus:border-[#ff6808] focus:ring-[#ff6808]' : '',
               className,
             ]
               .filter(Boolean)
@@ -44,14 +44,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3.5 flex items-center text-ink-secondary">
+            <div className="absolute right-3.5 flex items-center text-[#6e6d6c]">
               {rightIcon}
             </div>
           )}
         </div>
-        {error && <p className="text-[12px] text-red-500 font-medium">{error}</p>}
+        {error && <p className="text-[12px] text-[#ff6808] font-medium">{error}</p>}
         {!error && helperText && (
-          <p className="text-[12px] text-ink-secondary">{helperText}</p>
+          <p className="text-[12px] text-[#6e6d6c]">{helperText}</p>
         )}
       </div>
     );
@@ -59,4 +59,3 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = 'Input';
-

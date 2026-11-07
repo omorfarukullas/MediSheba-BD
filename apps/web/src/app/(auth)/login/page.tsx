@@ -49,23 +49,32 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ground flex flex-col justify-center items-center p-4">
+    <div className="min-h-screen bg-[#f1f0ec] flex flex-col justify-center items-center p-4 font-sans">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
-          <Link to="/" className="inline-flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-panel bg-accent text-on-accent flex items-center justify-center font-bold shadow-sm">
-              <HeartPulse className="w-6 h-6" />
+          <Link to="/" className="inline-flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-[8px] bg-[#193f78] text-white flex items-center justify-center font-bold text-xs shadow-none">
+              <HeartPulse className="w-5 h-5" />
             </div>
-            <span className="font-display font-extrabold text-2xl text-ink">
+            <span className="font-medium text-2xl text-[#000000] tracking-tight">
               MediSheba BD
             </span>
           </Link>
-          <p className="text-[14px] text-ink-secondary">
-            {lang === 'bn' ? 'আপনার অ্যাকাউন্টে সাইন ইন করুন' : 'Sign in to access your healthcare portal'}
+          <p className="text-[14px] text-[#6e6d6c]">
+            {lang === 'bn' ? (
+              <>
+                অ্যাকাউন্টে সাইন ইন করুন — সিরিয়াল{' '}
+                <span className="font-script text-[24px] text-[#ff6808] font-bold">
+                  লাইভ হবে
+                </span>
+              </>
+            ) : (
+              'Sign in to access your healthcare portal'
+            )}
           </p>
         </div>
 
-        <Card>
+        <Card variant="default" padding="lg" className="border border-[#e5e7eb]">
           <CardHeader>
             <CardTitle>{lang === 'bn' ? 'লগইন' : 'Sign In'}</CardTitle>
             <CardDescription>
@@ -76,7 +85,7 @@ export function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <Button
-              variant="outline"
+              variant="bone"
               fullWidth
               onClick={handleGoogle}
               disabled={loading}
@@ -92,10 +101,10 @@ export function LoginPage() {
               {lang === 'bn' ? 'Google দিয়ে সাইন ইন' : 'Continue with Google'}
             </Button>
 
-            <div className="flex items-center gap-3 text-[12px] text-ink-secondary py-1">
-              <div className="flex-1 h-px bg-rule" />
+            <div className="flex items-center gap-3 text-[12px] text-[#6e6d6c] py-1">
+              <div className="flex-1 h-px bg-[#e5e7eb]" />
               <span>{lang === 'bn' ? 'অথবা ইমেইলে' : 'or with email'}</span>
-              <div className="flex-1 h-px bg-rule" />
+              <div className="flex-1 h-px bg-[#e5e7eb]" />
             </div>
 
             <form onSubmit={handleEmailSubmit} className="space-y-3.5">
@@ -117,7 +126,7 @@ export function LoginPage() {
               />
 
               {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 text-[13px]">
+                <div className="p-3 rounded-[12px] bg-[#ff6808]/10 border border-[#ff6808]/30 text-[#ff6808] text-[13px] font-medium">
                   {error}
                 </div>
               )}
@@ -127,9 +136,9 @@ export function LoginPage() {
               </Button>
             </form>
 
-            <div className="text-center text-[13px] text-ink-secondary pt-2">
+            <div className="text-center text-[13px] text-[#6e6d6c] pt-2">
               {lang === 'bn' ? 'নতুন অ্যাকাউন্ট খুলতে চান? ' : "Don't have an account? "}
-              <Link to="/register" className="text-accent font-semibold hover:underline">
+              <Link to="/register" className="text-[#4570ff] font-medium hover:underline">
                 {lang === 'bn' ? 'রেজিস্ট্রেশন করুন' : 'Create account'}
               </Link>
             </div>
@@ -139,4 +148,3 @@ export function LoginPage() {
     </div>
   );
 }
-

@@ -155,7 +155,13 @@ Phase 5: Production Build & Verification [██████████] 100% (
   - [x] Built `AdminLayout.tsx`: Hospital administration management layout for Beds, ICU, Fleet, Doctors, and Diagnostic Test Pricing.
   - [x] Built `SuperAdminLayout.tsx`: Platform control console layout with hospital approvals and audit logging.
   - [x] Updated `router.tsx` to mount nested children inside their respective role layouts with active route highlighting.
-- [ ] **Phase 4: Public Landing Page Revamp**
+- [x] **Phase 4: Public Landing Page Revamp & Style Reference Alignment (`ui_design_system_style_reference.md`)**
+  - [x] Implemented "Warm diner counter with neon chalk accents" aesthetic across the entire UI.
+  - [x] Integrated tokens: Indigo Bolt (`#4570ff`), Ember Orange (`#ff6808`), Lime Highlighter (`#c6ff94`), Warm Bone (`#f1f0ec`), Paper White (`#ffffff`), and Ink Black (`#000000`).
+  - [x] Enforced Strict Zero-Shadow Policy: all visual hierarchy achieved via surface contrast and crisp 1px hairline (`#e5e7eb`) borders.
+  - [x] Redesigned `NavSidebar` (260px expanded, `#f1f0ec` surface, workspace switcher header, grouped sections, user profile footer, and `#000000` status callout with `#c6ff94` accents).
+  - [x] Redesigned Public Landing Page: Hand-drawn script headline flourish, 4-card rotating color KPI grid (`Lavender Mist`, `Ice Blue`, `Lilac Bloom`, `Deep Navy`), and Before/After split block.
+  - [x] Redesigned UI primitives: `Button` (Primary pill, Outlined orange, Bone, Ghost), `Card` (rotating variants + dark contrast), `Badge` (pill chips), `Input` (12px radius, zero shadow).
 - [ ] **Phase 5: Patient Portal Migration to Real tRPC Data**
 - [ ] **Phase 6: Doctor Portal Dedicated Views**
 - [ ] **Phase 7: Hospital Admin Dedicated Views**

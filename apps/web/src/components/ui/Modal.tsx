@@ -50,7 +50,7 @@ export function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-field/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#000000]/40 backdrop-blur-xs transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -60,30 +60,30 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         className={[
-          'relative w-full rounded-panel border border-rule bg-panel text-ink shadow-2xl',
-          'transform transition-all my-8 p-6 sm:p-8 space-y-5 z-10',
+          'relative w-full rounded-[20px] border border-[#e5e7eb] bg-[#ffffff] text-[#000000]',
+          'transform transition-all my-8 p-6 sm:p-8 space-y-4 z-10',
           sizeClasses[size],
         ]
           .filter(Boolean)
           .join(' ')}
       >
         {(title || showCloseButton) && (
-          <div className="flex items-start justify-between gap-4 pb-1">
-            <div className="space-y-1">
+          <div className="flex items-start justify-between gap-4 pb-2 border-b border-[#e5e7eb]">
+            <div className="space-y-0.5">
               {title && (
-                <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink">
+                <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-[#000000]">
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="text-[13px] text-ink-secondary">{description}</p>
+                <p className="text-[13px] text-[#6e6d6c]">{description}</p>
               )}
             </div>
             {showCloseButton && (
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg p-1.5 text-ink-secondary hover:text-ink hover:bg-ground-muted transition duration-interaction -mr-2 -mt-2"
+                className="rounded-full p-1.5 text-[#6e6d6c] hover:text-[#000000] hover:bg-[#f1f0ec] transition-colors -mr-1 -mt-1 cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -97,4 +97,3 @@ export function Modal({
     </div>
   );
 }
-

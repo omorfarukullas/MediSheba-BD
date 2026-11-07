@@ -1,6 +1,18 @@
 import React from 'react';
 
-export type BadgeVariant = 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'accent';
+export type BadgeVariant =
+  | 'neutral'
+  | 'orange'
+  | 'indigo'
+  | 'lime'
+  | 'lavender'
+  | 'ice'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'accent';
+
 export type BadgeSize = 'sm' | 'md';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -10,35 +22,62 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantClasses: Record<BadgeVariant, { badge: string; dot: string }> = {
-  success: {
-    badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20',
-    dot: 'bg-emerald-500',
+  // Neutral: Warm bone or hairline pill with dark text
+  neutral: {
+    badge: 'bg-[#f1f0ec] text-[#000000] border border-[#e5e7eb]',
+    dot: 'bg-[#6e6d6c]',
   },
-  warning: {
-    badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
-    dot: 'bg-amber-500',
+  // Ember Orange (#ff6808): Signature alert pill
+  orange: {
+    badge: 'bg-[#ff6808] text-white border-transparent',
+    dot: 'bg-white',
   },
-  danger: {
-    badge: 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20',
-    dot: 'bg-red-500',
-  },
-  info: {
-    badge: 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border-sky-500/20',
-    dot: 'bg-sky-500',
+  // Indigo Bolt (#4570ff): Primary action pill
+  indigo: {
+    badge: 'bg-[#4570ff] text-white border-transparent',
+    dot: 'bg-white',
   },
   accent: {
-    badge: 'bg-accent/10 text-accent border-accent/25',
-    dot: 'bg-accent',
+    badge: 'bg-[#4570ff] text-white border-transparent',
+    dot: 'bg-white',
   },
-  neutral: {
-    badge: 'bg-ground-muted text-ink-secondary border-rule',
-    dot: 'bg-ink-secondary',
+  // Lime Highlighter (#c6ff94): High-contrast badge for dark cards
+  lime: {
+    badge: 'bg-[#c6ff94] text-[#000000] border-transparent font-semibold',
+    dot: 'bg-[#000000]',
+  },
+  // Lavender Mist (#ebdcff)
+  lavender: {
+    badge: 'bg-[#ebdcff] text-[#000000] border-transparent',
+    dot: 'bg-[#4570ff]',
+  },
+  // Ice Blue (#d6e0ff)
+  ice: {
+    badge: 'bg-[#d6e0ff] text-[#000000] border-transparent',
+    dot: 'bg-[#4570ff]',
+  },
+  info: {
+    badge: 'bg-[#d6e0ff] text-[#000000] border-transparent',
+    dot: 'bg-[#4570ff]',
+  },
+  // Semantic mapping:
+  success: {
+    badge: 'bg-[#c6ff94] text-[#000000] border-transparent',
+    dot: 'bg-[#000000]',
+  },
+  warning: {
+    badge: 'bg-[#ebdcff] text-[#000000] border border-[#c293f1]',
+    dot: 'bg-[#ff6808]',
+  },
+  danger: {
+    badge: 'bg-[#ff6808] text-white border-transparent',
+    dot: 'bg-white',
   },
 };
 
 const sizeClasses: Record<BadgeSize, string> = {
   sm: 'text-[11px] px-2 py-0.5 gap-1.5 font-medium',
-  md: 'text-[12px] px-2.5 py-1 gap-1.5 font-semibold',
+  md: 'text-[12px] px-3 py-1 gap-1.5 font-medium',
 };
 
 export function Badge({
@@ -49,12 +88,12 @@ export function Badge({
   children,
   ...props
 }: BadgeProps) {
-  const styles = variantClasses[variant];
+  const styles = variantClasses[variant] || variantClasses.neutral;
 
   return (
     <span
       className={[
-        'inline-flex items-center rounded-full border leading-none select-none tracking-tight',
+        'inline-flex items-center rounded-full leading-none select-none tracking-tight',
         styles.badge,
         sizeClasses[size],
         className,
@@ -73,4 +112,3 @@ export function Badge({
     </span>
   );
 }
-
