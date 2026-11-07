@@ -13,7 +13,8 @@ import {
   FileBadge,
   ArrowRight,
   CheckCircle2,
-  Phone
+  Phone,
+  Sparkles
 } from 'lucide-react';
 
 export function PatientDashboardPage() {
@@ -136,6 +137,31 @@ export function PatientDashboardPage() {
           </Link>
         </div>
       </Card>
+
+      {/* ─── AI Health Assistant Action Banner (Mint Veil #cfe7d3) ─── */}
+      <div className="rounded-[14px] bg-[#cfe7d3] p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-[10px] bg-[#0f3e17] text-[#fffefc] flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5 text-[#b1dbb8]" />
+          </div>
+          <div>
+            <div className="font-serif text-lg font-light text-[#0f3e17]">
+              {lang === 'bn' ? 'অসুস্থ বোধ করছেন? এআই লক্ষণ পরামর্শ নিন' : 'Feeling unwell? Consult AI Health Assistant'}
+            </div>
+            <p className="text-xs text-[#222222]/70 mt-0.5">
+              {lang === 'bn' 
+                ? 'উপসর্গ লিখে বিশেষজ্ঞ ডাক্তারের পরামর্শ ও প্রাথমিক ট্রায়াজ গাইড পান।' 
+                : 'Check symptoms with our AI triage model to find the right specialist for your condition.'}
+            </p>
+          </div>
+        </div>
+        <Link to="/patient/ai" className="shrink-0 w-full sm:w-auto">
+          <Button variant="primary" size="md">
+            <span>{lang === 'bn' ? 'এআই পরামর্শ শুরু করুন' : 'Ask AI Assistant'}</span>
+            <ArrowRight className="w-4 h-4 ml-1.5" />
+          </Button>
+        </Link>
+      </div>
 
       {/* ─── Two-Column Section: Recent Prescriptions & Latest Records ─── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

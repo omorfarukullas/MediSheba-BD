@@ -19,8 +19,10 @@ import {
   Activity,
   Stethoscope,
   ChevronRight,
-  AlertTriangle
+  AlertTriangle,
+  Sparkles
 } from 'lucide-react';
+import { AiHealthAssistantView } from '../components/patient/AiHealthAssistantView';
 
 export function PublicLandingPage() {
   const { lang, t } = useLanguageStore();
@@ -400,7 +402,31 @@ export function PublicLandingPage() {
         </div>
       </section>
 
-      {/* ─── SECTION 4: OUR DOCTORS ─── */}
+      {/* ─── SECTION 4: AI HEALTH ASSISTANT & SYMPTOM TRIAGE (Botanical Greenhouse) ─── */}
+      <section className="py-12 sm:py-20 px-4 sm:px-8 border-t border-[#efeeeb] bg-[#f9fbf8]">
+        <div className="max-w-[1200px] mx-auto space-y-8">
+          <div className="max-w-2xl space-y-2">
+            <div className="eyebrow text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0f3e17]">
+              {lang === 'bn' ? 'বুদ্ধিমান স্বাস্থ্য ট্রায়াজ' : 'AI-POWERED CLINICAL TRIAGE'}
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-light text-[#0f3e17] tracking-tight">
+              {lang === 'bn' 
+                ? 'ডাক্তার দেখানোর আগেই এআই লক্ষণ পরামর্শ' 
+                : 'Instant Clinical Guidance Before Your Visit'}
+            </h2>
+            <p className="text-base text-[#222222]/70 leading-relaxed">
+              {lang === 'bn'
+                ? 'আপনার শারীরিক লক্ষণ বা উপসর্গগুলো লিখুন। মেডিসেবা এআই আপনাকে সম্ভাব্য কারণ, প্রয়োজনীয় সতর্কতা ও সঠিক বিশেষজ্ঞ চিকিৎসকের কাছে যাওয়ার পথ দেখাবে।'
+                : 'Tell our AI assistant what you are feeling. Receive empathetic triage, preliminary precautions, and direct routing to the appropriate medical specialist.'}
+            </p>
+          </div>
+
+          {/* Interactive AI View */}
+          <AiHealthAssistantView />
+        </div>
+      </section>
+
+      {/* ─── SECTION 5: OUR DOCTORS ─── */}
       <section className="py-12 sm:py-20 px-4 sm:px-8 border-t border-[#efeeeb] bg-[#f9fbf8]">
         <div className="max-w-[1200px] mx-auto space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">

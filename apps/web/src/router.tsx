@@ -28,6 +28,7 @@ import { PatientDocumentsPage } from './app/patient/documents/page';
 import { PatientTelemedicinePage } from './app/patient/telemedicine/page';
 import { PatientVitalsPage } from './app/patient/vitals/page';
 import { PatientResourcesPage } from './app/patient/resources/page';
+import { PatientAiPage } from './app/patient/ai/page';
 
 // Doctor Views
 import { DoctorDashboardPage } from './app/doctor/dashboard/page';
@@ -169,6 +170,10 @@ export const router = createBrowserRouter([
       {
         path: 'resources',
         element: <PatientResourcesPage />,
+      },
+      {
+        path: 'ai',
+        element: <PatientAiPage />,
       },
       {
         path: 'settings',

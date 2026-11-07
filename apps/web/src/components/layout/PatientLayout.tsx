@@ -21,7 +21,8 @@ import {
   Activity,
   Hospital,
   ChevronRight,
-  Phone
+  Phone,
+  Sparkles
 } from 'lucide-react';
 
 export function PatientLayout() {
@@ -50,6 +51,8 @@ export function PatientLayout() {
       ? t('nav.vitals')
       : currentPath.includes('/resources')
       ? t('nav.resources')
+      : currentPath.includes('/ai')
+      ? (lang === 'bn' ? 'এআই স্বাস্থ্য সহকারী' : 'AI Health Assistant')
       : t('nav.dashboard');
 
   return (
@@ -179,6 +182,25 @@ export function PatientLayout() {
               >
                 <Hospital className="w-[18px] h-[18px] shrink-0" />
                 <span>{t('nav.resources')}</span>
+              </NavLink>
+
+              <NavLink
+                to="/patient/ai"
+                className={({ isActive }) =>
+                  `flex items-center justify-between h-10 px-3 rounded-[10px] text-[14px] transition-colors ${
+                    isActive
+                      ? 'bg-[#e1f4df] text-[#0f3e17] font-medium'
+                      : 'text-[#222222] hover:bg-[#e1f4df]/40 hover:text-[#0f3e17]'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-3">
+                  <Sparkles className="w-[18px] h-[18px] shrink-0 text-[#0f3e17]" />
+                  <span>{lang === 'bn' ? 'এআই পরামর্শক' : 'AI Assistant'}</span>
+                </div>
+                <span className="bg-[#0f3e17] text-[#fffefc] text-[10px] px-2 py-0.5 rounded-full font-medium">
+                  AI
+                </span>
               </NavLink>
             </nav>
           </div>
@@ -359,6 +381,14 @@ export function PatientLayout() {
                 >
                   <Hospital className="w-[18px] h-[18px]" />
                   <span>{t('nav.resources')}</span>
+                </NavLink>
+                <NavLink
+                  to="/patient/ai"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] text-[#0f3e17] hover:bg-[#e1f4df]"
+                >
+                  <Sparkles className="w-[18px] h-[18px]" />
+                  <span>{lang === 'bn' ? 'এআই স্বাস্থ্য সহকারী' : 'AI Health Assistant'}</span>
                 </NavLink>
                 <NavLink
                   to="/emergency"
