@@ -6,7 +6,7 @@ export type SupportedLanguage = 'en' | 'bn';
 
 interface LanguageState {
   lang: SupportedLanguage;
-  t: (key: string) => string;
+  t: (key: string, fallback?: string) => string;
   setLanguage: (lang: SupportedLanguage) => void;
   toggleLanguage: () => void;
 }
@@ -34,10 +34,11 @@ function getNestedValue(obj: Record<string, unknown>, path: string): string {
 export const useLanguageStore = create<LanguageState>((set, get) => ({
   lang: (localStorage.getItem('medisheba_lang') as SupportedLanguage) || 'bn', // Default to Bengali for BD users
   
-  t: (key: string) => {
+  t: (key: string, fallback?: string) => {
     const currentLang = get().lang;
     const dictionary = dictionaries[currentLang] as Record<string, unknown>;
-    return getNestedValue(dictionary, key);
+    const val = getNestedValue(dictionary, key);
+    return val === key && fallback ? fallback : val;
   },
 
   setLanguage: (lang: SupportedLanguage) => {

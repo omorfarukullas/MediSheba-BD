@@ -7,22 +7,37 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  density?: 'comfort' | 'compact';
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, helperText, leftIcon, rightIcon, className = '', id, ...props }, ref) => {
+  (
+    {
+      label,
+      error,
+      helperText,
+      leftIcon,
+      rightIcon,
+      density = 'comfort',
+      className = '',
+      id,
+      ...props
+    },
+    ref
+  ) => {
     const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
+    const isComfort = density === 'comfort';
 
     return (
       <div className="w-full space-y-1.5 text-left font-sans">
         {label && (
-          <label htmlFor={inputId} className="block text-[14px] font-medium text-[#111111]">
+          <label htmlFor={inputId} className="block text-[14px] font-medium text-ink">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3 flex items-center pointer-events-none text-[#78716c]">
+            <div className={`absolute ${isComfort ? 'left-3.5' : 'left-3'} flex items-center pointer-events-none text-text-3 [&>svg]:w-5 [&>svg]:h-5`}>
               {leftIcon}
             </div>
           )}
@@ -30,13 +45,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={[
-              'w-full h-10 bg-[#ffffff] text-[#111111] text-[14px] placeholder:text-[#78716c]',
-              'rounded-lg border border-[#e7e5e4] transition-colors duration-150',
-              'focus:outline-none focus:ring-2 focus:ring-[#3b5bdb] focus:border-[#3b5bdb]',
-              'disabled:opacity-50 disabled:bg-[#f4f4f2] disabled:cursor-not-allowed',
-              leftIcon ? 'pl-9' : 'pl-3',
-              rightIcon ? 'pr-9' : 'pr-3',
-              error ? 'border-[#b42318] focus:ring-[#b42318] focus:border-[#b42318]' : '',
+              'w-full bg-canvas text-ink placeholder:text-text-3',
+              isComfort ? 'h-12 text-base px-4' : 'h-10 text-sm px-3',
+              'rounded-lg border border-border-strong transition-colors duration-150',
+              'focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent',
+              'disabled:opacity-50 disabled:bg-subtle disabled:cursor-not-allowed',
+              leftIcon ? (isComfort ? 'pl-11' : 'pl-9') : '',
+              rightIcon ? (isComfort ? 'pr-11' : 'pr-9') : '',
+              error ? 'border-danger-text focus:ring-danger-text focus:border-danger-text' : '',
               className,
             ]
               .filter(Boolean)
@@ -44,19 +60,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 flex items-center text-[#78716c]">
+            <div className={`absolute ${isComfort ? 'right-3.5' : 'right-3'} flex items-center text-text-3 [&>svg]:w-5 [&>svg]:h-5`}>
               {rightIcon}
             </div>
           )}
         </div>
         {error && (
-          <p className="flex items-center gap-1 text-[12px] text-[#b42318] font-medium">
-            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+          <p className="flex items-center gap-1.5 text-[13px] text-danger-text font-medium mt-1">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </p>
         )}
         {!error && helperText && (
-          <p className="text-[12px] text-[#78716c]">{helperText}</p>
+          <p className="text-[12px] text-text-3 mt-1">{helperText}</p>
         )}
       </div>
     );

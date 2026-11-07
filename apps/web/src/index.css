@@ -13,9 +13,10 @@
   --color-text-2: #57534e;
   --color-text-3: #78716c;
 
-  /* Accent */
-  --color-accent: #3b5bdb;
-  --color-accent-hover: #2f4bc0;
+  /* Accent (7:1 contrast) */
+  --color-accent: #2f4bc0;
+  --color-accent-hover: #233a9e;
+  --color-accent-pressed: #1c2f80;
   --color-accent-tint: #eef2ff;
 
   /* Status (statuses & clinical alerts only) */
@@ -89,6 +90,15 @@ body:lang(bn),
 html:lang(bn) body {
   font-size: 15px;
   line-height: 1.7;
+}
+
+/* Text Size Option: Large (+2px) (Section 7.0 & 9.9) */
+html.text-size-large body {
+  font-size: 16px;
+}
+html.text-size-large :lang(bn) body,
+html.text-size-large body:lang(bn) {
+  font-size: 17px;
 }
 
 /* Strict Zero-Shadow Policy (Section 0 Hard Rule 2) */

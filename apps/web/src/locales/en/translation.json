@@ -98,5 +98,89 @@
   "emergency": {
     "note": "In an emergency, call 999.",
     "hotline": "Emergency Hotline: 999"
+  },
+  "landing": {
+    "h1": "See a doctor, easily.",
+    "sub": "Book a visit. See your medicine list and reports in one place.",
+    "call": "Call 01700-000000",
+    "callUs": "Call us",
+    "signIn": "Sign in"
+  },
+  "how": {
+    "title": "How it works",
+    "step1": "Choose a doctor",
+    "step1Sub": "Search verified specialists across leading hospitals in Bangladesh.",
+    "step2": "Pick a time",
+    "step2Sub": "Select your preferred slot and get instant token confirmation.",
+    "step3": "Get an SMS and come",
+    "step3Sub": "Track live chamber tokens from home so you arrive just on time."
+  },
+  "svc": {
+    "title": "What you can do",
+    "appts": "Appointments",
+    "apptsSub": "Chamber tokens and live queue monitoring.",
+    "rx": "Prescriptions",
+    "rxSub": "Digital medicine list and dosage instructions.",
+    "reports": "Reports",
+    "reportsSub": "Diagnostic lab results and medical vault.",
+    "bills": "Bills",
+    "billsSub": "Transparent consultation and diagnostic pricing."
+  },
+  "doctors": {
+    "title": "Our doctors",
+    "seeAll": "See all doctors"
+  },
+  "visit": {
+    "title": "Visit us",
+    "hours": "Opening hours",
+    "hoursVal": "Sat - Thu: 9:00 AM - 9:00 PM (Friday Closed)",
+    "address": "Address",
+    "addressVal": "Dhanmondi 27, Dhaka 1209, Bangladesh",
+    "phone": "Phone",
+    "directions": "Get directions"
+  },
+  "footer": {
+    "privacy": "Privacy",
+    "help": "Help",
+    "terms": "Terms"
+  },
+  "settings": {
+    "title": "Settings",
+    "desc": "Manage language, display density, and account preferences.",
+    "language": "Language",
+    "banglaDigits": "Use Bangla digits (০–৯)",
+    "banglaDigitsDesc": "Display numbers in Bangla script where applicable",
+    "textSize": "Text size",
+    "textSizeDesc": "Increase font size for improved reading comfort",
+    "normal": "Normal",
+    "large": "Large",
+    "weekStartsOn": "Week starts on",
+    "weekStartsOnDesc": "First day of the week in appointment calendars",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "reminders": "Appointment Reminders",
+    "smsReminders": "SMS notification alerts",
+    "emailReminders": "Email reminder updates",
+    "account": "Account details",
+    "autoSignOut": "Auto sign-out after inactivity",
+    "autoSignOutDesc": "Automatically secure your account session (minutes)",
+    "saved": "Settings saved"
+  },
+  "help": {
+    "title": "Help & Support",
+    "desc": "Step-by-step guidance on booking, medical records, and live chamber queue.",
+    "step1Title": "1. Book an appointment",
+    "step1Desc": "Search by doctor or specialty, choose a time slot, and confirm in 3 simple steps.",
+    "step2Title": "2. View prescriptions & records",
+    "step2Desc": "Access your digital medicine list, dosage instructions, and lab reports from any device.",
+    "step3Title": "3. Live chamber token tracking",
+    "step3Desc": "Check your serial and estimated consultation time live to avoid hospital waiting.",
+    "faqTitle": "Frequently Asked Questions",
+    "faq1Q": "Can I cancel or reschedule my appointment?",
+    "faq1A": "Yes. Open Appointments, select your visit, and click 'Reschedule' or 'Cancel appointment'.",
+    "faq2Q": "Who can see my uploaded medical records?",
+    "faq2A": "By default, only you. When marked 'Doctor Access', your attending physician can review them during active visits.",
+    "faq3Q": "How do I print my prescription?",
+    "faq3A": "Open the prescription from your records and click 'Print Preview' for a clean A4/A5 clinical document."
   }
 }

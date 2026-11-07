@@ -21,10 +21,14 @@ import {
   Clock 
 } from 'lucide-react';
 
-export function HospitalAdminView() {
+export interface HospitalAdminViewProps {
+  initialTab?: 'resources' | 'ambulances' | 'tests' | 'doctors';
+}
+
+export function HospitalAdminView({ initialTab = 'resources' }: HospitalAdminViewProps) {
   const { lang } = useLanguageStore();
   const { user } = useAuthStore();
-  const [adminTab, setAdminTab] = useState<'resources' | 'ambulances' | 'tests' | 'doctors'>('resources');
+  const [adminTab, setAdminTab] = useState<'resources' | 'ambulances' | 'tests' | 'doctors'>(initialTab);
 
   // Resource Edit state
   const [editingResourceId, setEditingResourceId] = useState<string | null>(null);

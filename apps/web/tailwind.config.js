@@ -15,8 +15,9 @@ export default {
         ink: '#111111',
         'text-2': '#57534e',
         'text-3': '#78716c',
-        accent: '#3b5bdb',
-        'accent-hover': '#2f4bc0',
+        accent: '#2f4bc0',
+        'accent-hover': '#233a9e',
+        'accent-pressed': '#1c2f80',
         'accent-tint': '#eef2ff',
 
         'danger-text': '#b42318',

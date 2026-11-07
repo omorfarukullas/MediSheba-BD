@@ -45,12 +45,12 @@ const variantStyles: Record<string, { badge: string; dot: string }> = {
   },
   // Accent: selected category / department filter
   accent: {
-    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
-    dot: 'bg-[#3b5bdb]',
+    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
+    dot: 'bg-[#2f4bc0]',
   },
   info: {
-    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
-    dot: 'bg-[#3b5bdb]',
+    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
+    dot: 'bg-[#2f4bc0]',
   },
   // Fallbacks
   orange: {
@@ -58,8 +58,8 @@ const variantStyles: Record<string, { badge: string; dot: string }> = {
     dot: 'bg-[#b54708]',
   },
   indigo: {
-    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
-    dot: 'bg-[#3b5bdb]',
+    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
+    dot: 'bg-[#2f4bc0]',
   },
   lime: {
     badge: 'bg-[#ecfdf3] text-[#067647] border border-[#abefc6]',
@@ -70,8 +70,8 @@ const variantStyles: Record<string, { badge: string; dot: string }> = {
     dot: 'bg-[#78716c]',
   },
   ice: {
-    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
-    dot: 'bg-[#3b5bdb]',
+    badge: 'bg-[#eef2ff] text-[#2f4bc0] border border-[#eef2ff]',
+    dot: 'bg-[#2f4bc0]',
   },
 };
 

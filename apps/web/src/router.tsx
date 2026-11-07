@@ -49,6 +49,19 @@ import { SuperAdminDashboardPage } from './app/super-admin/dashboard/page';
 import { SuperAdminHospitalsPage } from './app/super-admin/hospitals/page';
 import { SuperAdminAuditPage } from './app/super-admin/audit/page';
 
+// Shared Settings & Help Views
+import { SettingsPage } from './app/settings/page';
+import { HelpPage } from './app/help/page';
+import { useAuthStore, getRoleDashboardUrl } from './stores/auth.store';
+
+function DashboardRedirect() {
+  const { profile, user } = useAuthStore();
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return <Navigate to={getRoleDashboardUrl(profile?.role)} replace />;
+}
+
 export const router = createBrowserRouter([
   // ─── Public Routes ───
   {
@@ -91,6 +104,24 @@ export const router = createBrowserRouter([
       <ProtectedRoute>
         <OnboardingPage />
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/dashboard',
+    element: (
+      <ProtectedRoute>
+        <DashboardRedirect />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/help',
+    element: (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-canvas p-4 sm:p-6 lg:p-8">
+          <HelpPage />
+        </div>
+      </ErrorBoundary>
     ),
   },
 
@@ -139,6 +170,14 @@ export const router = createBrowserRouter([
         path: 'resources',
         element: <PatientResourcesPage />,
       },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
+      },
+      {
+        path: 'help',
+        element: <HelpPage />,
+      },
     ],
   },
 
@@ -183,6 +222,14 @@ export const router = createBrowserRouter([
         path: 'earnings',
         element: <DoctorEarningsPage />,
       },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
+      },
+      {
+        path: 'help',
+        element: <HelpPage />,
+      },
     ],
   },
 
@@ -223,6 +270,14 @@ export const router = createBrowserRouter([
         path: 'tests',
         element: <AdminTestsPage />,
       },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
+      },
+      {
+        path: 'help',
+        element: <HelpPage />,
+      },
     ],
   },
 
@@ -254,6 +309,14 @@ export const router = createBrowserRouter([
       {
         path: 'audit',
         element: <SuperAdminAuditPage />,
+      },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
+      },
+      {
+        path: 'help',
+        element: <HelpPage />,
       },
     ],
   },

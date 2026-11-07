@@ -20,7 +20,8 @@ import {
   Video,
   Activity,
   Hospital,
-  ChevronRight
+  ChevronRight,
+  Phone
 } from 'lucide-react';
 
 export function PatientLayout() {
@@ -70,7 +71,7 @@ export function PatientLayout() {
           <Link to="/patient/doctors" className="block">
             <button
               type="button"
-              className="w-full h-10 rounded-lg bg-[#3b5bdb] hover:bg-[#2f4bc0] text-white text-[14px] font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="w-full h-10 rounded-lg bg-[#2f4bc0] hover:bg-[#233a9e] active:bg-[#1c2f80] text-white text-[14px] font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>{t('action.book')}</span>
@@ -88,7 +89,7 @@ export function PatientLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -102,7 +103,7 @@ export function PatientLayout() {
                 className={({ isActive }) =>
                   `flex items-center justify-between h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -129,7 +130,7 @@ export function PatientLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -143,7 +144,7 @@ export function PatientLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -157,7 +158,7 @@ export function PatientLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -171,7 +172,7 @@ export function PatientLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -183,7 +184,7 @@ export function PatientLayout() {
           </div>
         </div>
 
-        {/* Bottom Zone: Help, Settings, User Row */}
+        {/* Bottom Zone: Help, Settings, Emergency, User Row */}
         <div className="space-y-1 pt-4 border-t border-[#e7e5e4]">
           <Link
             to="/emergency"
@@ -191,6 +192,30 @@ export function PatientLayout() {
           >
             <span>{t('nav.emergency')}</span>
           </Link>
+
+          <NavLink
+            to="/patient/help"
+            className={({ isActive }) =>
+              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
+                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              }`
+            }
+          >
+            <HelpCircle className="w-4 h-4 shrink-0" />
+            <span>{t('nav.help', 'Help')}</span>
+          </NavLink>
+
+          <NavLink
+            to="/patient/settings"
+            className={({ isActive }) =>
+              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
+                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              }`
+            }
+          >
+            <Settings className="w-4 h-4 shrink-0" />
+            <span>{t('nav.settings', 'Settings')}</span>
+          </NavLink>
 
           <div className="pt-2 mt-2 border-t border-[#e7e5e4] flex items-center justify-between">
             <div className="flex items-center gap-2.5 overflow-hidden">
@@ -243,6 +268,17 @@ export function PatientLayout() {
           <div className="flex items-center gap-3">
             {/* One-Click LanguageToggle (Section 6.1) */}
             <LanguageToggle />
+
+            {/* Call us secondary button (Section 5) */}
+            <a href="tel:01700000000" className="hidden sm:inline-flex">
+              <button
+                type="button"
+                className="h-8 px-3 rounded-lg border-[1.5px] border-[#111111] bg-white hover:bg-[#f4f4f2] active:bg-[#e7e5e4] text-[#111111] text-[13px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#111111]" />
+                <span>{t('landing.callUs', 'Call us')}</span>
+              </button>
+            </a>
 
             <div className="w-8 h-8 rounded-full bg-[#f4f4f2] border border-[#e7e5e4] grid place-items-center text-xs font-semibold text-[#111111]">
               {(profile?.fullName || user?.displayName || 'P').slice(0, 2).toUpperCase()}

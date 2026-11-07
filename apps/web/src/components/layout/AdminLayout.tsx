@@ -13,7 +13,9 @@ import {
   Menu,
   X,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  HelpCircle,
+  Settings
 } from 'lucide-react';
 
 export function AdminLayout() {
@@ -64,7 +66,7 @@ export function AdminLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -78,7 +80,7 @@ export function AdminLayout() {
                 className={({ isActive }) =>
                   `flex items-center justify-between h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -97,7 +99,7 @@ export function AdminLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -111,7 +113,7 @@ export function AdminLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -125,7 +127,7 @@ export function AdminLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -138,7 +140,31 @@ export function AdminLayout() {
         </div>
 
         <div className="space-y-1 pt-4 border-t border-[#e7e5e4]">
-          <div className="flex items-center justify-between">
+          <NavLink
+            to="/admin/help"
+            className={({ isActive }) =>
+              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
+                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              }`
+            }
+          >
+            <HelpCircle className="w-4 h-4 shrink-0" />
+            <span>{t('nav.help', 'Help')}</span>
+          </NavLink>
+
+          <NavLink
+            to="/admin/settings"
+            className={({ isActive }) =>
+              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
+                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              }`
+            }
+          >
+            <Settings className="w-4 h-4 shrink-0" />
+            <span>{t('nav.settings', 'Settings')}</span>
+          </NavLink>
+
+          <div className="pt-2 mt-2 border-t border-[#e7e5e4] flex items-center justify-between">
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div className="w-8 h-8 rounded-full bg-[#f4f4f2] border border-[#e7e5e4] grid place-items-center text-xs font-semibold text-[#111111]">
                 {(profile?.fullName || user?.displayName || 'Ad').slice(0, 2).toUpperCase()}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'bone' | 'orange';
-export type ButtonSize = 'sm' | 'md' | 'lg' | 'compact' | 'default';
+export type ButtonSize = 'comfort' | 'compact' | 'sm' | 'md' | 'lg' | 'default';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -15,38 +15,42 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  // Primary: --color-accent (#3b5bdb) fill, white text, weight 500. Hover #2f4bc0. No shadow.
+  // Primary (blue filled): "Do this". One per content area.
   primary:
-    'bg-[#3b5bdb] hover:bg-[#2f4bc0] text-white border-transparent',
-  // Secondary: White fill, 1px solid #d6d3d1, #111111 text. Hover #f4f4f2.
+    'bg-accent hover:bg-accent-hover active:bg-accent-pressed text-white border-[1.5px] border-transparent',
+  // Secondary (outlined): "Another choice" / "Go back".
   secondary:
-    'bg-[#ffffff] hover:bg-[#f4f4f2] text-[#111111] border border-[#d6d3d1]',
-  // Ghost: Transparent, #57534e text. Hover #f4f4f2 + ink text.
-  ghost:
-    'bg-transparent hover:bg-[#f4f4f2] text-[#57534e] hover:text-[#111111] border-transparent',
-  // Danger: White fill, #b42318 text + border #fecdca.
+    'bg-canvas hover:bg-subtle active:bg-border text-ink border-[1.5px] border-ink',
+  // Danger (red outlined): "Delete" / "Cancel".
   danger:
-    'bg-[#ffffff] hover:bg-[#fef3f2] text-[#b42318] border border-[#fecdca]',
-  // Semantic aliases for compatibility
+    'bg-canvas hover:bg-danger-bg active:bg-danger-border text-danger-text border-[1.5px] border-danger-text',
+  // Ghost (Compact staff only)
+  ghost:
+    'bg-transparent hover:bg-subtle text-text-2 hover:text-ink border-[1.5px] border-transparent',
+  // Compatibility aliases
   outline:
-    'bg-[#ffffff] hover:bg-[#f4f4f2] text-[#111111] border border-[#d6d3d1]',
+    'bg-canvas hover:bg-subtle active:bg-border text-ink border-[1.5px] border-ink',
   bone:
-    'bg-[#f4f4f2] hover:bg-[#e7e5e4] text-[#111111] border-transparent',
+    'bg-subtle hover:bg-border text-ink border-[1.5px] border-transparent',
   orange:
-    'bg-[#ffffff] hover:bg-[#fffaeb] text-[#b54708] border border-[#fedf89]',
+    'bg-canvas hover:bg-warning-bg active:bg-warning-border text-warning-text border-[1.5px] border-warning-border',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-8 px-3 text-[13px] rounded-lg gap-1.5 font-medium',
-  compact: 'h-8 px-3 text-[13px] rounded-lg gap-1.5 font-medium',
-  md: 'h-10 px-4 text-[14px] rounded-lg gap-2 font-medium',
-  default: 'h-10 px-4 text-[14px] rounded-lg gap-2 font-medium',
-  lg: 'h-11 px-5 text-[15px] rounded-lg gap-2 font-medium',
+  // Comfort (Default): 48px height, 16px text (BN 17px), 10px 24px padding, min 120px
+  comfort: 'min-h-[48px] min-w-[120px] px-6 py-2.5 text-base font-medium rounded-lg gap-2',
+  default: 'min-h-[48px] min-w-[120px] px-6 py-2.5 text-base font-medium rounded-lg gap-2',
+  md: 'min-h-[48px] min-w-[120px] px-6 py-2.5 text-base font-medium rounded-lg gap-2',
+  lg: 'min-h-[52px] min-w-[130px] px-7 py-3 text-base font-medium rounded-lg gap-2.5',
+  // Compact (Staff tables): 40px height, 14px text (BN 15px), 8px 16px padding, min 88px
+  compact: 'min-h-[40px] min-w-[88px] px-4 py-2 text-sm font-medium rounded-lg gap-2',
+  // Small (inside table rows): 32px height, 4px 12px padding
+  sm: 'min-h-[32px] min-w-0 px-3 py-1 text-xs font-medium rounded-lg gap-1.5',
 };
 
 export function Button({
   variant = 'primary',
-  size = 'md',
+  size = 'comfort',
   loading = false,
   isLoading = false,
   leftIcon,
@@ -64,11 +68,13 @@ export function Button({
     <button
       disabled={isDisabled}
       className={[
-        'inline-flex items-center justify-center font-sans transition-colors duration-150 select-none cursor-pointer',
-        'disabled:opacity-50 disabled:bg-[#f4f4f2] disabled:text-[#78716c] disabled:border-transparent disabled:cursor-not-allowed',
+        'box-border inline-flex items-center justify-center font-sans text-center transition-colors duration-150 select-none cursor-pointer',
+        'focus-visible:outline-[3px] focus-visible:outline-accent focus-visible:outline-offset-2',
+        'disabled:bg-subtle disabled:text-text-2 disabled:border-border disabled:cursor-not-allowed',
         variantClasses[variant] || variantClasses.primary,
-        sizeClasses[size],
-        fullWidth ? 'w-full' : '',
+        sizeClasses[size] || sizeClasses.comfort,
+        fullWidth ? 'w-full px-4' : '',
+        leftIcon ? 'pl-5' : '',
         className,
       ]
         .filter(Boolean)
@@ -76,12 +82,12 @@ export function Button({
       {...props}
     >
       {isBusy ? (
-        <Loader2 className="animate-spin shrink-0 w-4 h-4" />
+        <Loader2 className="animate-spin shrink-0 w-5 h-5" />
       ) : (
-        leftIcon && <span className="shrink-0">{leftIcon}</span>
+        leftIcon && <span className="shrink-0 [&>svg]:w-5 [&>svg]:h-5">{leftIcon}</span>
       )}
-      {children && <span>{children}</span>}
-      {!isBusy && rightIcon && <span className="shrink-0">{rightIcon}</span>}
+      {children && <span className="leading-tight">{children}</span>}
+      {!isBusy && rightIcon && <span className="shrink-0 [&>svg]:w-5 [&>svg]:h-5">{rightIcon}</span>}
     </button>
   );
 }

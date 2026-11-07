@@ -1,16 +1,17 @@
-# UI Design System v2.1 — Healthcare, Minimal & Bilingual (English ⇄ বাংলা)
+# UI Design System v2.2 — Healthcare, Minimal, Bilingual & Easy for Everyone (English ⇄ বাংলা)
 
 > **Design Persona:** A calm, clean clinic desk. White canvas, ink-black text, hairline borders, **one** blue accent. Nothing decorative. Every page does one job, health alerts are impossible to miss, and the whole interface switches between English and Bangla with **one click**.
 
 **Theme:** Light only (dark mode is a later phase)
 **Target Environment:** Antigravity IDE / Web Application
 **Product:** Healthcare system — patients, doctors, and reception/admin staff.
-**Version:** 2.1 (healthcare pages; replaces the 7shifts-inspired v1)
+**Version:** 2.2 (adds Comfort mode for non-technical users and the public Landing Page; replaces the 7shifts-inspired v1)
 
 ### Assumptions (delete or change what does not match your system)
 
 - **Roles:** Patient · Doctor · Reception/Admin.
 - **Modules:** Appointments, Patients, Prescriptions, Medical Records, Billing.
+- **Users:** many patients are non-technical and may have low reading skill. So the landing page and all patient-facing screens use **Comfort mode** (big buttons, big text, plain words, clear colors). Staff tables may use **Compact mode**.
 - Only **Section 9** (pages), the sidebar names in **Section 5**, and the strings in **Section 6.6** are system-specific. Everything else works for any system.
 
 ---
@@ -24,9 +25,9 @@
 
 ### Hard Rules (never break)
 
-1. **One accent color only:** `#3b5bdb`. No orange, lime, purple, or pastel cards.
+1. **One accent color only:** `#2f4bc0`. No orange, lime, purple, or pastel cards.
 2. **No box-shadows.** Use `1px` borders and white vs. soft-gray surfaces.
-3. **One primary button per page** (in the content area). The sidebar quick-action button does not count.
+3. **One primary action per page** (in the content area). On the landing page the same primary action may repeat. The sidebar quick-action button does not count.
 4. **No hard-coded text in components.** Every string comes from `t('key')`.
 5. **Bangla text:** letter-spacing is always `0`, never uppercase, never heavier than weight `600`.
 6. **Language toggle** is always visible in the top bar, on every page.
@@ -34,6 +35,9 @@
 8. Status colors (red / green / amber) are used **only** for statuses and clinical alerts, always with an icon + text. Red is reserved for allergies, drug conflicts, and overdue items.
 9. Maximum **6 items** in the sidebar. Maximum **2 sections** of content above the fold.
 10. Every page must have: title, one-line description, content, and designed empty / loading / error states.
+11. **Comfort mode by default** on the landing page and all patient-facing screens: `48px` buttons, `16px` text (Bangla `17px`). Compact mode (`40px` / `14px`) only for staff tables.
+12. **Every button has a text label** (verb + noun, 8 words or fewer). Never icon-only. Never "OK" or "Submit".
+13. **Plain words only.** No medical or technical jargon without a short helper line.
 
 ---
 
@@ -64,11 +68,12 @@
 | **Ink** | `#111111` | `--color-ink` | Headings, primary text. |
 | **Text 2** | `#57534e` | `--color-text-2` | Body text, inactive sidebar items. |
 | **Text 3** | `#78716c` | `--color-text-3` | Helper text, captions, placeholders, table header. |
-| **Accent** | `#3b5bdb` | `--color-accent` | Primary button, active nav item, focus ring, links, active tab underline. |
-| **Accent Hover** | `#2f4bc0` | `--color-accent-hover` | Hover on primary button. |
+| **Accent** | `#2f4bc0` | `--color-accent` | Primary button, active nav item, focus ring, links, active tab underline. |
+| **Accent Hover** | `#233a9e` | `--color-accent-hover` | Hover on primary button. |
+| **Accent Pressed** | `#1c2f80` | `--color-accent-pressed` | Primary button while being pressed. |
 | **Accent Tint** | `#eef2ff` | `--color-accent-tint` | Active nav item background, selected row, selected time slot. |
 
-> The accent is slightly darker than v1 (`#4570ff`) so white text on it passes WCAG AA (≥ 4.5:1).
+> The accent is darker than v1 (`#4570ff`) so white text on it reaches about **7:1 contrast** (WCAG AAA). This makes buttons easy to read for everyone, including older adults and people with weak eyesight or bright screens.
 
 ### Status Colors (statuses & clinical alerts only)
 
@@ -127,6 +132,8 @@ Load from Google Fonts with `display=swap`:
 
 Only these 3 weights exist: **400** (body), **500** (buttons, nav, labels), **600** (titles, numbers).
 
+**Comfort mode** (landing page, patient screens, sign in): Body `16px` (BN `17px`), captions `14px` (BN `15px`). **Compact mode** (staff tables): use the scale above. Essential information uses `--color-ink` or `--color-text-2`; `--color-text-3` is only for non-essential captions and placeholders (at least `13px`). The landing hero H1 may use `36px` (weight 600), only there.
+
 ### Bangla Typography Rules
 
 1. `letter-spacing: 0` always. Negative or positive tracking breaks Bangla conjuncts (যুক্তাক্ষর).
@@ -150,7 +157,7 @@ Only these 3 weights exist: **400** (body), **500** (buttons, nav, labels), **60
 
 ## 4. Tokens — Spacing, Shape & Layout
 
-**Base unit:** `4px` | **Density:** Comfortable (staff use tablets and desktops) | **Shadows:** none
+**Base unit:** `4px` | **Density:** Comfort (default) and Compact (staff tables only) — see Section 7.0 | **Shadows:** none
 
 ### Spacing Scale
 `4` · `8` · `12` · `16` · `24` · `32` · `48` · `64` (px). Tokens: `--space-1` … `--space-8`.
@@ -224,6 +231,7 @@ Only these 3 weights exist: **400** (body), **500** (buttons, nav, labels), **60
 | State | Spec |
 |-------|------|
 | **Size** | Height `40px`, padding `0 12px`, gap `12px`, radius `8px`. Icon `18px` (Lucide, stroke `1.75`), label `14px` (BN `15px`). |
+| **Size (Comfort, patient role)** | Height `48px`, icon `22px`, label `16px` (BN `17px`). Staff roles use the `40px` size above. |
 | **Default** | Transparent, text/icon `--color-text-2`, weight 400. |
 | **Hover** | `--color-subtle` fill, `--color-ink` text. |
 | **Active** | `--color-accent-tint` fill, `--color-accent` text + icon, weight 500. `aria-current="page"`. |
@@ -242,6 +250,7 @@ Only these 3 weights exist: **400** (body), **500** (buttons, nav, labels), **60
 - **Right:** **LanguageToggle** → avatar button (menu: Settings, Sign out).
 - The page title (H1) lives **inside the content area**, not in the top bar.
 - Do not show patient names or other personal data in the top bar breadcrumb of shared screens (use "Patient profile").
+- **Patient role:** a **"Call us"** secondary button (phone icon + label) sits next to the language toggle, so help is always one tap away.
 
 ---
 
@@ -262,7 +271,7 @@ Only these 3 weights exist: **400** (body), **500** (buttons, nav, labels), **60
 | 1 | **One click.** Clicking the other segment switches the whole UI instantly. Never hidden in a menu or in Settings only. |
 | 2 | **No reload, no navigation.** The URL, scroll position, typed text, selected doctor/time slot, filters, and sidebar state all stay the same. |
 | 3 | **Remembered.** Save to `localStorage['ui-lang']` (and to the user profile after sign-in). |
-| 4 | **Smart first visit.** If `navigator.languages` starts with `bn` → Bangla; otherwise English. |
+| 4 | **Default language.** First-time visitors see **Bangla** (most patients read it more easily). One click on **EN** switches, and the choice is remembered. Change `DEFAULT_LANG` in code if you want a different default. |
 | 5 | **`<html lang>` updates** to `en` or `bn`, so fonts, line height, and screen readers follow. |
 | 6 | **Keyboard:** Tab to focus → `←` `→` or `Enter`/`Space` to switch. Global shortcut: `Alt + L`. |
 | 7 | **Screen-reader message** (`aria-live="polite"`): "Language changed to English" / "ভাষা বাংলায় পরিবর্তিত হয়েছে". |
@@ -337,27 +346,141 @@ Only these 3 weights exist: **400** (body), **500** (buttons, nav, labels), **60
 | `error.generic` | Something went wrong. Try again. | কিছু ভুল হয়েছে। আবার চেষ্টা করুন। |
 | `emergency.note` | In an emergency, call 999. | জরুরি অবস্থায় ৯৯৯ নম্বরে কল করুন। |
 | `lang.label` | Language | ভাষা |
+| `landing.title` | See a doctor, easily. | সহজেই ডাক্তার দেখান। |
+| `landing.sub` | Book a visit. See your medicine list and reports in one place. | অ্যাপয়েন্টমেন্ট নিন। ওষুধের তালিকা ও রিপোর্ট এক জায়গায় দেখুন। |
+| `cta.call` | Call us | ফোন করুন |
+| `cta.signin` | Sign in | সাইন ইন |
+| `help.call` | Need help? Call us | সাহায্য লাগবে? ফোন করুন |
+| `how.title` | How it works | কীভাবে কাজ করে |
+| `how.step1` | Choose a doctor | ডাক্তার বাছাই করুন |
+| `how.step2` | Pick a time | সময় বেছে নিন |
+| `how.step3` | Get an SMS and come | এসএমএস পান ও চলে আসুন |
+| `svc.title` | What you can do | যা যা করতে পারবেন |
+| `svc.reports` | Reports | রিপোর্ট |
+| `svc.bills` | Bills | বিল |
+| `doctors.title` | Our doctors | আমাদের ডাক্তার |
+| `visit.title` | Visit us | আমাদের ঠিকানা |
+| `visit.hours` | Opening hours | খোলা থাকে |
+| `footer.privacy` | Privacy | গোপনীয়তা |
+| `appt.booked` | Your appointment is booked. | আপনার অ্যাপয়েন্টমেন্ট বুক হয়েছে। |
+| `appt.cancel.yes` | Yes, cancel appointment | হ্যাঁ, অ্যাপয়েন্টমেন্ট বাতিল করুন |
+| `appt.cancel.no` | No, keep it | না, রেখে দিন |
+| `settings.textsize` | Text size | লেখার আকার |
+| `settings.normal` | Normal | স্বাভাবিক |
+| `settings.large` | Large | বড় |
 
 ---
 
 ## 7. Core UI Components
 
-### Buttons (height `40px`, compact `32px`, radius `8px`, no shadow)
-| Type | Spec |
-|------|------|
-| **Primary** | `--color-accent` fill, white text, weight 500, padding `0 16px`. Hover `--color-accent-hover`. **One per page.** |
-| **Secondary** | White fill, `1px solid --color-border-strong`, `--color-ink` text. Hover `--color-subtle`. |
-| **Ghost** | Transparent, `--color-text-2` text. Hover `--color-subtle` + ink text. |
-| **Danger** | White fill, `--color-danger-text` text + border. Only inside a destructive confirm (e.g., cancel appointment, delete record). |
-| **Disabled** | `--color-subtle` fill, `--color-text-3` text, `cursor: not-allowed`. |
-| **Loading** | Small spinner on the left; label stays; width does not change. |
+### 7.0 Clear Buttons & Colour (for non-technical users)
+
+Two density modes. **Comfort is the default.** Use Compact only inside staff tables and dense staff tools.
+
+| | **Comfort** (landing, sign in, patient screens, booking) | **Compact** (staff tables) |
+|--|--|--|
+| Button min-height | `48px` | `40px` (small `32px`) |
+| Button text | `16px` (BN `17px`), weight 500 | `14px` (BN `15px`), weight 500 |
+| Button padding / min width | `10px 24px` / `120px` | `8px 16px` / `88px` (small: `4px 12px`) |
+| Input height / text | `48px` / `16px` | `40px` / `14px` |
+| Nav item | `48px`, icon `22px` | `40px`, icon `18px` |
+| Touch target | at least `48×48px` | at least `40×40px` |
+| Gap between buttons | at least `12px` | at least `8px` |
+
+**Rules**
+
+1. **Text label on every button.** Verb + noun, 8 words or fewer: "Book appointment", "Print prescription". Never icon-only, never "OK", "Submit", or "Proceed". An icon (`20–24px`) may sit to the left of the label.
+2. **Only three button looks.** Blue filled = "do this". Outlined = "another choice / go back". Red outlined = "delete / cancel". People learn this once and trust it everywhere.
+3. **Never two blue buttons side by side.** In a Yes/No pair, Yes is blue and No is outlined. For destructive actions use clear words: **[ Yes, cancel appointment ]** (red outlined) and **[ No, keep it ]** (outlined).
+4. **Buttons must look like buttons.** Filled, or a `1.5px` solid border, with `8px` radius. Never use a plain text link for an action. Links are only for moving to another page inside a sentence.
+5. **Color is never alone.** Every status and alert has an icon and a word (✓ Confirmed, ◔ Pending, ✕ Cancelled, ! Allergy).
+6. **High contrast.** Main text and button text reach at least `7:1`. Never put gray text on a gray fill for anything important.
+7. **Clear states.** Hover = darker fill. Focus = `3px` accent outline with `2px` offset. If an action takes more than `300ms`, show a spinner and keep the label. Success = a clear message (rule 12).
+8. **Disabled buttons explain why.** Show a helper line below: "Choose a time first." Never leave the user guessing.
+9. **Small, fixed icon set** (Lucide): calendar, user, pill, file, receipt, phone, map-pin, clock, check, alert. Always with a text label.
+10. **Plain words.** Sentences of 15 words or fewer. Use everyday words ("Doctor visit", "Medicine list"). Where a word may be new, add a short helper line under it (for example: **Prescription** — your medicine list).
+11. **Forms are easy.** One question per row. Big option cards or chips instead of dropdowns when there are 6 options or fewer. Example text in the field ("e.g. 01XXXXXXXXX"). Phone fields use `inputmode="tel"`. Pick dates and times with buttons, not typing. Errors say how to fix it: "Enter an 11-digit phone number, like 01XXXXXXXXX."
+12. **Big success screen** after every important action: large ✓ icon + one sentence (for example `appt.booked`) + date/time + what happens next ("You will get an SMS").
+13. **Help is always visible.** A **Call us** button appears on the landing page and in the patient top bar.
+14. **Text size option.** Settings has **Text size: Normal | Large** (Large adds `2px` to every text size).
+
+### Buttons — three looks
+
+| Look | Meaning | Spec (sizes from the table above) |
+|------|---------|------|
+| **Primary** (blue filled) | "Do this" | `--color-accent` fill, white text, weight 500. Hover `--color-accent-hover`. **One per page** (landing page: the same action may repeat). |
+| **Secondary** (outlined) | "Another choice" / "Go back" | White fill, `1.5px solid --color-ink`, `--color-ink` text. Hover `--color-subtle`. |
+| **Danger** (red outlined) | "Delete" / "Cancel" | White fill, `1.5px solid --color-danger-text`, danger text + ✕ or trash icon. Only inside a destructive confirm (cancel appointment, delete record). |
+| **Ghost** (Compact only) | Low-importance action inside staff tables | Transparent, `--color-text-2` text. Hover `--color-subtle` + ink text. Never used in Comfort mode. |
+| **Disabled** | "Not ready yet" | `--color-subtle` fill, `--color-text-2` text, `cursor: not-allowed`, plus a helper line saying why. |
+| **Loading** | "Working…" | Small spinner on the left; label stays; width does not change. |
+
+### 7.0.1 Button Padding & Colour (exact values)
+
+**Padding**
+
+| Button | Padding | Notes |
+|--------|---------|-------|
+| **Comfort (default)** | `10px 24px` | Height comes from `min-height: 48px`. The vertical padding keeps wrapped text away from the edge. |
+| **With icon (icon on the left)** | `10px 24px 10px 20px` | Icon `20px`, gap between icon and label `8px`. |
+| **Full width** (mobile, forms, sign in) | `10px 16px` | Label centered; the whole width is tappable. |
+| **Compact** (staff tables) | `8px 16px` | `min-height: 40px`. |
+| **Small** (inside table rows) | `4px 12px` | `min-height: 32px`. Compact mode only. |
+| **Mobile sticky bar button** | `10px 16px` | Two buttons with a `12px` gap; bar padding `12px`. |
+| **Chip** (department filter) | `0 16px` | Comfort height `40px`, Compact `32px`. |
+| **Time-slot button** | `0 12px` | Comfort height `48px`, Compact `40px`. |
+
+Rules:
+1. **Height is `min-height`, not a fixed height.** Bangla and long labels can wrap to 2 lines on small phones without being cut off.
+2. **Same height in both languages.** Use `line-height: 1.25` (English) and `1.4` (Bangla) so switching language does not make buttons jump.
+3. **Every button has a `1.5px` border** (transparent on Primary), so Primary and Secondary buttons are exactly the same size side by side.
+4. **Space between buttons** at least `12px` (Comfort) or `8px` (Compact). Never let two buttons touch.
+5. The whole button rectangle, including the padding, is clickable. No dead area.
+
+**Colour (the padded area always has the same colour as the button fill)**
+
+| Look | State | Fill (includes padding area) | Text + icon | Border `1.5px` |
+|------|-------|------------------------------|-------------|----------------|
+| **Primary** | Default | `--color-accent` `#2f4bc0` | `#ffffff` | transparent |
+| | Hover | `--color-accent-hover` `#233a9e` | `#ffffff` | transparent |
+| | Pressed | `--color-accent-pressed` `#1c2f80` | `#ffffff` | transparent |
+| **Secondary** | Default | `--color-canvas` `#ffffff` | `--color-ink` `#111111` | `--color-ink` |
+| | Hover | `--color-subtle` `#f4f4f2` | `--color-ink` | `--color-ink` |
+| | Pressed | `--color-border` `#e7e5e4` | `--color-ink` | `--color-ink` |
+| **Danger** | Default | `--color-canvas` `#ffffff` | `--color-danger-text` `#b42318` | `--color-danger-text` |
+| | Hover | `--color-danger-bg` `#fef3f2` | `--color-danger-text` | `--color-danger-text` |
+| | Pressed | `--color-danger-border` `#fecdca` | `--color-danger-text` | `--color-danger-text` |
+| **All looks** | Disabled | `--color-subtle` `#f4f4f2` | `--color-text-2` `#57534e` | `--color-border` `#e7e5e4` |
+| **All looks** | Focus | unchanged | unchanged | plus `3px` outline `--color-accent`, offset `2px` |
+
+Rules:
+1. **No separate colour for the padding.** Do not draw an inner box, inner border, or double outline inside a button.
+2. **No gradients, no shadows, no opacity tricks** (do not fade a button to show disabled; use the Disabled row).
+3. Text and icon always share the same colour in a state.
+4. Do not put a blue button on a blue or colored background. Buttons sit on white or `--color-sidebar` only.
+
+**Container padding & surface colour**
+
+| Container | Padding (Comfort) | Fill | Border |
+|-----------|-------------------|------|--------|
+| Page content area | `32px` desktop · `24px` tablet · `16px` mobile | `--color-canvas` | none |
+| Card / stat card | `24px` desktop · `20px` mobile | `--color-canvas` | `1px --color-border` |
+| Landing section band | `64px` desktop · `40px` mobile (top and bottom), `24px` / `16px` sides | alternate `--color-canvas` and `--color-sidebar` | none |
+| Side drawer | `24px` | `--color-canvas` | left `1px --color-border` |
+| Dialog | `24px` | `--color-canvas` | `1px --color-border` |
+| Alert banner | `16px` | status background | `1px` status border |
+| Input | `0 16px` | `--color-canvas` | `1px --color-border-strong` |
+| Mobile sticky bar | `12px` + safe-area inset | `--color-canvas` | top `1px --color-border` |
+| Table cell (Compact) | `0 16px` | `--color-canvas` (header `--color-subtle`) | row `1px --color-border` |
+
+Cards placed on a `--color-sidebar` band stay white with their `1px` border, so they stand out without shadows.
 
 ### Cards
 White, `1px` border, `12px` radius, padding `20–24px`, **no shadow, no colored fills**. Cards never contain other cards.
 **Stat card:** label (`12px`, text-3) above number (`28px`, 600) with a one-line caption (date or unit). All stat cards look identical (no rotating pastels).
 
 ### Inputs
-- Height `40px`, white, `1px` border, radius `8px`, padding `0 12px`, `14px` text; placeholder `--color-text-3`.
+- Height `48px` (Comfort) or `40px` (Compact), white, `1px` border, radius `8px`, padding `0 16px` (Comfort) or `0 12px` (Compact), text `16px` (Comfort) or `14px` (Compact); placeholder `--color-text-3` showing an example.
 - Focus: `2px` accent outline. Label **above** the field (`14px`, 500). Helper `12px` text-3.
 - **Error:** border `--color-danger-text`, message below with an icon + text (never color only).
 - **Search input:** leading search icon, `/` focuses it, clear (✕) button when filled.
@@ -433,13 +556,76 @@ Rules:
 
 ## 9. Pages — UX Plan
 
+> **Public pages** (no sidebar): Landing `/` and Sign in `/login`. **Signed-in pages** use the sidebar below.
+>
 > Sidebar order: **Dashboard · Appointments · Patients · Prescriptions · Records · Billing**, with **Help · Settings** at the bottom. Hide pages by role (Section 5). Remove any page you do not build; never exceed 6 sidebar items.
+
+### 9.0 Landing Page `/` (public)
+
+**Goal:** a first-time visitor understands in 5 seconds what this is, and can **book or call with one tap**.
+
+**Layout:** public layout (no sidebar), Comfort mode. Signed-in users who open `/` are sent to `/dashboard`.
+
+```
+┌ Top bar (64px) ────────────────────────────────────────────┐
+│ [H] Health System      [EN|বাংলা]  [📞 Call us]  [Sign in]   │
+├─────────────────────────────────────────────────────────────┤
+│ HERO                                                         │
+│  See a doctor, easily.                                       │
+│  Book a visit. See your medicine list and reports in         │
+│  one place.                                                  │
+│  [ Book appointment ]   [ 📞 Call 01XXXXXXXXX ]              │
+├─────────────────────────────────────────────────────────────┤
+│ How it works                                                 │
+│  ① Choose a doctor   ② Pick a time   ③ Get an SMS and come  │
+├─────────────────────────────────────────────────────────────┤
+│ What you can do   (4 identical cards: icon + 2 words + line) │
+│  [Appointments] [Prescriptions] [Reports] [Bills]            │
+├─────────────────────────────────────────────────────────────┤
+│ Our doctors       [All][General][Cardiology][Pediatrics]…    │
+│  [card] [card] [card] [card]            [ See all doctors ]  │
+├─────────────────────────────────────────────────────────────┤
+│ Visit us:  🕘 Opening hours  📍 Address  📞 Phone            │
+│            [ Get directions ]                                │
+│ ┌ ! In an emergency, call 999. ──────────────────────────┐  │
+├─────────────────────────────────────────────────────────────┤
+│ Footer: Privacy · Help · [EN|বাংলা]                          │
+└─────────────────────────────────────────────────────────────┘
+Mobile only — sticky bottom bar:   [ Book appointment ] [ 📞 Call ]
+```
+
+**Sections**
+
+| # | Section | Content | Details |
+|---|---------|---------|---------|
+| 1 | **Hero** | H1 of 6 words or fewer (`36px`, weight 600), one line of text (`18px`, 15 words or fewer), two buttons | Blue **Book appointment** + outlined **Call 01XXXXXXXXX** (`tel:` link). White background. Optional one real clinic photo on the right (desktop only, hidden on mobile). |
+| 2 | **How it works** | 3 cards: number circle (`32px`, ink fill, white number) + icon (`32px`) + title (`18px`, 600) + one line | Steps: Choose a doctor → Pick a time → Get an SMS and come. After the cards, repeat the blue **Book appointment** button. |
+| 3 | **What you can do** | 4 identical white cards: icon in a `48px` subtle circle, 2-word title, one short line | Appointments, Prescriptions, Reports, Bills. Whole card is clickable (goes to sign-in, then the page). No colored cards. |
+| 4 | **Our doctors** | Department chips (scroll sideways on mobile) + 4 doctor cards + **See all doctors** (outlined) | Card: initials avatar `56px` (or photo), name, department, "Next free: Today 4:30 PM", outlined **Book** button. Public info only. |
+| 5 | **Visit us** | Info rows with icons: opening hours, address, phone | Each row has its own outlined button (**Get directions**, **Call us**). Below: emergency strip, Danger style (`--color-danger-bg`, `!` icon), text `emergency.note`. |
+| 6 | **Footer** | Privacy · Help · language toggle · © year | Small text (`14px`), `--color-text-2`. |
+
+**Mobile sticky bar:** fixed at the bottom, white, `1px` top border, padding `12px` (plus safe-area inset). Left: blue **Book appointment** (fills the space). Right: outlined phone button with label **Call**. No shadow.
+
+**Rules**
+
+1. At `375px` width, the first screen (no scrolling) shows: H1, one line of text, the **Book appointment** button, and the **Call** button.
+2. The only primary action is **Book appointment**. It may repeat (hero, after "How it works", mobile bar), but it is always the same action. For signed-out visitors it goes to `/login?next=/appointments/new`.
+3. At most **6 sections**; each fits about one screen on mobile.
+4. Headings: 6 words or fewer. Cards: 2 short lines. No long paragraphs.
+5. **Never:** carousels, auto-playing video, pop-ups, cookie walls, chat-widget overlays, stock-photo banners.
+6. **Speed:** page weight 500 KB or less; images in WebP/AVIF, lazy-loaded below the fold, with width/height set (no layout jump); works on slow mobile networks.
+7. **Language:** Bangla by default; the toggle is in the top bar and the footer.
+8. **Public data only:** doctor name, department, and availability. No patient information.
+9. Page `<title>` and meta description are translated and update with the language toggle.
+10. Section bands alternate `--color-canvas` and `--color-sidebar`, with the padding from Section 7.0.1.
 
 ### 9.1 Sign In `/login`
 - Centered card `400px`. Logo, H1, **phone or email**, password, **Sign in** (primary, full width), "Forgot password" link. LanguageToggle in the top-right corner.
 - No sidebar, no top bar. Show the emergency note (`emergency.note`) as a caption at the bottom.
+- Comfort mode: `48px` fields and button, `16px` text, and a **Call us** secondary button under the form. After sign-in, go to `next` (for example `/appointments/new`) or `/dashboard`.
 
-### 9.2 Dashboard `/` (role-aware)
+### 9.2 Dashboard `/dashboard` (role-aware)
 
 **Goal:** see what matters today in under 5 seconds.
 
@@ -602,10 +788,11 @@ Invoices and payments.                          [ + Create invoice ]
 Simple rows inside one card each, saved **instantly** (no Save button, toast "Saved"):
 1. **Language** — same segmented control as the top bar.
 2. **Use Bangla digits (০–৯)** — switch.
-3. **Week starts on** — Saturday / Sunday.
-4. **Reminders** — SMS / email switches for appointment reminders.
-5. **Account** — name, phone, email, change password, Sign out.
-6. **Privacy** — auto sign-out time (default 15 min).
+3. **Text size** — Normal / Large (Large adds `2px` to every text size).
+4. **Week starts on** — Saturday / Sunday.
+5. **Reminders** — SMS / email switches for appointment reminders.
+6. **Account** — name, phone, email, change password, Sign out.
+7. **Privacy** — auto sign-out time (default 15 min).
 
 ### 9.10 Help `/help`
 - Short numbered steps for the 3 main tasks (Book an appointment, View a prescription, Pay an invoice).
@@ -711,10 +898,13 @@ Reception:  Patients → search → open patient → Book appointment → Confir
    > "Follow UI_DESIGN.md strictly. Build the app shell from Section 5: `NavSidebar` (240px, #f7f7f5, 1px right border) with brand, role-based quick-action button, groups Workspace / Care / Admin, items filtered by role (table in Section 5), Help/Settings/user row at the bottom; and a 56px top bar with breadcrumb, `LanguageToggle`, and avatar. Active item = accent tint + accent text. Collapsible to 64px, drawer on mobile. All text from `t()`."
 
 4. **Shared components:**
-   > "Follow UI_DESIGN.md strictly. Build the components from Section 7: Button variants, Card, Stat card, Input, Search input, Autocomplete, Tabs, Badge (with the Status Map in Section 2), Alert Banner, Stepper, Time-Slot Button, Data Table, Dialog, Toast, Side Drawer, and Empty/Loading/Error states."
+   > "Follow UI_DESIGN.md strictly. Build the components from Section 7, in Comfort mode by default (48px buttons, 16px text, 7.0 rules) with a `density='compact'` option for staff tables: Button (3 looks, with the exact padding and colours from Section 7.0.1), Card, Stat card, Input, Search input, Autocomplete, Tabs, Badge (with the Status Map in Section 2), Alert Banner, Stepper, Time-Slot Button, Data Table, Dialog, Toast, Side Drawer, and Empty/Loading/Error states. Every button must have a text label."
+
+4B. **Landing page:**
+   > "Follow UI_DESIGN.md strictly. Build the public Landing Page at `/` from Section 9.0 in Comfort mode (48px buttons, 16px text, Bangla 17px). Use a public layout with no sidebar, mock data, and `t()` for every string (add English and Bangla strings to both locale files). Top bar (64px): logo + name, `LanguageToggle` (EN | বাংলা), a 'Call us' outlined button (`tel:` link) and a 'Sign in' outlined button. Sections in this exact order: (1) Hero: H1 of 6 words or fewer, one line of text, a blue 'Book appointment' button and an outlined 'Call 01XXXXXXXXX' button; (2) How it works: 3 numbered cards with an icon (Choose a doctor, Pick a time, Get an SMS and come), then the blue 'Book appointment' button again; (3) What you can do: 4 identical white cards with icon + 2-word title + one short line (Appointments, Prescriptions, Reports, Bills); (4) Our doctors: department chips + 4 doctor cards (initials avatar, name, department, 'Next free' time, outlined 'Book' button) + 'See all doctors'; (5) Visit us: opening hours, address, phone, 'Get directions' button, and a red-tinted emergency strip 'In an emergency, call 999.'; (6) Footer with Privacy, Help, and the language toggle. On mobile add a sticky bottom bar with the blue 'Book appointment' button and an outlined 'Call' button. 'Book appointment' goes to `/login?next=/appointments/new`; if the user is signed in, redirect `/` to `/dashboard`. Bangla is the default language. Use only token colors, one blue accent, no shadows, no carousel, no autoplay, no pop-ups. Page weight under 500 KB, lazy-load images below the fold. At 375px the first screen must show the H1, the text line, and both buttons."
 
 5. **Sign in + Dashboard:**
-   > "Follow UI_DESIGN.md strictly. Build `/login` (Section 9.1) and the role-aware Dashboard `/` (Section 9.2): doctor/reception view with 4 identical stat cards and today's schedule, and patient view with next-appointment card, recent prescriptions, latest records, and the emergency note. Use mock data."
+   > "Follow UI_DESIGN.md strictly. Build `/login` (Section 9.1) and the role-aware Dashboard `/dashboard` (Section 9.2): doctor/reception view with 4 identical stat cards and today's schedule, and patient view with next-appointment card, recent prescriptions, latest records, and the emergency note. Use mock data."
 
 6. **Appointments + booking drawer:**
    > "Follow UI_DESIGN.md strictly. Build `/appointments` and the 3-step booking drawer from Section 9.3: tabs Upcoming/Past/Cancelled, list grouped by day, row menu, and the drawer with doctor search, department chips, week strip starting Saturday, time-slot grid, summary, and Confirm. Pre-select the earliest free slot."
@@ -756,8 +946,9 @@ Reception:  Patients → search → open patient → Book appointment → Confir
   --color-text-3: #78716c;
 
   /* Accent */
-  --color-accent: #3b5bdb;
-  --color-accent-hover: #2f4bc0;
+  --color-accent: #2f4bc0;
+  --color-accent-hover: #233a9e;
+  --color-accent-pressed: #1c2f80;
   --color-accent-tint: #eef2ff;
 
   /* Status (statuses & clinical alerts only) */
@@ -811,6 +1002,49 @@ body:lang(bn), html:lang(bn) body { font-size: 15px; line-height: 1.7; }
 }
 ```
 
+### Button CSS (copy-paste, Comfort mode default)
+
+```css
+.btn {
+  box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; min-width: 120px; padding: 10px 24px;
+  border: 1.5px solid transparent; border-radius: var(--radius-sm);
+  font: 500 16px/1.25 var(--font-sans); text-align: center; cursor: pointer;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+:lang(bn) .btn { font-size: 17px; line-height: 1.4; }
+.btn > svg { width: 20px; height: 20px; flex: none; }
+.btn:has(> svg:first-child) { padding-left: 20px; }
+.btn-block { width: 100%; padding-left: 16px; padding-right: 16px; }
+
+.btn-primary { background: var(--color-accent); color: #fff; }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-primary:active { background: var(--color-accent-pressed); }
+
+.btn-secondary { background: var(--color-canvas); color: var(--color-ink); border-color: var(--color-ink); }
+.btn-secondary:hover { background: var(--color-subtle); }
+.btn-secondary:active { background: var(--color-border); }
+
+.btn-danger { background: var(--color-canvas); color: var(--color-danger-text); border-color: var(--color-danger-text); }
+.btn-danger:hover { background: var(--color-danger-bg); }
+.btn-danger:active { background: var(--color-danger-border); }
+
+.btn:disabled, .btn[aria-disabled="true"] {
+  background: var(--color-subtle); color: var(--color-text-2);
+  border-color: var(--color-border); cursor: not-allowed;
+}
+.btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+
+/* Compact (staff tables) */
+.btn-compact { min-height: 40px; min-width: 88px; padding: 8px 16px; font-size: 14px; line-height: 1.25; }
+:lang(bn) .btn-compact { font-size: 15px; line-height: 1.4; }
+.btn-sm { min-height: 32px; min-width: 0; padding: 4px 12px; }
+```
+
+Tailwind shortcut for the same primary button:
+`inline-flex items-center justify-center gap-2 min-h-12 min-w-[120px] px-6 py-2.5 rounded-lg border-[1.5px] border-transparent bg-accent text-white text-base font-medium hover:bg-accent-hover active:bg-accent-pressed focus-visible:outline-[3px] focus-visible:outline-accent focus-visible:outline-offset-2 disabled:bg-subtle disabled:text-text-2 disabled:border-border disabled:cursor-not-allowed`
+
 ### Tailwind v4 Configuration
 
 ```css
@@ -823,8 +1057,9 @@ body:lang(bn), html:lang(bn) body { font-size: 15px; line-height: 1.7; }
   --color-ink: #111111;
   --color-text-2: #57534e;
   --color-text-3: #78716c;
-  --color-accent: #3b5bdb;
-  --color-accent-hover: #2f4bc0;
+  --color-accent: #2f4bc0;
+  --color-accent-hover: #233a9e;
+  --color-accent-pressed: #1c2f80;
   --color-accent-tint: #eef2ff;
 
   --color-danger-text: #b42318;  --color-danger-bg: #fef3f2;  --color-danger-border: #fecdca;
@@ -872,18 +1107,18 @@ import en from '@/locales/en.json';
 import bn from '@/locales/bn.json';
 
 export type Lang = 'en' | 'bn';
+const DEFAULT_LANG: Lang = 'bn'; // first-time visitors see Bangla
 const dict: Record<Lang, Record<string, string>> = { en, bn };
 
 const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: (k: string) => string }>(null!);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('en');
+  const [lang, setLangState] = useState<Lang>(DEFAULT_LANG);
 
-  // First visit: saved choice → browser language → English
+  // First visit: saved choice → default (Bangla)
   useEffect(() => {
     const saved = localStorage.getItem('ui-lang') as Lang | null;
-    const guess: Lang = navigator.language.startsWith('bn') ? 'bn' : 'en';
-    setLangState(saved ?? guess);
+    setLangState(saved ?? DEFAULT_LANG);
   }, []);
 
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
@@ -963,7 +1198,7 @@ export function LanguageToggle() {
         <div class="px-3 pt-4 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-text-3">Workspace</div>
         <nav class="space-y-1">
           <!-- Active -->
-          <a href="/" aria-current="page"
+          <a href="/dashboard" aria-current="page"
              class="flex items-center gap-3 h-10 px-3 rounded-lg bg-accent-tint text-accent text-[14px] font-medium">
             <!-- icon: lucide "layout-dashboard" 18px --> <span>Dashboard</span>
           </a>
@@ -1040,19 +1275,25 @@ export function LanguageToggle() {
 1. Tokens + fonts (Prompt 1)
 2. Language system + toggle (Prompt 2)
 3. App shell (Prompt 3)
-4. Shared components (Prompt 4)
-5. Sign in + Dashboard (Prompt 5) ← **first demo-ready screen**
-6. Appointments + booking drawer (Prompt 6) ← **core patient flow**
-7. Patients + profile (Prompt 7)
-8. Prescriptions (Prompt 8) ← **core doctor flow**
-9. Records + Billing (Prompt 9)
-10. Settings + Help (Prompt 10)
-11. Privacy & safety pass (Prompt 11)
-12. QA pass (Prompt 12)
+4. Shared components, Comfort mode (Prompt 4)
+5. **Landing page (Prompt 4B)** ← **first thing visitors see**
+6. Sign in + Dashboard (Prompt 5) ← **first demo-ready signed-in screen**
+7. Appointments + booking drawer (Prompt 6) ← **core patient flow**
+8. Patients + profile (Prompt 7)
+9. Prescriptions (Prompt 8) ← **core doctor flow**
+10. Records + Billing (Prompt 9)
+11. Settings + Help (Prompt 10)
+12. Privacy & safety pass (Prompt 11)
+13. QA pass (Prompt 12)
 
 ### QA Checklist (run for every page, in EN and বাংলা)
 
-- [ ] One H1, one-line description, at most one primary button in the content.
+- [ ] One H1, one-line description, at most one primary action in the content.
+- [ ] Every button has a text label; Comfort mode buttons are `48px` high with `16px` text (BN `17px`).
+- [ ] Button padding and colours match Section 7.0.1 in every state (default, hover, pressed, disabled, focus); English and Bangla buttons have the same height.
+- [ ] Only three button looks (blue filled, outlined, red outlined); never two blue buttons side by side.
+- [ ] A non-technical person can tell what each button does without help (test with 2–3 real people).
+- [ ] Landing page: at 375px, H1 + Book + Call are visible without scrolling; page loads fast on a slow connection.
 - [ ] No text hard-coded; switching language changes **everything** (including empty/error states and toasts).
 - [ ] Language switch keeps typed text, selected slot, filters, drafts, and scroll position.
 - [ ] No Bangla text with letter-spacing, uppercase, or weight above 600.
@@ -1071,11 +1312,12 @@ export function LanguageToggle() {
 
 | Area | v1 | v2.1 |
 |------|----|----|
-| **Colors** | Indigo + orange + lime + 5 pastel/deep fills | **One accent** (`#3b5bdb`) + neutrals; status colors only for statuses and clinical alerts |
+| **Colors** | Indigo + orange + lime + 5 pastel/deep fills | **One accent** (`#2f4bc0`) + neutrals; status colors only for statuses and clinical alerts |
 | **Fonts** | Inter + hand-drawn script | Inter + Noto Sans Bengali; 3 weights |
 | **Sidebar** | Warm bone, workspace switcher, orange badges, black promo card | Soft gray, brand + role-based quick action, neutral badges, role-based items |
 | **Cards** | Rotating pastel KPI cards, 40px hero plates | Identical white bordered cards, `12px` radius |
 | **Buttons** | Pills, outlined orange variant | `8px` radius; primary / secondary / ghost / danger |
 | **Language** | English only | **One-click EN ⇄ বাংলা**, Bangla typography rules, Bangla digits option, bilingual printing |
 | **UX** | Marketing-style | Page template, smart defaults, 3-step booking, safety and privacy rules, full state design |
-| **Pages** | Restaurant examples | Sign in, Dashboard, Appointments, Patients, Patient profile, Prescriptions, Records, Billing, Settings, Help |
+| **Pages** | Restaurant examples | Landing, Sign in, Dashboard, Appointments, Patients, Patient profile, Prescriptions, Records, Billing, Settings, Help |
+| **Clarity** | Small buttons, many colors | **Comfort mode:** `48px` buttons with text labels, 3 clear button looks, exact padding and state colours (Section 7.0.1), 7:1 contrast, plain words, Call button, Large-text option |

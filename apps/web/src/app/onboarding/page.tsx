@@ -87,29 +87,29 @@ export function OnboardingPage() {
                 onClick={() => setSelectedRole(role.id)}
                 className={`p-5 rounded-xl border transition-colors duration-150 cursor-pointer flex items-start gap-4 ${
                   isSelected
-                    ? 'border-[#3b5bdb] bg-[#eef2ff]'
-                    : 'border-[#e7e5e4] bg-[#ffffff] hover:border-[#d6d3d1]'
+                    ? 'border-accent bg-accent-tint'
+                    : 'border-border bg-canvas hover:border-border-strong'
                 }`}
               >
                 <div
                   className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                    isSelected ? 'bg-[#3b5bdb] text-white' : 'bg-[#f4f4f2] text-[#111111]'
+                    isSelected ? 'bg-accent text-white' : 'bg-subtle text-ink'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1 space-y-0.5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-base text-[#111111]">
+                    <h3 className="font-semibold text-base text-ink">
                       {role.title}
                     </h3>
                     {isSelected && (
-                      <span className="w-5 h-5 rounded-full bg-[#3b5bdb] text-white flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     )}
                   </div>
-                  <p className="text-[13px] text-[#57534e] leading-relaxed">
+                  <p className="text-[13px] text-text-2 leading-relaxed">
                     {role.desc}
                   </p>
                 </div>

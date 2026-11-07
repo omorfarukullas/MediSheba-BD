@@ -24,10 +24,14 @@ import {
   Printer
 } from 'lucide-react';
 
-export function DoctorPortalView() {
+export interface DoctorPortalViewProps {
+  initialTab?: 'queue' | 'appointments' | 'schedule' | 'prescribe';
+}
+
+export function DoctorPortalView({ initialTab = 'queue' }: DoctorPortalViewProps) {
   const { lang } = useLanguageStore();
   const { user } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'queue' | 'appointments' | 'schedule' | 'prescribe'>('queue');
+  const [activeTab, setActiveTab] = useState<'queue' | 'appointments' | 'schedule' | 'prescribe'>(initialTab);
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
 

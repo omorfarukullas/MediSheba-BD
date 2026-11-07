@@ -6,8 +6,8 @@ export type AlertBannerVariant = 'danger' | 'warning' | 'success' | 'info';
 export interface AlertBannerProps {
   variant?: AlertBannerVariant;
   title?: React.ReactNode;
-  children?: React.ReactNode;
   message?: React.ReactNode;
+  children?: React.ReactNode;
   action?: {
     label: string;
     onClick: () => void;
@@ -51,8 +51,8 @@ const variantStyles: Record<AlertBannerVariant, {
 export function AlertBanner({
   variant = 'info',
   title,
-  children,
   message,
+  children,
   action,
   onDismiss,
   className = '',
@@ -93,3 +93,4 @@ export function AlertBanner({
     </div>
   );
 }
+

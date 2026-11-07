@@ -29,7 +29,7 @@ export function Card({
       className={[
         'rounded-xl border border-[#e7e5e4] transition-colors duration-150',
         isSubtle ? 'bg-[#f7f7f5]' : 'bg-[#ffffff]',
-        isInteractive ? 'hover:border-[#3b5bdb] hover:bg-[#f4f4f2]/40 cursor-pointer' : '',
+        isInteractive ? 'hover:border-[#2f4bc0] hover:bg-[#f4f4f2]/40 cursor-pointer' : '',
         paddingClasses[padding] || paddingClasses.md,
         className,
       ]

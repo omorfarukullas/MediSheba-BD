@@ -6,6 +6,7 @@ import { LanguageToggle } from '../../../components/shared/LanguageToggle';
 import { Card } from '../../../components/ui/Card';
 import { Input } from '../../../components/ui/Input';
 import { Button } from '../../../components/ui/Button';
+import { Phone } from 'lucide-react';
 
 export function RegisterPage() {
   const { t } = useLanguageStore();
@@ -127,13 +128,27 @@ export function RegisterPage() {
             Continue with Google
           </Button>
 
-          <div className="text-center text-[13px] text-[#57534e] pt-2">
+          <div className="text-center text-[13px] text-text-2 pt-2">
             Already have an account?{' '}
-            <Link to="/login" className="text-[#3b5bdb] font-medium hover:underline">
+            <Link to="/login" className="text-accent font-medium hover:underline">
               {t('action.signIn')}
             </Link>
           </div>
         </Card>
+
+        {/* Section 9.1: Call us secondary button under the form */}
+        <div className="pt-2">
+          <a href="tel:01700000000" className="block w-full">
+            <Button
+              type="button"
+              variant="secondary"
+              fullWidth
+              leftIcon={<Phone className="w-4 h-4" />}
+            >
+              {t('landing.callUs', 'Call us')}
+            </Button>
+          </a>
+        </div>
       </div>
 
       <div className="text-[13px] text-[#78716c] py-4 text-center">

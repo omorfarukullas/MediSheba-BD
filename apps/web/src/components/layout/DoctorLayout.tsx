@@ -15,7 +15,9 @@ import {
   X,
   LogOut,
   Plus,
-  ChevronRight
+  ChevronRight,
+  HelpCircle,
+  Settings
 } from 'lucide-react';
 
 export function DoctorLayout() {
@@ -63,7 +65,7 @@ export function DoctorLayout() {
           <Link to="/doctor/prescriptions" className="block">
             <button
               type="button"
-              className="w-full h-10 rounded-lg bg-[#3b5bdb] hover:bg-[#2f4bc0] text-white text-[14px] font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="w-full h-10 rounded-lg bg-[#2f4bc0] hover:bg-[#233a9e] active:bg-[#1c2f80] text-white text-[14px] font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>{t('action.newRx')}</span>
@@ -81,7 +83,7 @@ export function DoctorLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -95,7 +97,7 @@ export function DoctorLayout() {
                 className={({ isActive }) =>
                   `flex items-center justify-between h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -114,7 +116,7 @@ export function DoctorLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -136,7 +138,7 @@ export function DoctorLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -150,7 +152,7 @@ export function DoctorLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -164,7 +166,7 @@ export function DoctorLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
                     isActive
-                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium'
                       : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
                   }`
                 }
@@ -176,9 +178,33 @@ export function DoctorLayout() {
           </div>
         </div>
 
-        {/* Bottom Zone: User Profile Footer */}
+        {/* Bottom Zone: Help, Settings, User Profile Footer */}
         <div className="space-y-1 pt-4 border-t border-[#e7e5e4]">
-          <div className="flex items-center justify-between">
+          <NavLink
+            to="/doctor/help"
+            className={({ isActive }) =>
+              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
+                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              }`
+            }
+          >
+            <HelpCircle className="w-4 h-4 shrink-0" />
+            <span>{t('nav.help', 'Help')}</span>
+          </NavLink>
+
+          <NavLink
+            to="/doctor/settings"
+            className={({ isActive }) =>
+              `flex items-center gap-3 h-9 px-3 rounded-lg text-[13px] transition-colors ${
+                isActive ? 'bg-[#eef2ff] text-[#2f4bc0] font-medium' : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+              }`
+            }
+          >
+            <Settings className="w-4 h-4 shrink-0" />
+            <span>{t('nav.settings', 'Settings')}</span>
+          </NavLink>
+
+          <div className="pt-2 mt-2 border-t border-[#e7e5e4] flex items-center justify-between">
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div className="w-8 h-8 rounded-full bg-[#f4f4f2] border border-[#e7e5e4] grid place-items-center text-xs font-semibold text-[#111111]">
                 {(profile?.fullName || user?.displayName || 'Dr').slice(0, 2).toUpperCase()}
