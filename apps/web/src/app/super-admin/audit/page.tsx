@@ -1,9 +1,12 @@
 import React from 'react';
+import { useLanguageStore } from '../../../stores/language.store';
 import { Card } from '../../../components/ui/Card';
 import { Badge } from '../../../components/ui/Badge';
 import { ShieldCheck, User } from 'lucide-react';
 
 export function SuperAdminAuditPage() {
+  const { lang } = useLanguageStore();
+
   const logs = [
     { id: '1', action: 'RESOURCE_UPDATE', user: 'admin@dmc.gov.bd', details: 'Updated ICU bed count to 8 available', time: '10 mins ago' },
     { id: '2', action: 'EMERGENCY_DISPATCH', user: 'system_dispatcher', details: 'Dispatched Ambulance DHA-METRO-1234 to Dhanmondi 27', time: '24 mins ago' },
@@ -12,35 +15,41 @@ export function SuperAdminAuditPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-[1120px] mx-auto space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-ink">System Audit Logs</h1>
-        <p className="text-[13px] text-ink-secondary">Complete tamper-proof record of clinical operations and resource changes</p>
+        <h1 className="text-[28px] font-semibold text-ink leading-tight">
+          {lang === 'bn' ? 'সিস্টেম অডিট ও নিরীক্ষা লগ' : 'System Audit & Compliance Logs'}
+        </h1>
+        <p className="text-sm text-text-2 mt-1">
+          {lang === 'bn'
+            ? 'ক্লিনিক্যাল অপারেশন এবং রিসোর্স পরিবর্তনের নির্ভরযোগ্য ও সুরক্ষিত অডিট লগ।'
+            : 'Tamper-proof record of clinical operations, bed updates, and access security.'}
+        </p>
       </div>
 
-      <Card padding="none">
+      <Card padding="none" className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-[14px]">
-            <thead className="bg-ground-muted text-ink-secondary border-b border-rule text-[12px] font-semibold uppercase">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-subtle text-xs text-text-3 font-medium border-b border-border">
               <tr>
-                <th className="py-3 px-4">Action</th>
-                <th className="py-3 px-4">Initiator</th>
-                <th className="py-3 px-4">Details</th>
-                <th className="py-3 px-4">Timestamp</th>
+                <th className="px-5 py-3">{lang === 'bn' ? 'অ্যাকশন' : 'Action'}</th>
+                <th className="px-5 py-3">{lang === 'bn' ? 'ব্যবহারকারী' : 'Initiator'}</th>
+                <th className="px-5 py-3">{lang === 'bn' ? 'বিবরণ' : 'Details'}</th>
+                <th className="px-5 py-3 text-right">{lang === 'bn' ? 'সময়' : 'Timestamp'}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-rule/60 text-ink">
+            <tbody className="divide-y divide-border">
               {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-ground-muted/40 transition-colors">
-                  <td className="py-3.5 px-4 font-mono text-[12px]">
-                    <Badge variant="accent" size="sm">{log.action}</Badge>
+                <tr key={log.id} className="hover:bg-subtle/50 transition-colors h-[52px]">
+                  <td className="px-5 py-3 font-mono text-xs">
+                    <Badge variant="accent">{log.action}</Badge>
                   </td>
-                  <td className="py-3.5 px-4 font-medium flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-ink-secondary" />
-                    {log.user}
+                  <td className="px-5 py-3 font-medium text-ink flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-text-3" />
+                    <span>{log.user}</span>
                   </td>
-                  <td className="py-3.5 px-4 text-ink-secondary">{log.details}</td>
-                  <td className="py-3.5 px-4 text-ink-secondary text-[12px]">{log.time}</td>
+                  <td className="px-5 py-3 text-xs text-text-2">{log.details}</td>
+                  <td className="px-5 py-3 text-xs text-text-3 text-right">{log.time}</td>
                 </tr>
               ))}
             </tbody>
@@ -50,4 +59,3 @@ export function SuperAdminAuditPage() {
     </div>
   );
 }
-

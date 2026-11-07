@@ -1,44 +1,102 @@
 {
   "app_name": "MediSheba BD",
-  "tagline": "Modern Healthcare & Live Queue Management in Bangladesh",
+  "tagline": "Smart Healthcare System",
+  "lang": {
+    "label": "Language"
+  },
   "nav": {
-    "home": "Home",
-    "doctors": "Find Doctors",
-    "hospitals": "Hospitals & Beds",
-    "ambulances": "Ambulances",
-    "login": "Sign In",
-    "register": "Register",
     "dashboard": "Dashboard",
-    "logout": "Log Out"
+    "appointments": "Appointments",
+    "patients": "Patients",
+    "prescriptions": "Prescriptions",
+    "records": "Medical Records",
+    "billing": "Billing",
+    "settings": "Settings",
+    "help": "Help",
+    "emergency": "Emergency 999",
+    "telemedicine": "Telemedicine",
+    "vitals": "Health Vitals",
+    "resources": "Beds & Tests"
   },
-  "roles": {
-    "patient": "Patient",
+  "groups": {
+    "workspace": "Workspace",
+    "care": "Care",
+    "admin": "Admin"
+  },
+  "action": {
+    "book": "Book appointment",
+    "newRx": "New prescription",
+    "save": "Save",
+    "saveprint": "Save & print",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "createAccount": "Create account",
+    "callNext": "Call next patient",
+    "viewAll": "View all",
+    "upload": "Upload record"
+  },
+  "search": {
+    "placeholder": "Search by name, phone or ID",
+    "doctorPlaceholder": "Search doctor, specialty, or clinic..."
+  },
+  "status": {
+    "scheduled": "Scheduled",
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "available": "Available",
+    "busy": "Busy",
+    "active": "Active",
+    "alert": "Alert"
+  },
+  "bill": {
+    "paid": "Paid",
+    "due": "Due",
+    "overdue": "Overdue"
+  },
+  "appt": {
     "doctor": "Doctor",
-    "hospital_admin": "Hospital Admin",
-    "super_admin": "Super Admin"
+    "department": "Department",
+    "date": "Date",
+    "time": "Time",
+    "serial": "Serial",
+    "todaySchedule": "Today's Schedule",
+    "nowServing": "Now Serving",
+    "yourSerial": "Your Serial",
+    "patientsAhead": "Patients Ahead",
+    "estTime": "Est. Call Time",
+    "noUpcoming": "No upcoming appointments scheduled"
   },
-  "queue": {
-    "current_serving": "Currently Serving",
-    "your_position": "Your Serial Number",
-    "estimated_wait": "Estimated Wait Time",
-    "status": "Queue Status",
-    "waiting": "Waiting",
-    "called": "Called to Room",
-    "in_consultation": "In Consultation",
-    "completed": "Completed"
+  "patient": {
+    "allergies": "Allergies",
+    "age": "Age",
+    "gender": "Gender",
+    "phone": "Phone",
+    "profile": "Patient Profile"
   },
-  "payment": {
-    "title": "Payment Checkout (Demo)",
-    "select_method": "Select Payment Channel",
-    "enter_number": "Sender Account Number",
-    "trx_id": "Transaction ID (TrxID)",
-    "confirm": "Confirm & Book Slot",
-    "success": "Demo Payment Successful!"
+  "rx": {
+    "dose": "Dose",
+    "duration": "Duration",
+    "instructions": "Instructions",
+    "doseLegend": "Dose notation: Morning + Noon + Night (e.g. 1+0+1)",
+    "advice": "Advice & Clinical Notes"
   },
-  "ai": {
-    "title": "Llama Health Assistant",
-    "placeholder": "Ask about symptoms, doctor recommendations, or hospital advice...",
-    "disclaimer": "AI provides preliminary guidance and does not replace certified doctors."
+  "empty": {
+    "appointments": "No appointments found",
+    "records": "No medical records uploaded yet",
+    "doctors": "No doctors found matching search criteria"
+  },
+  "error": {
+    "generic": "Something went wrong. Please try again."
+  },
+  "emergency": {
+    "note": "In an emergency, call 999.",
+    "hotline": "Emergency Hotline: 999"
   }
 }
-

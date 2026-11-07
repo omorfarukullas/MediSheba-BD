@@ -3,6 +3,11 @@ import { trpc } from '../../lib/trpc';
 import { getSocket } from '../../lib/socket';
 import { useLanguageStore } from '../../stores/language.store';
 import { useAuthStore } from '../../stores/auth.store';
+import { Card } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { Badge } from '../ui/Badge';
+import { AlertBanner } from '../ui/AlertBanner';
 import { 
   Video, 
   VideoOff, 
@@ -11,12 +16,9 @@ import {
   PhoneOff, 
   MessageSquare, 
   Send, 
-  FileText, 
   ShieldCheck, 
-  CheckCircle,
-  User,
-  Radio,
-  Clock
+  User, 
+  Radio
 } from 'lucide-react';
 
 export function TelemedicineRoomView() {
@@ -76,7 +78,6 @@ export function TelemedicineRoomView() {
       });
 
       socket.on('telemedicine:peer-joined', () => {
-        // Mock remote connected stream / notification
         if (remoteVideoRef.current && stream) {
           remoteVideoRef.current.srcObject = stream;
         }
@@ -87,7 +88,6 @@ export function TelemedicineRoomView() {
       });
     } catch (err) {
       console.warn('Camera/mic access error:', err);
-      // Fallback preview mode
       setInCall(true);
     }
   };
@@ -109,10 +109,6 @@ export function TelemedicineRoomView() {
   const handleEndCall = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }
-    if (sessionData?.session?.roomId) {
-      getSocket().emit('telemedicine:end', { roomId: sessionData.session.roomId });
     }
     setInCall(false);
   };
@@ -124,7 +120,7 @@ export function TelemedicineRoomView() {
     setMessages((prev) => [
       ...prev,
       {
-        sender: user?.displayName || user?.email?.split('@')[0] || 'Me',
+        sender: user?.displayName || 'Me',
         text: inputMessage,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
@@ -135,21 +131,17 @@ export function TelemedicineRoomView() {
   const currentAppt = teleAppointments?.find((a) => a.id === selectedAppointmentId);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-[1120px] mx-auto space-y-6">
+      {/* ─── Header ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-accent text-xs font-bold uppercase tracking-wider mb-1">
-            <Video className="w-4 h-4 text-emerald-500 animate-pulse" />
-            {lang === 'bn' ? 'এইচডি অডিও ও ভিডিও কনসাল্টেশন' : 'HD Telemedicine Suite'}
-          </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-ink tracking-tight">
+          <h1 className="text-[28px] font-semibold text-ink leading-tight">
             {lang === 'bn' ? 'টেলিমেডিসিন ভিডিও পরামর্শ' : 'Telemedicine Video Consultation'}
           </h1>
-          <p className="text-sm text-ink-secondary mt-1">
+          <p className="text-sm text-text-2 mt-1">
             {lang === 'bn'
-              ? 'অনলাইনে বিশেষজ্ঞ ডাক্তারের সাথে সরাসরি কথা বলুন এবং ডিজিটাল প্রেসক্রিপশন সংগ্রহ করুন।'
-              : 'Direct peer-to-peer secure video call with doctor and real-time digital prescription.'}
+              ? 'নিরাপদ ভিডিও ও অডিও সংযোগে বিশেষজ্ঞ চিকিৎসকের সাথে সরাসরি পরামর্শ।'
+              : 'Direct peer-to-peer encrypted video consultation with certified doctors.'}
           </p>
         </div>
 
@@ -158,31 +150,32 @@ export function TelemedicineRoomView() {
             <select
               value={selectedAppointmentId}
               onChange={(e) => setSelectedAppointmentId(e.target.value)}
-              className="px-4 py-2.5 text-xs font-semibold border border-rule rounded-xl bg-panel text-ink focus:outline-none focus:border-accent shadow-xs"
+              className="h-10 px-3 text-sm font-medium border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
             >
               {teleAppointments && teleAppointments.length > 0 ? (
                 teleAppointments.map((a) => (
                   <option key={a.id} value={a.id}>
-                    Dr. {a.doctor.user.fullName} ({new Date(a.appointmentDate).toLocaleDateString()} {a.appointmentTime})
+                    Dr. {a.doctor.user.fullName} ({new Date(a.appointmentDate).toLocaleDateString()})
                   </option>
                 ))
               ) : (
-                <option value="">{lang === 'bn' ? 'অনলাইন অ্যাপয়েন্টমেন্ট নেই' : 'No online appointments booked'}</option>
+                <option value="">{lang === 'bn' ? 'কোন অনলাইন অ্যাপয়েন্টমেন্ট নেই' : 'No online appointments booked'}</option>
               )}
             </select>
 
-            <button
+            <Button
+              variant="primary"
+              size="default"
+              leftIcon={<Video className="w-4 h-4" />}
+              disabled={!selectedAppointmentId || getOrCreateSessionMutation.isPending}
               onClick={() => {
                 if (selectedAppointmentId) {
                   getOrCreateSessionMutation.mutate({ appointmentId: selectedAppointmentId });
                 }
               }}
-              disabled={!selectedAppointmentId || getOrCreateSessionMutation.isPending}
-              className="bg-accent hover:opacity-90 text-on-accent font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition shadow-sm disabled:opacity-50"
             >
-              <Video className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'কল শুরু করুন' : 'Join Video Call'}</span>
-            </button>
+              {lang === 'bn' ? 'কল শুরু করুন' : 'Join Video Call'}
+            </Button>
           </div>
         )}
       </div>
@@ -191,42 +184,41 @@ export function TelemedicineRoomView() {
         /* Video Consultation Room Screen */
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Video Screen */}
-          <div className="lg:col-span-3 bg-gray-950 rounded-3xl overflow-hidden shadow-2xl relative flex flex-col justify-between min-h-[500px]">
+          <div className="lg:col-span-3 bg-neutral-900 rounded-xl overflow-hidden border border-border flex flex-col justify-between min-h-[500px]">
             {/* Top Bar inside Call */}
-            <div className="relative z-10 p-4 bg-gradient-to-b from-black/80 to-transparent flex items-center justify-between text-white">
+            <div className="p-4 bg-neutral-900/90 border-b border-neutral-800 flex items-center justify-between text-white">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping inline-block" />
-                <span className="font-bold text-sm">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-semibold text-sm">
                   Dr. {currentAppt?.doctor.user.fullName || 'Consultant'}
                 </span>
-                <span className="text-xs text-white/70">
+                <span className="text-xs text-neutral-400">
                   ({lang === 'bn' ? 'চলমান পরামর্শ' : 'Active Session'})
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-xs bg-white/10 backdrop-blur-md px-3 py-1 rounded-full">
-                <Radio className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="text-xs text-neutral-400 flex items-center gap-1.5">
+                <Radio className="w-3.5 h-3.5 text-accent" />
                 <span>WebRTC Encrypted</span>
               </div>
             </div>
 
             {/* Video Canvas Container */}
             <div className="relative flex-1 flex items-center justify-center p-4">
-              {/* Remote Doctor Video */}
-              <div className="w-full h-full flex items-center justify-center bg-gray-900 rounded-2xl relative overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center bg-neutral-950 rounded-lg relative overflow-hidden">
                 <video
                   ref={remoteVideoRef}
                   autoPlay
                   playsInline
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white/50 space-y-2 pointer-events-none">
-                  <User className="w-16 h-16 text-white/20" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-500 space-y-2 pointer-events-none">
+                  <User className="w-12 h-12 text-neutral-600" />
                   <span className="text-xs">Dr. {currentAppt?.doctor.user.fullName} (Connected)</span>
                 </div>
               </div>
 
               {/* Local Patient Video (Picture-in-Picture) */}
-              <div className="absolute bottom-6 right-6 w-44 h-32 bg-black rounded-2xl border-2 border-white/30 overflow-hidden shadow-xl z-20">
+              <div className="absolute bottom-6 right-6 w-40 h-28 bg-neutral-900 rounded-lg border border-neutral-700 overflow-hidden z-20">
                 <video
                   ref={localVideoRef}
                   autoPlay
@@ -235,139 +227,106 @@ export function TelemedicineRoomView() {
                   className="w-full h-full object-cover"
                 />
                 {!isCameraOn && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900 text-white/60 text-[11px]">
-                    <VideoOff className="w-5 h-5 mb-1" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-neutral-900 text-neutral-400 text-xs">
+                    <VideoOff className="w-5 h-5" />
                   </div>
                 )}
-                <div className="absolute bottom-1 left-2 text-[10px] text-white/90 font-bold bg-black/60 px-1.5 rounded">
+                <div className="absolute bottom-1 left-2 text-[10px] text-white font-medium bg-black/70 px-1.5 rounded">
                   {lang === 'bn' ? 'আপনি' : 'You'}
                 </div>
               </div>
             </div>
 
             {/* Bottom Controls Bar */}
-            <div className="relative z-10 p-5 bg-gradient-to-t from-black/90 to-transparent flex items-center justify-center gap-4">
+            <div className="p-4 bg-neutral-900/90 border-t border-neutral-800 flex items-center justify-center gap-3">
               <button
                 onClick={handleToggleMic}
-                className={`p-3.5 rounded-2xl transition ${
-                  isMicOn ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-rose-600 text-white'
+                className={`h-10 w-10 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
+                  isMicOn ? 'bg-neutral-800 text-white hover:bg-neutral-700' : 'bg-rose-600 text-white'
                 }`}
                 title={isMicOn ? 'Mute' : 'Unmute'}
               >
-                {isMicOn ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
+                {isMicOn ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
               </button>
 
               <button
                 onClick={handleToggleCamera}
-                className={`p-3.5 rounded-2xl transition ${
-                  isCameraOn ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-rose-600 text-white'
+                className={`h-10 w-10 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
+                  isCameraOn ? 'bg-neutral-800 text-white hover:bg-neutral-700' : 'bg-rose-600 text-white'
                 }`}
                 title={isCameraOn ? 'Turn Camera Off' : 'Turn Camera On'}
               >
-                {isCameraOn ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
+                {isCameraOn ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
               </button>
 
               <button
                 onClick={handleEndCall}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3.5 rounded-2xl font-bold flex items-center gap-2 shadow-lg transition"
+                className="h-10 px-4 rounded-lg bg-rose-600 hover:bg-rose-700 text-white flex items-center gap-2 text-xs font-semibold cursor-pointer"
               >
-                <PhoneOff className="w-5 h-5" />
-                <span>{lang === 'bn' ? 'পরামর্শ সমাপ্ত' : 'End Call'}</span>
+                <PhoneOff className="w-4 h-4" />
+                <span>{lang === 'bn' ? 'কল সমাপ্ত' : 'End Call'}</span>
               </button>
             </div>
           </div>
 
-          {/* Right Sidebar: In-call Chat & Prescription */}
-          <div className="bg-panel border border-rule rounded-3xl p-5 shadow-sm flex flex-col justify-between h-[500px]">
-            <div>
-              <div className="flex items-center gap-2 pb-3 border-b border-rule">
-                <MessageSquare className="w-4 h-4 text-accent" />
-                <h3 className="font-bold text-sm text-ink">
-                  {lang === 'bn' ? 'পরামর্শ চ্যাট ও নোট' : 'In-Call Messages'}
-                </h3>
-              </div>
-
-              {/* Chat Message List */}
-              <div className="py-3 space-y-3 overflow-y-auto max-h-[340px]">
-                {messages.length === 0 ? (
-                  <div className="text-center py-12 text-xs text-ink-secondary">
-                    {lang === 'bn' ? 'কোন বার্তা নেই। নিচে মেসেজ লিখুন।' : 'Send a message to the doctor'}
-                  </div>
-                ) : (
-                  messages.map((m, idx) => (
-                    <div key={idx} className="bg-ground p-2.5 rounded-xl border border-rule text-xs space-y-1">
-                      <div className="flex justify-between text-[10px] text-ink-secondary font-semibold">
-                        <span>{m.sender}</span>
-                        <span>{m.time}</span>
-                      </div>
-                      <p className="text-ink font-medium">{m.text}</p>
-                    </div>
-                  ))
-                )}
-              </div>
+          {/* Right Side Chat */}
+          <Card padding="md" className="flex flex-col justify-between h-[500px]">
+            <div className="pb-3 border-b border-border flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-text-3" />
+              <h3 className="font-semibold text-sm text-ink">
+                {lang === 'bn' ? 'পরামর্শ বার্তা' : 'Consultation Chat'}
+              </h3>
             </div>
 
-            {/* Chat Input */}
-            <form onSubmit={handleSendMessage} className="flex items-center gap-2 pt-2 border-t border-rule">
+            <div className="flex-1 overflow-y-auto space-y-3 py-3">
+              {messages.length === 0 ? (
+                <div className="text-center text-xs text-text-3 py-12">
+                  {lang === 'bn' ? 'মেডিকেল বার্তা বা নোট এখানে পাঠান' : 'Type messages or notes to doctor here'}
+                </div>
+              ) : (
+                messages.map((m, idx) => (
+                  <div key={idx} className="p-2.5 rounded-lg bg-subtle text-xs space-y-1">
+                    <div className="flex justify-between text-text-3 text-[11px]">
+                      <span className="font-medium text-ink">{m.sender}</span>
+                      <span>{m.time}</span>
+                    </div>
+                    <p className="text-text-2">{m.text}</p>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <form onSubmit={handleSendMessage} className="pt-3 border-t border-border flex gap-2">
               <input
                 type="text"
+                placeholder={lang === 'bn' ? 'বার্তা লিখুন...' : 'Type message...'}
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder={lang === 'bn' ? 'মেসেজ লিখুন...' : 'Type message...'}
-                className="flex-1 border border-rule rounded-xl px-3 py-2 text-xs bg-ground text-ink focus:outline-none focus:border-accent"
+                className="flex-1 h-9 px-3 text-xs border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
               />
-              <button
-                type="submit"
-                className="p-2 rounded-xl bg-accent text-on-accent hover:opacity-90 transition"
-              >
-                <Send className="w-4 h-4" />
-              </button>
+              <Button variant="primary" size="compact" type="submit">
+                <Send className="w-3.5 h-3.5" />
+              </Button>
             </form>
-          </div>
+          </Card>
         </div>
       ) : (
-        /* Empty / Pre-call View */
-        <div className="bg-panel border border-rule rounded-3xl p-10 text-center max-w-xl mx-auto shadow-sm space-y-6">
-          <div className="w-20 h-20 rounded-3xl bg-accent/10 text-accent flex items-center justify-center mx-auto shadow-xs">
-            <Video className="w-10 h-10" />
+        /* Standby Card */
+        <Card padding="lg" className="py-12 text-center space-y-4">
+          <div className="w-12 h-12 rounded-lg bg-subtle text-accent mx-auto flex items-center justify-center">
+            <Video className="w-6 h-6" />
           </div>
-
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold text-ink">
-              {lang === 'bn' ? 'টেলিমেডিসিন রুম প্রস্তুত' : 'Virtual Consultation Room Ready'}
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold text-ink">
+              {lang === 'bn' ? 'টেলিমেডিসিন রুম প্রস্তুত' : 'Telemedicine Room Ready'}
             </h2>
-            <p className="text-xs text-ink-secondary max-w-sm mx-auto">
+            <p className="text-sm text-text-3 max-w-md mx-auto">
               {lang === 'bn'
-                ? 'অনলাইন অ্যাপয়েন্টমেন্ট নির্বাচন করে "কল শুরু করুন" বোতামে চাপ দিন। আপনার ক্যামেরা ও মাইক্রোফোন ব্যবহারের অনুমতি দিন।'
-                : 'Select your scheduled appointment and click "Join Video Call" to meet your physician.'}
+                ? 'আপনার নির্ধারিত অ্যাপয়েন্টমেন্ট নির্বাচন করে "কল শুরু করুন" বাটনে ক্লিক করুন। ক্যামেরা ও মাইক্রোফোন ব্যবহারের অনুমতি দিন।'
+                : 'Select your booked online appointment above and click Join Video Call to consult with your physician.'}
             </p>
           </div>
-
-          {currentAppt ? (
-            <div className="p-4 rounded-2xl bg-ground border border-rule text-xs text-left space-y-2">
-              <div className="flex justify-between">
-                <span className="text-ink-secondary">{lang === 'bn' ? 'চিকিৎসক' : 'Physician'}:</span>
-                <span className="font-bold text-ink">Dr. {currentAppt.doctor.user.fullName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-ink-secondary">{lang === 'bn' ? 'হাসপাতাল' : 'Hospital'}:</span>
-                <span className="font-semibold text-ink">{currentAppt.doctor.hospital.name}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-ink-secondary">{lang === 'bn' ? 'তারিখ ও সময়' : 'Schedule'}:</span>
-                <span className="font-semibold text-accent">
-                  {new Date(currentAppt.appointmentDate).toLocaleDateString()} at {currentAppt.appointmentTime}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="text-xs text-amber-600 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200">
-              {lang === 'bn' 
-                ? 'আপনার কোন অনলাইন অ্যাপয়েন্টমেন্ট পাওয়া যায়নি। প্রথমে "ডাক্তার খুঁজুন" ট্যাব থেকে অনলাইন কনসাল্টেশন বুক করুন।' 
-                : 'No online consultation appointment found. Please book an online slot under Find Doctor.'}
-            </div>
-          )}
-        </div>
+        </Card>
       )}
     </div>
   );

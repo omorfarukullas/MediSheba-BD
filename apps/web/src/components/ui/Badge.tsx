@@ -2,16 +2,16 @@ import React from 'react';
 
 export type BadgeVariant =
   | 'neutral'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'accent'
+  | 'info'
   | 'orange'
   | 'indigo'
   | 'lime'
   | 'lavender'
-  | 'ice'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'accent';
+  | 'ice';
 
 export type BadgeSize = 'sm' | 'md';
 
@@ -19,81 +19,82 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
   size?: BadgeSize;
   dot?: boolean;
+  icon?: React.ReactNode;
 }
 
-const variantClasses: Record<BadgeVariant, { badge: string; dot: string }> = {
-  // Neutral: Warm bone or hairline pill with dark text
+const variantStyles: Record<string, { badge: string; dot: string }> = {
+  // Neutral: subtle gray pill
   neutral: {
-    badge: 'bg-[#f1f0ec] text-[#000000] border border-[#e5e7eb]',
-    dot: 'bg-[#6e6d6c]',
+    badge: 'bg-[#f4f4f2] text-[#57534e] border border-[#e7e5e4]',
+    dot: 'bg-[#78716c]',
   },
-  // Ember Orange (#ff6808): Signature alert pill
-  orange: {
-    badge: 'bg-[#ff6808] text-white border-transparent',
-    dot: 'bg-white',
+  // Success: confirmed, paid, normal
+  success: {
+    badge: 'bg-[#ecfdf3] text-[#067647] border border-[#abefc6]',
+    dot: 'bg-[#067647]',
   },
-  // Indigo Bolt (#4570ff): Primary action pill
-  indigo: {
-    badge: 'bg-[#4570ff] text-white border-transparent',
-    dot: 'bg-white',
+  // Warning: pending, due soon, check
+  warning: {
+    badge: 'bg-[#fffaeb] text-[#b54708] border border-[#fedf89]',
+    dot: 'bg-[#b54708]',
   },
+  // Danger: allergy, drug conflict, overdue
+  danger: {
+    badge: 'bg-[#fef3f2] text-[#b42318] border border-[#fecdca]',
+    dot: 'bg-[#b42318]',
+  },
+  // Accent: selected category / department filter
   accent: {
-    badge: 'bg-[#4570ff] text-white border-transparent',
-    dot: 'bg-white',
-  },
-  // Lime Highlighter (#c6ff94): High-contrast badge for dark cards
-  lime: {
-    badge: 'bg-[#c6ff94] text-[#000000] border-transparent font-semibold',
-    dot: 'bg-[#000000]',
-  },
-  // Lavender Mist (#ebdcff)
-  lavender: {
-    badge: 'bg-[#ebdcff] text-[#000000] border-transparent',
-    dot: 'bg-[#4570ff]',
-  },
-  // Ice Blue (#d6e0ff)
-  ice: {
-    badge: 'bg-[#d6e0ff] text-[#000000] border-transparent',
-    dot: 'bg-[#4570ff]',
+    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
+    dot: 'bg-[#3b5bdb]',
   },
   info: {
-    badge: 'bg-[#d6e0ff] text-[#000000] border-transparent',
-    dot: 'bg-[#4570ff]',
+    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
+    dot: 'bg-[#3b5bdb]',
   },
-  // Semantic mapping:
-  success: {
-    badge: 'bg-[#c6ff94] text-[#000000] border-transparent',
-    dot: 'bg-[#000000]',
+  // Fallbacks
+  orange: {
+    badge: 'bg-[#fffaeb] text-[#b54708] border border-[#fedf89]',
+    dot: 'bg-[#b54708]',
   },
-  warning: {
-    badge: 'bg-[#ebdcff] text-[#000000] border border-[#c293f1]',
-    dot: 'bg-[#ff6808]',
+  indigo: {
+    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
+    dot: 'bg-[#3b5bdb]',
   },
-  danger: {
-    badge: 'bg-[#ff6808] text-white border-transparent',
-    dot: 'bg-white',
+  lime: {
+    badge: 'bg-[#ecfdf3] text-[#067647] border border-[#abefc6]',
+    dot: 'bg-[#067647]',
   },
-};
-
-const sizeClasses: Record<BadgeSize, string> = {
-  sm: 'text-[11px] px-2 py-0.5 gap-1.5 font-medium',
-  md: 'text-[12px] px-3 py-1 gap-1.5 font-medium',
+  lavender: {
+    badge: 'bg-[#f4f4f2] text-[#57534e] border border-[#e7e5e4]',
+    dot: 'bg-[#78716c]',
+  },
+  ice: {
+    badge: 'bg-[#eef2ff] text-[#3b5bdb] border border-[#eef2ff]',
+    dot: 'bg-[#3b5bdb]',
+  },
 };
 
 export function Badge({
   variant = 'neutral',
   size = 'md',
   dot = false,
+  icon,
   className = '',
   children,
   ...props
 }: BadgeProps) {
-  const styles = variantClasses[variant] || variantClasses.neutral;
+  const styles = variantStyles[variant] || variantStyles.neutral;
+
+  const sizeClasses: Record<BadgeSize, string> = {
+    sm: 'text-[11px] px-2 py-0.5 gap-1 font-medium',
+    md: 'text-[12px] px-2.5 py-0.5 gap-1.5 font-medium',
+  };
 
   return (
     <span
       className={[
-        'inline-flex items-center rounded-full leading-none select-none tracking-tight',
+        'inline-flex items-center rounded-full leading-none select-none tracking-normal',
         styles.badge,
         sizeClasses[size],
         className,
@@ -108,6 +109,7 @@ export function Badge({
           aria-hidden="true"
         />
       )}
+      {icon && <span className="shrink-0">{icon}</span>}
       {children}
     </span>
   );

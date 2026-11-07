@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { AlertCircle } from 'lucide-react';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -15,13 +16,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5 text-left font-sans">
         {label && (
-          <label htmlFor={inputId} className="block text-[13px] font-medium text-[#000000]">
+          <label htmlFor={inputId} className="block text-[14px] font-medium text-[#111111]">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3.5 flex items-center pointer-events-none text-[#6e6d6c]">
+            <div className="absolute left-3 flex items-center pointer-events-none text-[#78716c]">
               {leftIcon}
             </div>
           )}
@@ -29,14 +30,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={[
-              'w-full bg-[#ffffff] text-[#000000] text-[14px] placeholder:text-[#6e6d6c]/60',
-              'rounded-[12px] border border-[#e5e7eb] transition-colors duration-150',
-              'focus:outline-none focus:border-[#4570ff] focus:ring-1 focus:ring-[#4570ff]',
-              'disabled:opacity-50 disabled:bg-[#f1f0ec] disabled:cursor-not-allowed',
-              leftIcon ? 'pl-10' : 'pl-3.5',
-              rightIcon ? 'pr-10' : 'pr-3.5',
-              'py-2.5',
-              error ? 'border-[#ff6808] focus:border-[#ff6808] focus:ring-[#ff6808]' : '',
+              'w-full h-10 bg-[#ffffff] text-[#111111] text-[14px] placeholder:text-[#78716c]',
+              'rounded-lg border border-[#e7e5e4] transition-colors duration-150',
+              'focus:outline-none focus:ring-2 focus:ring-[#3b5bdb] focus:border-[#3b5bdb]',
+              'disabled:opacity-50 disabled:bg-[#f4f4f2] disabled:cursor-not-allowed',
+              leftIcon ? 'pl-9' : 'pl-3',
+              rightIcon ? 'pr-9' : 'pr-3',
+              error ? 'border-[#b42318] focus:ring-[#b42318] focus:border-[#b42318]' : '',
               className,
             ]
               .filter(Boolean)
@@ -44,14 +44,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3.5 flex items-center text-[#6e6d6c]">
+            <div className="absolute right-3 flex items-center text-[#78716c]">
               {rightIcon}
             </div>
           )}
         </div>
-        {error && <p className="text-[12px] text-[#ff6808] font-medium">{error}</p>}
+        {error && (
+          <p className="flex items-center gap-1 text-[12px] text-[#b42318] font-medium">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            <span>{error}</span>
+          </p>
+        )}
         {!error && helperText && (
-          <p className="text-[12px] text-[#6e6d6c]">{helperText}</p>
+          <p className="text-[12px] text-[#78716c]">{helperText}</p>
         )}
       </div>
     );

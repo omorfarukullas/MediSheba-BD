@@ -8,6 +8,7 @@ export interface ModalProps {
   description?: React.ReactNode;
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  maxWidth?: string;
   showCloseButton?: boolean;
 }
 
@@ -16,7 +17,7 @@ const sizeClasses = {
   md: 'max-w-lg',
   lg: 'max-w-2xl',
   xl: 'max-w-4xl',
-  full: 'max-w-6xl',
+  full: 'max-w-5xl',
 };
 
 export function Modal({
@@ -26,6 +27,7 @@ export function Modal({
   description,
   children,
   size = 'md',
+  maxWidth,
   showCloseButton = true,
 }: ModalProps) {
   useEffect(() => {
@@ -55,35 +57,35 @@ export function Modal({
         aria-hidden="true"
       />
 
-      {/* Modal Dialog */}
+      {/* Modal Dialog (12px radius, hairline border, white canvas, zero shadow) */}
       <div
         role="dialog"
         aria-modal="true"
         className={[
-          'relative w-full rounded-[20px] border border-[#e5e7eb] bg-[#ffffff] text-[#000000]',
-          'transform transition-all my-8 p-6 sm:p-8 space-y-4 z-10',
-          sizeClasses[size],
+          'relative w-full rounded-xl border border-[#e7e5e4] bg-[#ffffff] text-[#111111]',
+          'transform transition-all my-8 p-6 sm:p-7 space-y-4 z-10',
+          maxWidth || sizeClasses[size],
         ]
           .filter(Boolean)
           .join(' ')}
       >
         {(title || showCloseButton) && (
-          <div className="flex items-start justify-between gap-4 pb-2 border-b border-[#e5e7eb]">
+          <div className="flex items-start justify-between gap-4 pb-2 border-b border-[#e7e5e4]">
             <div className="space-y-0.5">
               {title && (
-                <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-[#000000]">
+                <h2 className="text-xl font-semibold tracking-tight text-[#111111]">
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="text-[13px] text-[#6e6d6c]">{description}</p>
+                <p className="text-[13px] text-[#78716c]">{description}</p>
               )}
             </div>
             {showCloseButton && (
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full p-1.5 text-[#6e6d6c] hover:text-[#000000] hover:bg-[#f1f0ec] transition-colors -mr-1 -mt-1 cursor-pointer"
+                className="rounded-lg p-1.5 text-[#78716c] hover:text-[#111111] hover:bg-[#f4f4f2] transition-colors -mr-1 -mt-1 cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />

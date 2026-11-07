@@ -8,4 +8,4 @@ export * from './Modal';
 export * from './EmptyState';
 export * from './Avatar';
 export * from './StatusDot';
-
+export * from './AlertBanner';

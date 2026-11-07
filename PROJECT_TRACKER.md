@@ -1,7 +1,7 @@
 # 🏥 MediSheba BD — Live Project Tracker
 
 > **Last Updated:** 2026-11-07  
-> **Status:** 🟢 Phase 0 & Phase 1 Fully Built, Phase 2–4 Core Modules Operational  
+> **Status:** 🟢 UI Design System v2.1 Overhaul Complete · Healthcare Minimal & Bilingual (English ⇄ বাংলা)  
 > **Architecture:** Turbo monorepo · Express 5 + tRPC · Socket.io · Supabase PostgreSQL + Prisma 6 · React 18 + Vite 6 + Tailwind CSS
 
 ---
@@ -9,164 +9,61 @@
 ## 🎯 Progress Overview
 
 ```
-Phase 0: Foundation, Realtime & Schema  [██████████] 100% (Completed)
-Phase 1: Patient Core Features           [██████████] 100% (Completed)
-Phase 2: Doctor Experience & Queue       [██████████] 100% (Completed)
-Phase 3: Hospital Admin & Fleet          [██████████] 100% (Completed)
-Phase 4: Telemedicine & WebRTC Signals   [██████████] 100% (Completed)
-Phase 5: Production Build & Verification [██████████] 100% (Completed)
+Phase 0: Foundation, Realtime & Schema   [██████████] 100% (Completed)
+Phase 1: Patient Core Features            [██████████] 100% (Completed)
+Phase 2: Doctor Experience & Queue        [██████████] 100% (Completed)
+Phase 3: Hospital Admin & Fleet           [██████████] 100% (Completed)
+Phase 4: Telemedicine & WebRTC Signals    [██████████] 100% (Completed)
+Phase 5: UI Design System v2.1 Redesign   [██████████] 100% (Completed)
 ```
 
 ---
 
-## 📋 Detailed Task Breakdown
+## 🎨 Phase 5: UI Design System v2.1 — Healthcare Minimal & Bilingual (100% Complete)
 
-### 🟢 Phase 0 — Foundation & Realtime Setup (100% Complete)
-- [x] **Monorepo Linking & TypeScript Fixes**: Configured paths and module exports for `@medisheba/types` and `@medisheba/zod-schemas`.
-- [x] **Typecheck Verification**: Passed all 4 workspace packages (`types`, `zod-schemas`, `api`, `web`).
-- [x] **WebSocket Infrastructure**:
-  - [x] Installed `socket.io` (backend) & `socket.io-client` (frontend).
-  - [x] Implemented `apps/api/src/services/socket.service.ts` with queue rooms, telemedicine signaling, and ambulance GPS broadcasts.
-  - [x] Initialized Socket.io on the HTTP server in `apps/api/src/server.ts`.
-  - [x] Created singleton socket client in `apps/web/src/lib/socket.ts`.
-- [x] **Prisma Database Schema Expansion**:
-  - [x] Added `TestPriceList` model (hospital diagnostic tests, categories, prices, turnaround times).
-  - [x] Added `TelemedicineSession` model (WebRTC room tracking, timestamps, session status).
-  - [x] Added `EmergencyRequest` model (no-login ambulance request, geolocation coordinates, hospital/ambulance dispatch).
-  - [x] Added `AmbulanceLocation` model (live GPS tracking, heading, speed).
-  - [x] Expanded `Document` model with `visibilityMode` (`ONLY_ME`, `DOCTOR_ACCESS`, `PUBLIC`) and `sharedDoctorIds`.
-  - [x] Added Enums: `DocumentVisibility`, `TelemedicineStatus`, `EmergencyStatus`.
-  - [x] Generated Prisma 6 Client successfully.
-- [x] **Zod Validation Schemas**:
-  - [x] `CreateDocumentSchema`, `UpdateDocumentVisibilitySchema`.
-  - [x] `CreateTestPriceSchema`, `UpdateTestPriceSchema`.
-  - [x] `CreateEmergencyRequestSchema`, `UpdateEmergencyStatusSchema`, `UpdateAmbulanceLocationSchema`.
-  - [x] `CreateTelemedicineSessionSchema`, `UpdateResourceAvailabilitySchema`.
+### 1. Typography & Tokens
+- [x] **Font Stack**: Configured Google Fonts `Inter (400, 500, 600)` and `Noto Sans Bengali (400, 500, 600)`. Removed script fonts (`Caveat`, `Nanum Pen Script`).
+- [x] **Strict Bangla Typography Rules**: `:lang(bn)` overrides with `letter-spacing: 0 !important; text-transform: none !important; font-weight: <= 600; line-height: 1.7;`.
+- [x] **Single Accent Color**: `#3b5bdb` (hover `#2f4bc0`, tint `#eef2ff`). Zero pastels, zero orange/purple/lime card backgrounds.
+- [x] **Zero-Shadow Policy**: Reset `box-shadow: none !important;` globally. Depth achieved exclusively through `1px solid #e7e5e4` hairline borders and `#ffffff` vs `#f7f7f5` / `#f4f4f2` surfaces.
+- [x] **Accessible Focus Ring**: `2px solid #3b5bdb; outline-offset: 2px;` on all interactive controls.
 
----
+### 2. Bilingual Localization Infrastructure
+- [x] **Flat Dot-Notated Keys**: Synchronized `apps/web/src/locales/en/translation.json` and `bn/translation.json` with keys (`nav.*`, `groups.*`, `action.*`, `status.*`, `patient.*`, `appt.*`, `emergency.*`, etc.).
+- [x] **LanguageToggle Control**: `[ EN | বাংলা ]` segmented button with `32px` height, `56px` min width, `Alt + L` shortcut, `aria-live` announcement, and automatic `<html lang>` sync without page reloading.
 
-### 🟢 Phase 1 — Patient Experience (100% Complete)
-- [x] **Live Doctor Appointment Serial Tracking**:
-  - [x] Component: `apps/web/src/components/patient/LiveQueueTrackerView.tsx`.
-  - [x] Real-time Socket.io listener for `queue:updated`.
-  - [x] Big digital token board: Currently Serving Serial #, Your Serial #, Patients Ahead, Estimated Wait Time.
-  - [x] Next-in-line token preview list.
-  - [x] Audio/Visual alert banner when patient's turn arrives.
-- [x] **Hospital Resources & Test Prices Viewer**:
-  - [x] Component: `apps/web/src/components/patient/HospitalResourcesView.tsx`.
-  - [x] City & text filter across all approved hospitals.
-  - [x] Live Bed, ICU, CCU, Cabin, Ward occupancy breakdown with visual capacity progress bars.
-  - [x] Diagnostic Test Price Catalog tab with search, categories, official prices in BDT, and delivery turnaround times.
-  - [x] Ambulance fleet list per hospital with direct driver contact.
-- [x] **Emergency Ambulance System (No Login Required)**:
-  - [x] Component: `apps/web/src/components/patient/EmergencyAmbulanceView.tsx`.
-  - [x] Browser Geolocation API integration (auto-detects patient latitude/longitude).
-  - [x] Public backend endpoint: `trpc.emergency.getNearbyAmbulances`.
-  - [x] One-click click-to-call direct driver phone (`tel:...`).
-  - [x] 1-tap instant emergency dispatch request with caller phone and patient condition.
-- [x] **Medical Records & Digital Document Vault**:
-  - [x] Component: `apps/web/src/components/patient/PatientDocumentsView.tsx`.
-  - [x] Store past prescriptions, lab reports, discharge summaries, and scans.
-  - [x] **Privacy Visibility Toggle**:
-    - 🔒 **Only Me** (`ONLY_ME`): Strictly hidden from all attending doctors.
-    - 🩺 **Doctor Can Access** (`DOCTOR_ACCESS`): Accessible during medical consultations.
-  - [x] 1-click toggle and secure deletion.
-- [x] **Telemedicine Video Consultations**:
-  - [x] Component: `apps/web/src/components/patient/TelemedicineRoomView.tsx`.
-  - [x] WebRTC media stream preview (camera toggle, microphone mute).
-  - [x] In-call real-time messaging chat.
-  - [x] Call status & peer connection signaling.
+### 3. Core UI Primitives Overhauled
+- [x] `Button.tsx`: Heights 40px (default/md) and 32px (compact/sm). Radius 8px. Variants: `primary` (#3b5bdb), `secondary` (white with border), `ghost`, `danger`.
+- [x] `Card.tsx`: Radius 12px, border `1px solid #e7e5e4`, no shadow, white background. Added `StatCard` helper.
+- [x] `Badge.tsx`: Pill 9999px radius, icon support, standard status mapping (`success`, `warning`, `danger`, `accent`, `neutral`).
+- [x] `Input.tsx`: 40px height, 8px radius, border `1px solid #e7e5e4`, focus outline `2px solid #3b5bdb`, visible labels and helper texts.
+- [x] `Modal.tsx`: 12px radius, hairline border, backdrop `rgba(0,0,0,0.4)` blur.
+- [x] `AlertBanner.tsx`: Clinical safety alert banner (`danger` for allergies/conflicts, `warning`, `success`, `info`).
+- [x] `EmptyState.tsx`, `Skeleton.tsx`, `StatusDot.tsx`, `Avatar.tsx`: Converted to v2.1 token standards.
+
+### 4. Layout Shells & Navigation
+- [x] `PatientLayout.tsx`: 240px sidebar (`#f7f7f5`, `1px solid #e7e5e4`), `+ Book appointment` full-width primary button, grouped Workspace and Care sections, bottom emergency hotline callout + user row with sign out.
+- [x] `DoctorLayout.tsx`: Quick action `+ New prescription`, Workspace and Care sections, 56px top bar with breadcrumb and `LanguageToggle`.
+- [x] `AdminLayout.tsx` & `SuperAdminLayout.tsx`: Streamlined navigation with maximum 6 items, active item tint `#eef2ff`, and top bar `LanguageToggle`.
+
+### 5. Application Views Redesigned
+- [x] **Landing Page (`/`)**: Calm clinic desk presentation, next appointment card, 4 identical stat cards, 999 emergency banner.
+- [x] **Auth Pages (`/login`, `/register`, `/onboarding`)**: Centered 400px white card, `LanguageToggle` in top-right, emergency caption note.
+- [x] **Patient Dashboard (`/patient/dashboard`)**: Single primary button `[ Book appointment ]`, upcoming schedule block with token status, 4 identical stat cards, recent prescriptions and latest records previews.
+- [x] **Specialist Directory & Booking (`/patient/doctors`)**: Search field with `/` shortcut, department chips, 3-step side drawer/modal stepper (`Step 1 of 3 ●○○`, week strip starting Saturday, slot grid).
+- [x] **Live Queue Tracker (`/patient/appointments`)**: Live Socket.io token feed, Now Serving number, estimated arrival wait timer, queue board.
+- [x] **Health Vitals Log (`/patient/vitals`)**: 4 identical stat cards (BP, Pulse, Sugar, Weight), add reading form, measurements table.
+- [x] **Medical Record Vault (`/patient/documents`)**: Privacy-first file manager with `Doctor Access` vs `Only Me` toggle, upload modal, filter chips.
+- [x] **Hospital Bed & Test Transparency (`/patient/resources`)**: Real-time bed occupancy, government cap vs private diagnostic test prices, ready ambulance fleets.
+- [x] **Emergency 999 Dispatch (`/emergency`)**: Danger alert banner, direct 999 telephone callout, GPS coordinates auto-detection, no-login ambulance dispatch.
+- [x] **Telemedicine Room (`/patient/telemedicine`)**: Clean WebRTC video canvas with encrypted room status, in-call controls, side chat panel.
+- [x] **Doctor Chamber Desk (`/doctor/dashboard`)**: Chamber queue advance actions (Call Next, Start Visit, Complete), appointment schedule, visiting hours configuration, digital prescription generator with print preview.
+- [x] **Hospital Admin Desk (`/admin/dashboard`)**: Bed category management, on-duty ambulance fleet controls, diagnostic catalog manager.
+- [x] **Super Admin Console (`/super-admin/dashboard`)**: Nationwide platform monitoring, hospital approvals table, system audit logs.
 
 ---
 
-### 🟢 Phase 2 — Doctor Experience (100% Complete)
-- [x] Component: `apps/web/src/components/doctor/DoctorPortalView.tsx`.
-- [x] **Smart Queue Manager**:
-  - [x] Advance queue status: Call Next (`CALLED`), Start Visit (`IN_CONSULTATION`), Mark Completed (`COMPLETED`), Skip.
-  - [x] Real-time broadcast to all watching patients via Socket.io.
-  - [x] Queue reordering endpoint for prioritizing urgent patients.
-- [x] **Patient Medical History Access**:
-  - [x] Inspect patient's past prescriptions and vitals (BP, pulse).
-  - [x] **Strict Privacy Enforcement**: Documents marked `ONLY_ME` are filtered out server-side.
-- [x] **Availability Schedule Configuration**:
-  - [x] Set weekly visiting days (Sun–Sat).
-  - [x] Set visiting hours (start time & end time).
-  - [x] Set physical and telemedicine consultation fees.
-  - [x] Toggle telemedicine service availability.
-- [x] **Daily Patient Appointment List**:
-  - [x] Filter by date picker.
-  - [x] View serial number, patient name, slot time, consultation type, and payment status.
-
----
-
-### 🟢 Phase 3 — Hospital Administration (100% Complete)
-- [x] Component: `apps/web/src/components/admin/HospitalAdminView.tsx`.
-- [x] **Resource Management**:
-  - [x] Live inline editing of ICU, CCU, Cabin, General Bed, and Ward counts.
-  - [x] Add new resource categories with daily rates (price per day).
-- [x] **Ambulance Fleet Management**:
-  - [x] Change ambulance status: `AVAILABLE`, `BUSY`, `ON_THE_WAY`, `MAINTENANCE`.
-  - [x] Register new ambulances with driver name, phone, plate number, and type.
-- [x] **Diagnostic Test Price List Management**:
-  - [x] Add new diagnostic tests (test name, category, price in BDT, delivery turnaround hours).
-  - [x] Edit and remove diagnostic tests.
-- [x] **Doctor Affiliation Roster**:
-  - [x] View doctors affiliated with the hospital, BMDC numbers, specializations, and fees.
-
----
-
-## 🚀 Build & Verification Status
-- ✅ `@medisheba/types`: Typecheck 0 errors.
-- ✅ `@medisheba/zod-schemas`: Typecheck 0 errors.
-- ✅ `@medisheba/api`: Typecheck 0 errors, Production TSC build succeeded (`dist/`).
-- ✅ `@medisheba/web`: Typecheck 0 errors, Vite production build succeeded (`dist/index.html`, `dist/assets/`).
-- ✅ Navigation bar updated with direct access to: Home, Doctors, Live Serial, Beds & Tests, Emergency 999, My Records, Telemedicine, Doctor Portal, Hospital Admin, and AI Assistant.
-
----
-
-## 🎨 UI Redesign & Modernization (Active Track)
-
-- [x] **Phase 1: Shared UI Component Library (`apps/web/src/components/ui/`)**
-  - [x] `Button.tsx`: Variants (`primary`, `secondary`, `danger`, `ghost`, `outline`), sizes (`sm`, `md`, `lg`), loading spinner, icons, fullWidth.
-  - [x] `Card.tsx`: Variants (`default`, `muted`, `interactive`, `accent`), `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`.
-  - [x] `Badge.tsx`: Status variants (`success`, `warning`, `danger`, `info`, `neutral`, `accent`), with optional pulsing indicator dot.
-  - [x] `Spinner.tsx`: Sizes (`sm`, `md`, `lg`, `xl`), label support, color variants.
-  - [x] `Skeleton.tsx`: Shapes (`circular`, `rectangular`, `rounded`) + `SkeletonCard` composite placeholder.
-  - [x] `Input.tsx`: Styled text/email/password input with icon slots, validation error message, helper text.
-  - [x] `Modal.tsx`: Accessible dialog with backdrop blur, keyboard escape handler, body scroll lock, size options.
-  - [x] `EmptyState.tsx`: Icon + title + message + call-to-action button for empty or error views.
-  - [x] `Avatar.tsx`: Image avatar with fallback to initials, size scale, status indicators (`online`, `busy`, `offline`).
-  - [x] `StatusDot.tsx`: Live pulse dot with variant colors and labels.
-  - [x] Barrel export file `index.ts`.
-- [x] **Phase 2: React Router & Role-Based Navigation Routing**
-  - [x] Configured React Router v7 `createBrowserRouter` in `apps/web/src/router.tsx`.
-  - [x] Built `RouteGuards.tsx`: `ProtectedRoute` (Firebase token validation), `RoleGuard` (Strict enum authorization check), `PublicOnlyRoute` (redirects logged-in users away from auth forms).
-  - [x] Built global `ErrorBoundary.tsx` catching React render exceptions with live reload & home fallback.
-  - [x] Built accessible `NotFoundPage.tsx` for wildcard (`*`) routes.
-  - [x] Populated public views: `/` (`PublicLandingPage`), `/emergency` (`EmergencyAmbulanceView`), `/login`, `/register`, `/onboarding`.
-  - [x] Populated patient views: `/patient/dashboard`, `/patient/doctors`, `/patient/appointments`, `/patient/documents`, `/patient/telemedicine`, `/patient/vitals`, `/patient/resources`.
-  - [x] Populated doctor views: `/doctor/dashboard`, `/doctor/queue`, `/doctor/appointments`, `/doctor/slots`, `/doctor/prescriptions`, `/doctor/earnings`.
-  - [x] Populated hospital admin views: `/admin/dashboard`, `/admin/resources`, `/admin/ambulances`, `/admin/doctors`, `/admin/tests`.
-  - [x] Populated super admin views: `/super-admin/dashboard`, `/super-admin/hospitals`, `/super-admin/audit`.
-  - [x] Streamlined `App.tsx` from 1,131 lines into a clean `<RouterProvider router={router} />` root (9 lines).
-- [x] **Phase 3: Per-Role Layout Shells (Sidebar + Mobile Bottom Navigation)**
-  - [x] Built `PatientLayout.tsx`: Left desktop sidebar (260px) + mobile slide-out drawer + 5-tab mobile bottom navigation + persistent Emergency 999 FAB.
-  - [x] Built `DoctorLayout.tsx`: BMDC certification header badge + quick doctor queue and consultation navigation + mobile drawer & bottom nav.
-  - [x] Built `AdminLayout.tsx`: Hospital administration management layout for Beds, ICU, Fleet, Doctors, and Diagnostic Test Pricing.
-  - [x] Built `SuperAdminLayout.tsx`: Platform control console layout with hospital approvals and audit logging.
-  - [x] Updated `router.tsx` to mount nested children inside their respective role layouts with active route highlighting.
-- [x] **Phase 4: Public Landing Page Revamp & Style Reference Alignment (`ui_design_system_style_reference.md`)**
-  - [x] Implemented "Warm diner counter with neon chalk accents" aesthetic across the entire UI.
-  - [x] Integrated tokens: Indigo Bolt (`#4570ff`), Ember Orange (`#ff6808`), Lime Highlighter (`#c6ff94`), Warm Bone (`#f1f0ec`), Paper White (`#ffffff`), and Ink Black (`#000000`).
-  - [x] Enforced Strict Zero-Shadow Policy: all visual hierarchy achieved via surface contrast and crisp 1px hairline (`#e5e7eb`) borders.
-  - [x] Redesigned `NavSidebar` (260px expanded, `#f1f0ec` surface, workspace switcher header, grouped sections, user profile footer, and `#000000` status callout with `#c6ff94` accents).
-  - [x] Redesigned Public Landing Page: Hand-drawn script headline flourish, 4-card rotating color KPI grid (`Lavender Mist`, `Ice Blue`, `Lilac Bloom`, `Deep Navy`), and Before/After split block.
-  - [x] Redesigned UI primitives: `Button` (Primary pill, Outlined orange, Bone, Ghost), `Card` (rotating variants + dark contrast), `Badge` (pill chips), `Input` (12px radius, zero shadow).
-- [ ] **Phase 5: Patient Portal Migration to Real tRPC Data**
-- [ ] **Phase 6: Doctor Portal Dedicated Views**
-- [ ] **Phase 7: Hospital Admin Dedicated Views**
-- [ ] **Phase 8: Role Onboarding & Auth Flow**
-- [ ] **Phase 9: Eliminate Hardcoded Mock Data**
-- [ ] **Phase 10: Error Boundaries & Suspense Skeletons**
-- [ ] **Phase 11: Mobile Polish & Emergency Persistent FAB**
-- [ ] **Phase 12: App.tsx Monolith Cleanup**
+## 🔍 Verification & Build Results
+- **TypeScript**: `npm run typecheck --workspace=@medisheba/web` → `0 errors`
+- **Vite Production Build**: `npm run build --workspace=@medisheba/web` → `✓ built in 11.70s`
+- **Dist Assets**: `dist/index.html (0.79 kB)`, `dist/assets/index-kJFYSgdk.css (31.55 kB)`, `dist/assets/index-DI_SUvw8.js (735.44 kB)`

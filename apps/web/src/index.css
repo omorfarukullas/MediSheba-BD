@@ -3,78 +3,130 @@
 @tailwind utilities;
 
 :root {
-  /* Colors */
-  --color-indigo-bolt: #4570ff;
-  --color-indigo-bolt-hover: #345ee6;
-  --color-ember-orange: #ff6808;
-  --color-lime-highlighter: #c6ff94;
-  --color-lavender-mist: #ebdcff;
-  --color-ice-blue: #d6e0ff;
-  --color-lilac-bloom: #c293f1;
-  --color-deep-navy: #193f78;
-  --color-forest-sage: #244f47;
-  --color-warm-bone: #f1f0ec;
-  --color-paper-white: #ffffff;
-  --color-ink-black: #000000;
-  --color-hairline: #e5e7eb;
-  --color-stone: #d1d5db;
-  --color-smoke: #6e6d6c;
-  --color-graphite: #555555;
+  /* Neutrals */
+  --color-canvas: #ffffff;
+  --color-sidebar: #f7f7f5;
+  --color-subtle: #f4f4f2;
+  --color-border: #e7e5e4;
+  --color-border-strong: #d6d3d1;
+  --color-ink: #111111;
+  --color-text-2: #57534e;
+  --color-text-3: #78716c;
 
-  /* Typography */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-script: 'Caveat', 'Nanum Pen Script', cursive;
+  /* Accent */
+  --color-accent: #3b5bdb;
+  --color-accent-hover: #2f4bc0;
+  --color-accent-tint: #eef2ff;
 
-  /* Semantic Aliases */
-  --dp-color-ground: #ffffff;
-  --dp-color-ink: #000000;
-  --dp-color-ink-secondary: #6e6d6c;
-  --dp-color-ground-muted: #f1f0ec;
-  --dp-color-rule: #e5e7eb;
-  --dp-color-accent: #4570ff;
-  --dp-color-panel: #ffffff;
-  --dp-color-on-accent: #ffffff;
-  --dp-color-field: #000000;
-  --dp-color-on-field: #ffffff;
-  --dp-color-on-field-secondary: #d1d5db;
-  --dp-radius-panel: 20px;
-  --dp-motion-interaction: 160ms;
-  --dp-motion-easing: ease-out;
+  /* Status (statuses & clinical alerts only) */
+  --color-danger-text: #b42318;
+  --color-danger-bg: #fef3f2;
+  --color-danger-border: #fecdca;
+
+  --color-success-text: #067647;
+  --color-success-bg: #ecfdf3;
+  --color-success-border: #abefc6;
+
+  --color-warning-text: #b54708;
+  --color-warning-bg: #fffaeb;
+  --color-warning-border: #fedf89;
+
+  /* Fonts */
+  --font-sans: 'Inter', 'Noto Sans Bengali', 'Hind Siliguri', ui-sans-serif, system-ui, sans-serif;
+  --font-bn: 'Noto Sans Bengali', 'Hind Siliguri', 'Kalpurush', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale (English) */
+  --text-caption: 12px;
+  --text-body: 14px;
+  --text-body-lg: 16px;
+  --text-title: 20px;
+  --text-heading: 28px;
+  --text-stat: 28px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-pill: 9999px;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --sidebar-width-collapsed: 64px;
+  --topbar-height: 56px;
+  --page-max-width: 1120px;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-canvas);
 }
 
 body {
   margin: 0;
-  background-color: var(--color-paper-white);
-  color: var(--color-ink-black);
-  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Strict Zero-Shadow Rule according to Section 7 */
-.no-shadow,
-.shadow-xs,
-.shadow-sm,
-.shadow-md,
-.shadow-lg,
-.shadow-xl,
-.shadow-2xl {
+/* Bangla Typography Rules (Section 3) */
+:lang(bn) {
+  font-family: var(--font-bn);
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body:lang(bn),
+html:lang(bn) body {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* Strict Zero-Shadow Policy (Section 0 Hard Rule 2) */
+*,
+::before,
+::after {
   box-shadow: none !important;
 }
 
-h1, h2, h3, h4 {
-  letter-spacing: -0.025em;
-  font-weight: 500;
+/* Accessible Focus Ring (Section 4) */
+:focus-visible {
+  outline: 2px solid var(--color-accent) !important;
+  outline-offset: 2px !important;
 }
 
-.font-script {
-  font-family: var(--font-script);
+h1, h2, h3, h4 {
+  font-weight: 600;
+  color: var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Dedicated Print Stylesheet (Section 10.2) */
+@media print {
+  aside,
+  header,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
   }
 }

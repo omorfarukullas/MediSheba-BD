@@ -42,36 +42,36 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-[400px] flex items-center justify-center p-6">
-          <div className="max-w-md w-full bg-panel border border-rule rounded-panel p-8 text-center space-y-4 shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-red-500/10 text-red-600 flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
+          <div className="max-w-md w-full bg-canvas border border-border rounded-xl p-8 text-center space-y-4">
+            <div className="w-10 h-10 rounded-lg bg-danger-bg text-danger-text flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h2 className="font-display text-xl font-bold text-ink">
+              <h2 className="text-lg font-semibold text-ink">
                 Something went wrong
               </h2>
-              <p className="text-[13px] text-ink-secondary leading-relaxed">
+              <p className="text-sm text-text-3 leading-relaxed">
                 An unexpected interface error occurred. You can reload this view or return to the main dashboard.
               </p>
             </div>
             {this.state.error?.message && (
-              <pre className="text-[11px] bg-ground-muted p-2 rounded text-red-600 overflow-x-auto text-left font-mono">
+              <pre className="text-xs bg-subtle p-2.5 rounded-lg text-danger-text overflow-x-auto text-left font-mono">
                 {this.state.error.message}
               </pre>
             )}
             <div className="flex items-center justify-center gap-3 pt-2">
               <Button
-                variant="outline"
-                size="sm"
-                leftIcon={<RefreshCw className="w-4 h-4" />}
+                variant="secondary"
+                size="compact"
+                leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
                 onClick={this.handleReload}
               >
                 Reload
               </Button>
               <Button
                 variant="primary"
-                size="sm"
-                leftIcon={<Home className="w-4 h-4" />}
+                size="compact"
+                leftIcon={<Home className="w-3.5 h-3.5" />}
                 onClick={this.handleGoHome}
               >
                 Go Home
@@ -85,4 +85,3 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
-

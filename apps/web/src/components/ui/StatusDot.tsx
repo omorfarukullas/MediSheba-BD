@@ -12,29 +12,29 @@ export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 const variantStyles: Record<StatusDotVariant, { bg: string; pingBg: string; text: string }> = {
   online: {
-    bg: 'bg-[#4570ff]',
-    pingBg: 'bg-[#4570ff]',
-    text: 'text-[#000000]',
+    bg: 'bg-emerald-600',
+    pingBg: 'bg-emerald-500',
+    text: 'text-ink',
   },
   busy: {
-    bg: 'bg-[#ff6808]',
-    pingBg: 'bg-[#ff6808]',
-    text: 'text-[#ff6808]',
+    bg: 'bg-amber-600',
+    pingBg: 'bg-amber-500',
+    text: 'text-warning-text',
   },
   offline: {
-    bg: 'bg-[#d1d5db]',
-    pingBg: 'bg-[#d1d5db]',
-    text: 'text-[#6e6d6c]',
+    bg: 'bg-stone-400',
+    pingBg: 'bg-stone-300',
+    text: 'text-text-3',
   },
   warning: {
-    bg: 'bg-[#ff6808]',
-    pingBg: 'bg-[#ff6808]',
-    text: 'text-[#ff6808]',
+    bg: 'bg-amber-600',
+    pingBg: 'bg-amber-500',
+    text: 'text-warning-text',
   },
   danger: {
-    bg: 'bg-[#ff6808]',
-    pingBg: 'bg-[#ff6808]',
-    text: 'text-[#ff6808]',
+    bg: 'bg-rose-600',
+    pingBg: 'bg-rose-500',
+    text: 'text-danger-text',
   },
 };
 

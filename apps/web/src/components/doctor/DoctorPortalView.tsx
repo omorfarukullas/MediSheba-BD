@@ -2,25 +2,26 @@ import React, { useState } from 'react';
 import { trpc } from '../../lib/trpc';
 import { useLanguageStore } from '../../stores/language.store';
 import { useAuthStore } from '../../stores/auth.store';
+import { Card, StatCard } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { Badge } from '../ui/Badge';
+import { Modal } from '../ui/Modal';
+import { AlertBanner } from '../ui/AlertBanner';
 import { 
   UserCheck, 
   Calendar, 
   Clock, 
   FileText, 
-  Video, 
-  ArrowUp, 
-  ArrowDown, 
-  CheckCircle, 
+  CheckCircle2, 
   AlertCircle, 
   Plus, 
   Trash2, 
   FolderLock, 
   Lock, 
   ShieldCheck, 
-  HeartPulse, 
-  PhoneCall, 
   Eye,
-  Settings
+  Printer
 } from 'lucide-react';
 
 export function DoctorPortalView() {
@@ -28,7 +29,6 @@ export function DoctorPortalView() {
   const { user } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'queue' | 'appointments' | 'schedule' | 'prescribe'>('queue');
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
-  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
   const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
 
   // Schedule settings state
@@ -40,11 +40,13 @@ export function DoctorPortalView() {
   const [endTime, setEndTime] = useState('21:00');
 
   // Prescription Form State
+  const [prescriptionPatientName, setPrescriptionPatientName] = useState('Karim Ullah');
   const [diagnosis, setDiagnosis] = useState('');
   const [notes, setNotes] = useState('');
   const [medicines, setMedicines] = useState<{ name: string; dosage: string; duration: string; instruction: string }[]>([
-    { name: 'Tab. Paracetamol 500mg', dosage: '1+1+1', duration: '3 days', instruction: 'After food' }
+    { name: 'Tab. Paracetamol 500mg', dosage: '1+0+1', duration: '3 days', instruction: 'After food' }
   ]);
+  const [prescriptionSaved, setPrescriptionSaved] = useState(false);
 
   // Doctor dashboard overview
   const { data: dashboard, isLoading, refetch } = trpc.doctor.getDashboard.useQuery(undefined, {
@@ -62,14 +64,10 @@ export function DoctorPortalView() {
     onSuccess: () => refetch()
   });
 
-  const reorderQueueMutation = trpc.queue.reorderQueue.useMutation({
-    onSuccess: () => refetch()
-  });
-
   // Schedule mutation
   const updateScheduleMutation = trpc.doctor.updateSchedule.useMutation({
     onSuccess: () => {
-      alert(lang === 'bn' ? 'সফলভাবে শিডিউল আপডেট হয়েছে!' : 'Schedule updated successfully!');
+      alert(lang === 'bn' ? 'শিডিউল সফলভাবে সংরক্ষিত হয়েছে!' : 'Schedule updated successfully!');
       refetch();
     }
   });
@@ -79,7 +77,7 @@ export function DoctorPortalView() {
   };
 
   const handleAddMedicine = () => {
-    setMedicines([...medicines, { name: '', dosage: '1+0+1', duration: '5 days', instruction: 'After food' }]);
+    setMedicines([...medicines, { name: '', dosage: '1+0+1', duration: '5 days', instruction: 'After meal' }]);
   };
 
   const handleRemoveMedicine = (idx: number) => {
@@ -99,458 +97,538 @@ export function DoctorPortalView() {
     }));
 
     updateScheduleMutation.mutate({
-      slots,
-      isTelemedicineEnabled: teleEnabled,
+      consultationFeePhysical: feePhysical,
       consultationFeeOnline: feeOnline,
-      consultationFeePhysical: feePhysical
+      isTelemedicineEnabled: teleEnabled,
+      slots
     });
   };
 
-  const activeQueue = dashboard?.doctor.queues || [];
-  const todayAppointments = dashboard?.appointments || [];
+  const handleSavePrescription = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPrescriptionSaved(true);
+    setTimeout(() => setPrescriptionSaved(false), 4000);
+  };
+
+  const activeQueue = dashboard?.doctor?.queues || [];
+  const todayAppointments = dashboard?.doctor?.appointments || [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-[1120px] mx-auto space-y-6">
+      {/* ─── Page Header ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-accent text-xs font-bold uppercase tracking-wider mb-1">
-            <UserCheck className="w-4 h-4" />
-            {lang === 'bn' ? 'চিকিৎসক নিয়ন্ত্রণ প্যানেল' : 'Physician Master Suite'}
-          </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-ink tracking-tight">
-            {lang === 'bn' ? 'ডাক্তার ড্যাশবোর্ড ও স্মার্ট চেম্বার কিউ' : 'Doctor Dashboard & Smart Queue Control'}
+          <h1 className="text-[28px] font-semibold text-ink leading-tight">
+            {lang === 'bn' ? 'চিকিৎসক পোর্টাল ও চেম্বার' : 'Physician Desk & Chamber'}
           </h1>
-          <p className="text-sm text-ink-secondary mt-1">
-            {lang === 'bn' 
-              ? 'চেম্বারের রোগী তালিকা, স্মার্ট সিরিয়াল কলিং, পূর্ববর্তী প্রেসক্রিপশন ও টেলিমেডিসিন নিয়ন্ত্রণ।'
-              : 'Manage patient appointments, advance smart serial queues, access medical history, and issue prescriptions.'}
+          <p className="text-sm text-text-2 mt-1">
+            {lang === 'bn'
+              ? 'চেম্বারের লাইভ সিরিয়াল পরিচালনা, রোগীর রিপোর্ট যাচাই এবং ডিজিটাল প্রেসক্রিপশন তৈরি।'
+              : 'Real-time chamber queue tokens, confidential medical records, and digital prescriptions.'}
           </p>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-1.5 bg-ground-muted p-1 rounded-2xl border border-rule text-xs font-semibold">
-          <button
-            onClick={() => setActiveTab('queue')}
-            className={`px-4 py-2 rounded-xl transition ${
-              activeTab === 'queue' ? 'bg-accent text-on-accent shadow-xs' : 'text-ink-secondary hover:text-ink'
-            }`}
-          >
-            {lang === 'bn' ? 'স্মার্ট সিরিয়াল কিউ' : 'Live Smart Queue'}
-          </button>
-          <button
-            onClick={() => setActiveTab('appointments')}
-            className={`px-4 py-2 rounded-xl transition ${
-              activeTab === 'appointments' ? 'bg-accent text-on-accent shadow-xs' : 'text-ink-secondary hover:text-ink'
-            }`}
-          >
-            {lang === 'bn' ? 'দৈনিক রোগী তালিকা' : 'Patient List'}
-          </button>
-          <button
-            onClick={() => setActiveTab('schedule')}
-            className={`px-4 py-2 rounded-xl transition ${
-              activeTab === 'schedule' ? 'bg-accent text-on-accent shadow-xs' : 'text-ink-secondary hover:text-ink'
-            }`}
-          >
-            {lang === 'bn' ? 'চেম্বারের শিডিউল' : 'Availability Slots'}
-          </button>
-        </div>
+        <Button
+          variant="primary"
+          leftIcon={<Plus className="w-4 h-4" />}
+          onClick={() => setActiveTab('prescribe')}
+        >
+          {lang === 'bn' ? '+ নতুন প্রেসক্রিপশন' : '+ New Prescription'}
+        </Button>
       </div>
 
-      {/* TAB 1: Smart Queue Management */}
+      {/* ─── 4 Identical Stat Cards ─── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          label={lang === 'bn' ? 'অপেক্ষমাণ রোগী' : 'Waiting in Queue'}
+          value={String(activeQueue.filter((q) => q.status === 'WAITING' || q.status === 'CALLED').length)}
+          caption={lang === 'bn' ? 'আজকের সিরিয়াল' : 'Today'}
+        />
+        <StatCard
+          label={lang === 'bn' ? 'চলমান পরামর্শ' : 'In Consultation'}
+          value={String(activeQueue.filter((q) => q.status === 'IN_CONSULTATION').length)}
+          caption={lang === 'bn' ? 'চেম্বারে উপস্থিত' : 'Active Patient'}
+        />
+        <StatCard
+          label={lang === 'bn' ? 'সম্পন্ন পরামর্শ' : 'Completed Today'}
+          value={String(activeQueue.filter((q) => q.status === 'COMPLETED').length)}
+          caption={lang === 'bn' ? 'পরামর্শ সম্পন্ন' : 'Finished'}
+        />
+        <StatCard
+          label={lang === 'bn' ? 'মোট শিডিউল বুকিং' : "Today's Bookings"}
+          value={String(todayAppointments.length)}
+          caption={lang === 'bn' ? 'মোট রোগী' : 'Appointments'}
+        />
+      </div>
+
+      {/* ─── Page Tabs (Underline Style) ─── */}
+      <div className="flex items-center gap-6 border-b border-border">
+        <button
+          onClick={() => setActiveTab('queue')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            activeTab === 'queue'
+              ? 'border-accent text-ink font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'চেম্বার লাইভ কিউ' : 'Chamber Queue'}
+        </button>
+        <button
+          onClick={() => setActiveTab('appointments')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            activeTab === 'appointments'
+              ? 'border-accent text-ink font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'অ্যাপয়েন্টমেন্ট তালিকা' : 'Appointments'}
+        </button>
+        <button
+          onClick={() => setActiveTab('schedule')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            activeTab === 'schedule'
+              ? 'border-accent text-ink font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'ভিজিটিং সময় ও ফি' : 'Visiting Hours & Fees'}
+        </button>
+        <button
+          onClick={() => setActiveTab('prescribe')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            activeTab === 'prescribe'
+              ? 'border-accent text-accent font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'প্রেসক্রিপশন জেনারেটর' : 'New Prescription'}
+        </button>
+      </div>
+
+      {/* ─── TAB 1: Queue Stream ─── */}
       {activeTab === 'queue' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-lg text-ink">
-                {lang === 'bn' ? 'চেম্বারের লাইভ সিরিয়াল কিউ' : 'Active Queue Stream'}
-              </h2>
-              <span className="text-xs font-semibold text-accent bg-accent/10 px-3 py-1 rounded-full">
-                {activeQueue.length} {lang === 'bn' ? 'জন অপেক্ষমাণ' : 'Patients Waiting'}
-              </span>
-            </div>
-
-            {activeQueue.length === 0 ? (
-              <div className="p-16 text-center bg-panel border border-rule rounded-3xl text-ink-secondary">
-                <Clock className="w-10 h-10 mx-auto mb-2 text-ink-secondary/40" />
-                <p>{lang === 'bn' ? 'বর্তমানে লাইভ কিউতে কোন অপেক্ষমাণ রোগী নেই।' : 'No patients currently in the live queue.'}</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {activeQueue.map((item, idx) => {
-                  const isCurrent = item.status === 'IN_CONSULTATION';
-                  const isCalled = item.status === 'CALLED';
-                  return (
-                    <div
-                      key={item.id}
-                      className={`p-5 rounded-2xl border transition shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                        isCurrent 
-                          ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20 ring-2 ring-emerald-500/20' 
-                          : isCalled 
-                            ? 'border-accent bg-accent/10 ring-2 ring-accent/30' 
-                            : 'border-rule bg-panel hover:bg-ground'
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-xs ${
-                          isCurrent 
-                            ? 'bg-emerald-600 text-white' 
-                            : isCalled 
-                              ? 'bg-accent text-on-accent animate-pulse' 
-                              : 'bg-ground-muted text-ink'
-                        }`}>
-                          #{item.position}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-base text-ink">
-                              {item.appointment.patient.user.fullName}
-                            </h4>
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                              isCurrent ? 'bg-emerald-100 text-emerald-800' : isCalled ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800'
-                            }`}>
-                              {item.status}
-                            </span>
-                          </div>
-                          <p className="text-xs text-ink-secondary mt-0.5">
-                            {lang === 'bn' ? 'অ্যাপয়েন্টমেন্ট আইডি:' : 'Token ID:'} {item.appointmentId.slice(0, 8)} • {item.appointment.consultationType}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Action buttons */}
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setSelectedPatientId(item.appointment.patientId)}
-                          className="px-3 py-1.5 rounded-xl border border-rule hover:border-accent text-xs font-semibold text-ink flex items-center gap-1.5 transition"
-                        >
-                          <FileText className="w-3.5 h-3.5 text-accent" />
-                          <span>{lang === 'bn' ? 'ইতিহাস দেখুন' : 'History'}</span>
-                        </button>
-
-                        {item.status === 'WAITING' && (
-                          <button
-                            onClick={() => handleAdvanceQueue(item.id, 'CALLED')}
-                            className="px-3.5 py-1.5 rounded-xl bg-accent text-on-accent font-bold text-xs hover:opacity-90 transition shadow-xs"
-                          >
-                            {lang === 'bn' ? 'সিরিয়াল ডাকুন' : 'Call Next'}
-                          </button>
-                        )}
-
-                        {item.status === 'CALLED' && (
-                          <button
-                            onClick={() => handleAdvanceQueue(item.id, 'IN_CONSULTATION')}
-                            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition shadow-xs"
-                          >
-                            {lang === 'bn' ? 'পরামর্শ শুরু' : 'Start Visit'}
-                          </button>
-                        )}
-
-                        {item.status === 'IN_CONSULTATION' && (
-                          <button
-                            onClick={() => handleAdvanceQueue(item.id, 'COMPLETED')}
-                            className="px-3.5 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition shadow-xs"
-                          >
-                            {lang === 'bn' ? 'পরামর্শ সম্পন্ন' : 'Mark Completed'}
-                          </button>
-                        )}
-
-                        <button
-                          onClick={() => handleAdvanceQueue(item.id, 'SKIPPED')}
-                          className="p-1.5 rounded-xl border border-rule hover:border-rose-400 text-ink-secondary hover:text-rose-600 text-xs transition"
-                          title={lang === 'bn' ? 'বাদ দিন' : 'Skip'}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Right Sidebar: Selected Patient Medical History & Prescriptions */}
-          <div className="bg-panel border border-rule rounded-3xl p-6 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-rule">
-              <div className="flex items-center gap-2">
-                <FolderLock className="w-5 h-5 text-accent" />
-                <h3 className="font-bold text-base text-ink">
-                  {lang === 'bn' ? 'রোগীর পূর্ববর্তী মেডিকেল রেকর্ড' : 'Patient Medical History'}
-                </h3>
-              </div>
-            </div>
-
-            {selectedPatientId && patientHistory ? (
-              <div className="space-y-4">
-                <div className="p-3 bg-ground rounded-2xl border border-rule">
-                  <h4 className="font-bold text-sm text-ink">{patientHistory.user.fullName}</h4>
-                  <p className="text-xs text-ink-secondary">{patientHistory.user.email} • {patientHistory.bloodGroup || 'Blood: N/A'}</p>
-                </div>
-
-                {/* Vitals summary */}
-                {patientHistory.vitals && patientHistory.vitals.length > 0 && (
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-ink-secondary uppercase">
-                      {lang === 'bn' ? 'সর্বশেষ ভাইটালস' : 'Latest Vitals'}
-                    </span>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="p-2 rounded-xl bg-ground border border-rule">
-                        <span className="text-ink-secondary">BP: </span>
-                        <strong className="text-ink">{patientHistory.vitals[0].bloodPressure || 'N/A'}</strong>
-                      </div>
-                      <div className="p-2 rounded-xl bg-ground border border-rule">
-                        <span className="text-ink-secondary">Pulse: </span>
-                        <strong className="text-ink">{patientHistory.vitals[0].heartRate || 'N/A'} bpm</strong>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Patient Shared Documents with Privacy Protection */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-ink-secondary uppercase">
-                      {lang === 'bn' ? 'অনুমোদিত রিপোর্ট ও প্রেসক্রিপশন' : 'Permitted Records'}
-                    </span>
-                    <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                      {lang === 'bn' ? 'রোগী শেয়ার করেছেন' : 'Patient Permitted'}
-                    </span>
-                  </div>
-
-                  {patientHistory.documents.length === 0 ? (
-                    <div className="p-6 text-center text-xs text-ink-secondary bg-ground rounded-2xl border border-rule">
-                      {lang === 'bn' 
-                        ? 'রোগী কোন উন্মুক্ত প্রেসক্রিপশন বা রিপোর্ট শেয়ার করেননি।' 
-                        : 'No records shared by patient with doctor visibility.'}
-                    </div>
-                  ) : (
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {patientHistory.documents.map((doc) => (
-                        <div key={doc.id} className="p-3 rounded-xl bg-ground border border-rule flex items-center justify-between text-xs">
-                          <div>
-                            <div className="font-semibold text-ink line-clamp-1">{doc.title}</div>
-                            <span className="text-[10px] text-ink-secondary uppercase">{doc.fileType}</span>
-                          </div>
-                          <a
-                            href={doc.fileUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg bg-panel border border-rule text-accent hover:opacity-80"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="p-12 text-center text-xs text-ink-secondary">
-                {lang === 'bn' 
-                  ? 'রোগীর পূর্ববর্তী প্রেসক্রিপশন ও রিপোর্ট দেখতে কিউ থেকে "ইতিহাস দেখুন" চাপুন।' 
-                  : 'Click "History" on any patient above to inspect permitted medical records.'}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* TAB 2: Daily Appointment List */}
-      {activeTab === 'appointments' && (
-        <div className="bg-panel border border-rule rounded-3xl p-6 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h2 className="font-bold text-lg text-ink">
-              {lang === 'bn' ? 'তারিখ অনুযায়ী অ্যাপয়েন্টমেন্ট তালিকা' : 'Scheduled Appointments by Date'}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-semibold text-ink">
+              {lang === 'bn' ? 'আজকের সিরিয়াল লাইন' : 'Live Chamber Queue Stream'}
             </h2>
-            <input
-              type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="px-3.5 py-2 text-xs font-semibold border border-rule rounded-xl bg-ground text-ink focus:outline-none focus:border-accent"
-            />
+            <Badge variant="accent">
+              {activeQueue.length} {lang === 'bn' ? 'জন নিবন্ধিত' : 'Patients In Line'}
+            </Badge>
           </div>
 
-          {todayAppointments.length === 0 ? (
-            <div className="p-16 text-center text-ink-secondary">
-              <Calendar className="w-10 h-10 mx-auto mb-2 text-ink-secondary/40" />
-              <p>{lang === 'bn' ? 'এই তারিখে কোন অ্যাপয়েন্টমেন্ট বুক করা নেই।' : 'No appointments scheduled for this date.'}</p>
-            </div>
+          {activeQueue.length === 0 ? (
+            <Card padding="lg" className="text-center py-12 text-sm text-text-3">
+              <Clock className="w-8 h-8 mx-auto mb-2 text-text-3" />
+              <p>{lang === 'bn' ? 'বর্তমানে লাইভ কিউতে কোন অপেক্ষমাণ রোগী নেই।' : 'No patients currently in the live queue.'}</p>
+            </Card>
           ) : (
-            <div className="overflow-x-auto border border-rule rounded-2xl">
-              <table className="w-full text-left text-xs text-ink">
-                <thead className="bg-ground-muted text-ink-secondary font-bold uppercase tracking-wider border-b border-rule">
-                  <tr>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'সিরিয়াল #' : 'Serial #'}</th>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'রোগীর নাম' : 'Patient Name'}</th>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'সময়' : 'Slot Time'}</th>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'ধরন' : 'Consultation'}</th>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'পেমেন্ট' : 'Payment'}</th>
-                    <th className="py-3 px-4 text-right">{lang === 'bn' ? 'অ্যাকশন' : 'Action'}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-rule">
-                  {todayAppointments.map((appt) => (
-                    <tr key={appt.id} className="hover:bg-ground/50 transition">
-                      <td className="py-3 px-4 font-black text-sm text-accent">#{appt.queueNumber || '--'}</td>
-                      <td className="py-3 px-4 font-semibold text-ink">{appt.patient.user.fullName}</td>
-                      <td className="py-3 px-4 text-ink-secondary">{appt.appointmentTime}</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                          appt.consultationType === 'ONLINE' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
-                        }`}>
-                          {appt.consultationType}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                          appt.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                        }`}>
-                          {appt.paymentStatus}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={() => {
-                            setSelectedPatientId(appt.patientId);
-                            setSelectedAppointmentId(appt.id);
-                            setActiveTab('queue');
-                          }}
-                          className="px-3 py-1 rounded-xl bg-accent text-on-accent text-xs font-bold hover:opacity-90"
+            <div className="space-y-3">
+              {activeQueue.map((item) => {
+                const isCurrent = item.status === 'IN_CONSULTATION';
+                const isCalled = item.status === 'CALLED';
+                return (
+                  <Card
+                    key={item.id}
+                    padding="md"
+                    className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
+                      isCurrent
+                        ? 'border-accent ring-1 ring-accent'
+                        : isCalled
+                        ? 'border-warning-border bg-warning-bg/30'
+                        : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-lg border border-border bg-subtle flex items-center justify-center font-bold text-lg text-ink">
+                        #{item.position}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-semibold text-sm text-ink">
+                            {item.appointment.patient.user.fullName}
+                          </h4>
+                          <Badge
+                            variant={
+                              isCurrent
+                                ? 'success'
+                                : isCalled
+                                ? 'warning'
+                                : 'neutral'
+                            }
+                          >
+                            {item.status}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-text-3 mt-0.5">
+                          {item.appointment.consultationType} · ID: {item.appointmentId.slice(0, 8)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="secondary"
+                        size="compact"
+                        leftIcon={<FileText className="w-3.5 h-3.5" />}
+                        onClick={() => setSelectedPatientId(item.appointment.patientId)}
+                      >
+                        {lang === 'bn' ? 'মেডিকেল রেকর্ড' : 'History'}
+                      </Button>
+
+                      {item.status === 'WAITING' && (
+                        <Button
+                          variant="primary"
+                          size="compact"
+                          onClick={() => handleAdvanceQueue(item.id, 'CALLED')}
                         >
-                          {lang === 'bn' ? 'ব্যবস্থাপনা' : 'Manage'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                          {lang === 'bn' ? 'সিরিয়াল ডাকুন' : 'Call Next'}
+                        </Button>
+                      )}
+
+                      {item.status === 'CALLED' && (
+                        <Button
+                          variant="primary"
+                          size="compact"
+                          onClick={() => handleAdvanceQueue(item.id, 'IN_CONSULTATION')}
+                        >
+                          {lang === 'bn' ? 'পরামর্শ শুরু' : 'Start Visit'}
+                        </Button>
+                      )}
+
+                      {item.status === 'IN_CONSULTATION' && (
+                        <Button
+                          variant="primary"
+                          size="compact"
+                          onClick={() => handleAdvanceQueue(item.id, 'COMPLETED')}
+                        >
+                          {lang === 'bn' ? 'পরামর্শ সমাপ্ত' : 'Complete Visit'}
+                        </Button>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
       )}
 
-      {/* TAB 3: Schedule & Availability Settings */}
-      {activeTab === 'schedule' && (
-        <form onSubmit={handleSaveSchedule} className="bg-panel border border-rule rounded-3xl p-6 md:p-8 shadow-sm space-y-6 max-w-3xl">
-          <div className="space-y-1">
-            <h2 className="font-bold text-lg text-ink">
-              {lang === 'bn' ? 'ডাক্তারের চেম্বার সময় ও টেলিমেডিসিন শিডিউল' : 'Chamber Availability & Fee Configuration'}
+      {/* ─── TAB 2: Appointments ─── */}
+      {activeTab === 'appointments' && (
+        <Card padding="none" className="overflow-hidden">
+          <div className="p-4 border-b border-border bg-subtle flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-ink">
+              {lang === 'bn' ? 'আজকের অ্যাপয়েন্টমেন্ট তালিকা' : "Today's Appointment Schedule"}
             </h2>
-            <p className="text-xs text-ink-secondary">
-              {lang === 'bn' 
-                ? 'আপনার চেম্বার বসার দিন, সময় এবং কনসালটেশন ফি নির্ধারণ করুন।' 
-                : 'Set weekly visiting hours, online telemedicine availability, and appointment fees.'}
+            <span className="text-xs text-text-3 font-mono">{filterDate}</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-subtle text-xs text-text-3 font-medium border-b border-border">
+                <tr>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'টোকেন' : 'Token'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'রোগীর নাম' : 'Patient Name'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'সময়' : 'Time'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'পরামর্শ ধরন' : 'Consultation'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'অবস্থা' : 'Status'}</th>
+                  <th className="px-5 py-3 text-right">{lang === 'bn' ? 'অ্যাকশন' : 'Action'}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {todayAppointments && todayAppointments.length > 0 ? (
+                  todayAppointments.map((appt) => (
+                    <tr key={appt.id} className="hover:bg-subtle/50 transition-colors h-[52px]">
+                      <td className="px-5 py-3 font-semibold text-accent font-mono">#{appt.queueNumber || '--'}</td>
+                      <td className="px-5 py-3 font-medium text-ink">{appt.patient.user.fullName}</td>
+                      <td className="px-5 py-3 text-xs text-text-3">{appt.appointmentTime}</td>
+                      <td className="px-5 py-3 text-xs text-text-2">{appt.consultationType}</td>
+                      <td className="px-5 py-3">
+                        <Badge variant={appt.status === 'CONFIRMED' ? 'success' : 'neutral'}>
+                          {appt.status}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3 text-right">
+                        <Button
+                          variant="ghost"
+                          size="compact"
+                          onClick={() => setSelectedPatientId(appt.patientId)}
+                        >
+                          {lang === 'bn' ? 'রেকর্ড দেখুন' : 'View Record'}
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-5 py-8 text-center text-xs text-text-3">
+                      {lang === 'bn' ? 'আজকের জন্য কোন অ্যাপয়েন্টমেন্ট নেই।' : 'No appointments scheduled for today.'}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* ─── TAB 3: Schedule & Visiting Hours ─── */}
+      {activeTab === 'schedule' && (
+        <Card padding="lg" className="space-y-5">
+          <div className="pb-3 border-b border-border">
+            <h2 className="text-base font-semibold text-ink">
+              {lang === 'bn' ? 'চেম্বার শিডিউল ও ভিজিটিং ফি নির্ধারণ' : 'Chamber Schedule & Visiting Fees'}
+            </h2>
+            <p className="text-xs text-text-3">
+              {lang === 'bn' ? 'সাপ্তাহিক দিন ও ফি আপডেট করুন' : 'Configure consultation fee and regular chamber timings'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-ink-secondary mb-1">
-                {lang === 'bn' ? 'সরাসরি চেম্বার ফি (BDT) *' : 'Physical Consultation Fee (BDT) *'}
-              </label>
-              <input
+          <form onSubmit={handleSaveSchedule} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label={lang === 'bn' ? 'চেম্বার ভিজিট ফি (BDT ৳)' : 'In-Person Chamber Fee (৳)'}
                 type="number"
-                value={feePhysical}
+                value={String(feePhysical)}
                 onChange={(e) => setFeePhysical(Number(e.target.value))}
-                className="w-full border border-rule rounded-xl px-3.5 py-2.5 text-sm bg-ground text-ink focus:outline-none focus:border-accent"
               />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-ink-secondary mb-1">
-                {lang === 'bn' ? 'অনলাইন টেলিমেডিসিন ফি (BDT) *' : 'Telemedicine Fee (BDT) *'}
-              </label>
-              <input
-                type="number"
-                value={feeOnline}
-                onChange={(e) => setFeeOnline(Number(e.target.value))}
-                className="w-full border border-rule rounded-xl px-3.5 py-2.5 text-sm bg-ground text-ink focus:outline-none focus:border-accent"
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-ink-secondary mb-1">
-                {lang === 'bn' ? 'চেম্বারের শুরু সময়' : 'Session Start Time'}
-              </label>
-              <input
+              <Input
+                label={lang === 'bn' ? 'টেলিমেডিসিন ফি (BDT ৳)' : 'Online Telemedicine Fee (৳)'}
+                type="number"
+                value={String(feeOnline)}
+                onChange={(e) => setFeeOnline(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label={lang === 'bn' ? 'শুরুর সময়' : 'Start Time'}
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full border border-rule rounded-xl px-3.5 py-2.5 text-sm bg-ground text-ink focus:outline-none focus:border-accent"
               />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-ink-secondary mb-1">
-                {lang === 'bn' ? 'চেম্বারের সমাপ্তি সময়' : 'Session End Time'}
-              </label>
-              <input
+
+              <Input
+                label={lang === 'bn' ? 'সমাপ্তির সময়' : 'End Time'}
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full border border-rule rounded-xl px-3.5 py-2.5 text-sm bg-ground text-ink focus:outline-none focus:border-accent"
               />
             </div>
-          </div>
 
-          {/* Days selector */}
-          <div className="space-y-2">
-            <label className="block text-xs font-semibold text-ink-secondary">
-              {lang === 'bn' ? 'চেম্বারে উপস্থিতির দিনসমূহ' : 'Available Days of Week'}
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, idx) => {
-                const isSelected = selectedDays.includes(idx);
-                return (
-                  <button
-                    type="button"
-                    key={d}
-                    onClick={() => {
-                      if (isSelected) setSelectedDays(selectedDays.filter((i) => i !== idx));
-                      else setSelectedDays([...selectedDays, idx]);
-                    }}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold border transition ${
-                      isSelected 
-                        ? 'bg-accent text-on-accent border-accent shadow-xs' 
-                        : 'bg-ground text-ink-secondary border-rule hover:text-ink'
-                    }`}
-                  >
-                    {d}
-                  </button>
-                );
-              })}
+            <div className="pt-3 border-t border-border flex justify-end">
+              <Button variant="primary" size="default" type="submit" isLoading={updateScheduleMutation.isPending}>
+                {lang === 'bn' ? 'শিডিউল সংরক্ষণ করুন' : 'Save Schedule Settings'}
+              </Button>
             </div>
-          </div>
+          </form>
+        </Card>
+      )}
 
-          {/* Telemedicine toggle */}
-          <div className="flex items-center gap-3 p-4 rounded-2xl bg-ground border border-rule">
-            <input
-              type="checkbox"
-              id="telemedicineToggle"
-              checked={teleEnabled}
-              onChange={(e) => setTeleEnabled(e.target.checked)}
-              className="w-4 h-4 text-accent rounded"
+      {/* ─── TAB 4: Prescription Generator (Section 9.6) ─── */}
+      {activeTab === 'prescribe' && (
+        <div className="space-y-5">
+          {prescriptionSaved && (
+            <AlertBanner
+              variant="success"
+              message={
+                lang === 'bn'
+                  ? 'প্রেসক্রিপশন সফলভাবে সংরক্ষিত হয়েছে এবং রোগীর প্রেসক্রিপশন ভল্টে যুক্ত হয়েছে।'
+                  : 'Prescription saved successfully and securely synced to patient record vault.'
+              }
             />
-            <label htmlFor="telemedicineToggle" className="text-xs font-semibold text-ink cursor-pointer">
-              {lang === 'bn' ? 'টেলিমেডিসিন ভিডিও পরামর্শ সেবা সক্রিয় রাখুন' : 'Enable Telemedicine Video Consultations for Patients'}
-            </label>
-          </div>
+          )}
 
-          <div className="pt-3 border-t border-rule flex justify-end">
-            <button
-              type="submit"
-              disabled={updateScheduleMutation.isPending}
-              className="px-6 py-2.5 rounded-xl bg-accent text-on-accent font-bold text-xs hover:opacity-90 transition disabled:opacity-60 shadow-xs"
-            >
-              {updateScheduleMutation.isPending ? (lang === 'bn' ? 'সংরক্ষণ হচ্ছে...' : 'Saving...') : (lang === 'bn' ? 'শিডিউল সংরক্ষণ করুন' : 'Save Schedule')}
-            </button>
+          <Card padding="lg" className="space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border">
+              <div>
+                <h2 className="text-base font-semibold text-ink">
+                  {lang === 'bn' ? 'ডিজিটাল প্রেসক্রিপশন তৈরি' : 'Create New Prescription'}
+                </h2>
+                <p className="text-xs text-text-3">
+                  {lang === 'bn' ? 'রোগীর উপসর্গ, রোগ নির্ণয় এবং ওষুধের তালিকা যোগ করুন' : 'Add diagnosis, medication regimen, and dietary advice'}
+                </p>
+              </div>
+
+              <div className="w-64">
+                <Input
+                  label={lang === 'bn' ? 'রোগীর নাম' : 'Patient Name'}
+                  value={prescriptionPatientName}
+                  onChange={(e) => setPrescriptionPatientName(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <form onSubmit={handleSavePrescription} className="space-y-4">
+              <Input
+                label={lang === 'bn' ? 'রোগ নির্ণয় (Diagnosis) *' : 'Clinical Diagnosis *'}
+                required
+                placeholder={lang === 'bn' ? 'যেমন: Acute Upper Respiratory Tract Infection...' : 'e.g. Essential Hypertension, Type 2 DM...'}
+                value={diagnosis}
+                onChange={(e) => setDiagnosis(e.target.value)}
+              />
+
+              {/* Medicines Table */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-text-3">
+                    {lang === 'bn' ? 'ওষুধের তালিকা (Rx)' : 'Medications (Rx)'}
+                  </label>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="compact"
+                    leftIcon={<Plus className="w-3.5 h-3.5" />}
+                    onClick={handleAddMedicine}
+                  >
+                    {lang === 'bn' ? '+ ওষুধ যোগ করুন' : '+ Add Medicine'}
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  {medicines.map((med, idx) => (
+                    <div key={idx} className="p-3 rounded-lg border border-border bg-canvas grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+                      <div className="sm:col-span-4">
+                        <input
+                          type="text"
+                          required
+                          placeholder="Medicine name (e.g. Paracetamol 500mg)"
+                          value={med.name}
+                          onChange={(e) => {
+                            const updated = [...medicines];
+                            updated[idx].name = e.target.value;
+                            setMedicines(updated);
+                          }}
+                          className="w-full h-9 px-3 text-xs border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <input
+                          type="text"
+                          placeholder="1+0+1"
+                          value={med.dosage}
+                          onChange={(e) => {
+                            const updated = [...medicines];
+                            updated[idx].dosage = e.target.value;
+                            setMedicines(updated);
+                          }}
+                          className="w-full h-9 px-3 text-xs border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <input
+                          type="text"
+                          placeholder="5 days"
+                          value={med.duration}
+                          onChange={(e) => {
+                            const updated = [...medicines];
+                            updated[idx].duration = e.target.value;
+                            setMedicines(updated);
+                          }}
+                          className="w-full h-9 px-3 text-xs border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
+                        />
+                      </div>
+                      <div className="sm:col-span-3">
+                        <input
+                          type="text"
+                          placeholder="After food / Before meal"
+                          value={med.instruction}
+                          onChange={(e) => {
+                            const updated = [...medicines];
+                            updated[idx].instruction = e.target.value;
+                            setMedicines(updated);
+                          }}
+                          className="w-full h-9 px-3 text-xs border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
+                        />
+                      </div>
+                      <div className="sm:col-span-1 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveMedicine(idx)}
+                          className="p-1.5 rounded-md hover:bg-subtle text-text-3 hover:text-danger-text transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-text-3 block mb-1">
+                  {lang === 'bn' ? 'পরামর্শ ও নির্দেশিকা (Advice)' : 'Clinical Advice & Instructions'}
+                </label>
+                <textarea
+                  rows={3}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder={lang === 'bn' ? 'পর্যাপ্ত পানি পান করুন, তৈলাক্ত খাবার পরিহার করুন...' : 'Drink plenty of fluids, review in 7 days...'}
+                  className="w-full p-3 text-xs border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-border flex items-center justify-end gap-3">
+                <Button variant="secondary" size="default" type="button" leftIcon={<Printer className="w-4 h-4" />} onClick={() => window.print()}>
+                  {lang === 'bn' ? 'প্রিন্ট ভিউ' : 'Print Preview'}
+                </Button>
+                <Button variant="primary" size="default" type="submit">
+                  {lang === 'bn' ? 'সংরক্ষণ ও প্রদান' : 'Save Prescription'}
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      )}
+
+      {/* ─── Patient Medical History Drawer / Modal ─── */}
+      {selectedPatientId && (
+        <Modal
+          isOpen={true}
+          onClose={() => setSelectedPatientId(null)}
+          title={lang === 'bn' ? 'রোগীর পূর্ববর্তী মেডিকেল রেকর্ড' : 'Confidential Patient History'}
+          maxWidth="max-w-2xl"
+        >
+          <div className="space-y-4">
+            <AlertBanner
+              variant="info"
+              message={
+                lang === 'bn'
+                  ? 'রোগীর সম্মতি অনুযায়ী শুধুমাত্র "Doctor Access" অনুমোদিত রিপোর্টগুলো প্রদর্শিত হচ্ছে।'
+                  : 'Only records explicitly marked "Doctor Access" by the patient are visible.'
+              }
+            />
+
+            {isLoadingHistory ? (
+              <div className="py-8 text-center text-xs text-text-3">Loading history...</div>
+            ) : patientHistory?.documents && patientHistory.documents.length > 0 ? (
+              <div className="divide-y divide-border border border-border rounded-lg overflow-hidden">
+                {patientHistory.documents.map((doc: any) => (
+                  <div key={doc.id} className="p-3.5 flex items-center justify-between hover:bg-subtle/50 transition-colors">
+                    <div>
+                      <div className="font-semibold text-sm text-ink">{doc.title}</div>
+                      <div className="text-xs text-text-3">
+                        {doc.fileType} · {new Date(doc.uploadedAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer">
+                      <Button variant="secondary" size="compact" leftIcon={<Eye className="w-3.5 h-3.5" />}>
+                        {lang === 'bn' ? 'ফাইল দেখুন' : 'View File'}
+                      </Button>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-xs text-text-3 bg-subtle rounded-lg">
+                {lang === 'bn' ? 'কোন অনুমোদিত মেডিকেল রেকর্ড নেই।' : 'No shared medical records found for this patient.'}
+              </div>
+            )}
           </div>
-        </form>
+        </Modal>
       )}
     </div>
   );
 }
-

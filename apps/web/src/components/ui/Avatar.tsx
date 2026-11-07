@@ -16,9 +16,9 @@ const sizeClasses = {
 };
 
 const statusClasses = {
-  online: 'bg-[#c6ff94] ring-[#000000]',
-  busy: 'bg-[#ff6808] ring-[#ffffff]',
-  offline: 'bg-[#d1d5db] ring-[#ffffff]',
+  online: 'bg-emerald-600 ring-white',
+  busy: 'bg-amber-600 ring-white',
+  offline: 'bg-stone-400 ring-white',
 };
 
 export function Avatar({
@@ -48,9 +48,9 @@ export function Avatar({
     >
       <div
         className={[
-          'rounded-full overflow-hidden flex items-center justify-center font-medium border border-[#e5e7eb]',
+          'rounded-full overflow-hidden flex items-center justify-center font-medium border border-[#e7e5e4]',
           sizeClasses[size],
-          showImage ? 'bg-[#ffffff]' : 'bg-[#ebdcff] text-[#000000]',
+          showImage ? 'bg-canvas' : 'bg-[#eef2ff] text-accent',
         ]
           .filter(Boolean)
           .join(' ')}

@@ -2,179 +2,199 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../stores/auth.store';
 import { useLanguageStore } from '../../stores/language.store';
-import { Avatar } from '../ui/Avatar';
-import { Badge } from '../ui/Badge';
-import { Button } from '../ui/Button';
+import { LanguageToggle } from '../shared/LanguageToggle';
 import {
-  Stethoscope,
   LayoutDashboard,
-  Users,
   Calendar,
-  Clock,
+  Users,
   FileText,
+  FolderHeart,
+  Clock,
   DollarSign,
-  Globe,
-  LogOut,
   Menu,
   X,
-  ChevronDown,
-  ShieldCheck,
-  Plus
+  LogOut,
+  Plus,
+  ChevronRight
 } from 'lucide-react';
 
 export function DoctorLayout() {
-  const { lang, toggleLanguage } = useLanguageStore();
+  const { t } = useLanguageStore();
   const { user, profile, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const navItems = [
-    {
-      to: '/doctor/dashboard',
-      label: lang === 'bn' ? 'ড্যাশবোর্ড' : 'Chamber Overview',
-      icon: LayoutDashboard,
-    },
-    {
-      to: '/doctor/queue',
-      label: lang === 'bn' ? 'লাইভ চেম্বার সিরিয়াল' : 'Live Patient Queue',
-      icon: Users,
-      badge: { text: 'Active', variant: 'orange' as const },
-    },
-    {
-      to: '/doctor/appointments',
-      label: lang === 'bn' ? 'আজকের রোগী তালিকা' : "Today's Appointments",
-      icon: Calendar,
-    },
-    {
-      to: '/doctor/slots',
-      label: lang === 'bn' ? 'শিডিউল ও চেম্বার সময়' : 'Visiting Schedule',
-      icon: Clock,
-    },
-    {
-      to: '/doctor/prescriptions',
-      label: lang === 'bn' ? 'প্রেসক্রিপশন ও হিস্ট্রি' : 'Clinical Records',
-      icon: FileText,
-    },
-    {
-      to: '/doctor/earnings',
-      label: lang === 'bn' ? 'ফি ও কনসালটেশন হিসাব' : 'Earnings & Revenue',
-      icon: DollarSign,
-    },
-  ];
 
   const handleLogout = async () => {
     await logout();
     navigate('/');
   };
 
+  const currentPath = location.pathname;
+  const pageTitle =
+    currentPath.includes('/queue')
+      ? 'Chamber Queue'
+      : currentPath.includes('/appointments')
+      ? t('nav.appointments')
+      : currentPath.includes('/slots')
+      ? 'Visiting Hours'
+      : currentPath.includes('/prescriptions')
+      ? t('nav.prescriptions')
+      : currentPath.includes('/earnings')
+      ? 'Billing & Fees'
+      : t('nav.dashboard');
+
   return (
-    <div className="flex min-h-screen bg-[#ffffff] font-sans text-[#000000]">
-      {/* ─── NavSidebar (Warm Bone #f1f0ec, Zero-Shadow) ─── */}
-      <aside className="hidden md:flex w-[260px] shrink-0 bg-[#f1f0ec] border-r border-[#e5e7eb] p-4 flex-col justify-between select-none">
+    <div className="flex min-h-screen bg-[#ffffff] font-sans text-[#111111]">
+      {/* ─── NavSidebar (240px, #f7f7f5, 1px right border) ─── */}
+      <aside className="hidden lg:flex w-[240px] shrink-0 bg-[#f7f7f5] border-r border-[#e7e5e4] p-4 flex-col justify-between select-none">
         <div className="space-y-4">
-          {/* Header Workspace Pill */}
-          <Link
-            to="/"
-            className="w-full flex items-center justify-between bg-[#ffffff] border border-[#e5e7eb] rounded-[12px] p-2.5 text-left transition-colors hover:border-[#4570ff]/40"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-[8px] bg-[#193f78] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                <Stethoscope className="w-4 h-4" />
-              </div>
-              <div className="overflow-hidden">
-                <div className="text-[14px] font-medium leading-tight text-[#000000] truncate">
-                  Doctor Practice
-                </div>
-                <div className="text-[11px] text-[#6e6d6c] truncate">
-                  BMDC Certified Chamber
-                </div>
-              </div>
+          {/* Brand */}
+          <Link to="/" className="flex items-center gap-3 px-1 h-10">
+            <div className="w-7 h-7 rounded-lg bg-[#111111] text-white grid place-items-center text-xs font-semibold">
+              M
             </div>
-            <ChevronDown className="w-4 h-4 text-[#6e6d6c] shrink-0" />
+            <span className="text-[16px] font-semibold text-[#111111]">
+              {t('app_name')}
+            </span>
           </Link>
 
-          {/* Quick Action Button */}
-          <Link to="/doctor/queue" className="block">
-            <button className="w-full bg-[#4570ff] hover:bg-[#345ee6] text-white font-medium text-[14px] py-2.5 px-4 rounded-full flex items-center justify-center gap-2 transition-colors cursor-pointer">
-              <Users className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'পরবর্তী রোগী কল করুন' : 'Call Next Patient'}</span>
+          {/* Quick Action Button (Doctor: + New prescription) */}
+          <Link to="/doctor/prescriptions" className="block">
+            <button
+              type="button"
+              className="w-full h-10 rounded-lg bg-[#3b5bdb] hover:bg-[#2f4bc0] text-white text-[14px] font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>{t('action.newRx')}</span>
             </button>
           </Link>
 
-          {/* Navigation Section */}
+          {/* Group: Workspace */}
           <div>
-            <div className="px-3 pt-2 pb-1.5 text-[11px] font-bold uppercase tracking-[0.025em] text-[#6e6d6c]">
-              Physician Operations
+            <div className="px-3 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#78716c]">
+              {t('groups.workspace')}
             </div>
-            <nav className="space-y-1">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.to;
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    className={`flex items-center justify-between px-3 py-2.5 rounded-[12px] text-[14px] transition-colors duration-150 ${
-                      isActive
-                        ? 'bg-[#4570ff] text-white font-medium'
-                        : 'text-[#555555] hover:bg-[#ffffff] hover:text-[#000000] hover:font-medium'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span className="truncate">{item.label}</span>
-                    </div>
-                    {item.badge && (
-                      <span
-                        className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
-                          isActive
-                            ? 'bg-white/20 text-white'
-                            : 'bg-[#ff6808] text-white'
-                        }`}
-                      >
-                        {item.badge.text}
-                      </span>
-                    )}
-                  </NavLink>
-                );
-              })}
+            <nav className="space-y-0.5">
+              <NavLink
+                to="/doctor/dashboard"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                    isActive
+                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                  }`
+                }
+              >
+                <LayoutDashboard className="w-[18px] h-[18px] shrink-0" />
+                <span>{t('nav.dashboard')}</span>
+              </NavLink>
+
+              <NavLink
+                to="/doctor/queue"
+                className={({ isActive }) =>
+                  `flex items-center justify-between h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                    isActive
+                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-3">
+                  <Users className="w-[18px] h-[18px] shrink-0" />
+                  <span>Chamber Queue</span>
+                </div>
+                <span className="bg-[#f4f4f2] text-[#78716c] text-[12px] px-2 py-0.5 rounded-full font-medium">
+                  Active
+                </span>
+              </NavLink>
+
+              <NavLink
+                to="/doctor/appointments"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                    isActive
+                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                  }`
+                }
+              >
+                <Calendar className="w-[18px] h-[18px] shrink-0" />
+                <span>{t('nav.appointments')}</span>
+              </NavLink>
+            </nav>
+          </div>
+
+          {/* Group: Care */}
+          <div>
+            <div className="px-3 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#78716c]">
+              {t('groups.care')}
+            </div>
+            <nav className="space-y-0.5">
+              <NavLink
+                to="/doctor/prescriptions"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                    isActive
+                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                  }`
+                }
+              >
+                <FileText className="w-[18px] h-[18px] shrink-0" />
+                <span>{t('nav.prescriptions')}</span>
+              </NavLink>
+
+              <NavLink
+                to="/doctor/slots"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                    isActive
+                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                  }`
+                }
+              >
+                <Clock className="w-[18px] h-[18px] shrink-0" />
+                <span>Visiting Hours</span>
+              </NavLink>
+
+              <NavLink
+                to="/doctor/earnings"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] transition-colors ${
+                    isActive
+                      ? 'bg-[#eef2ff] text-[#3b5bdb] font-medium'
+                      : 'text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]'
+                  }`
+                }
+              >
+                <DollarSign className="w-[18px] h-[18px] shrink-0" />
+                <span>{t('nav.billing')}</span>
+              </NavLink>
             </nav>
           </div>
         </div>
 
-        {/* Bottom Sidebar Zone */}
-        <div className="space-y-3 pt-4">
-          {/* Dark Contrast Metric Box */}
-          <div className="bg-[#000000] text-white rounded-[16px] p-4 space-y-1.5">
-            <div className="text-[11px] font-bold uppercase tracking-[0.025em] text-[#c6ff94]">
-              Today's Patients
-            </div>
-            <div className="text-[24px] font-medium tracking-[-0.6px] leading-tight">
-              23 <span className="text-[12px] font-normal text-[#c6ff94]">(18 Chamber)</span>
-            </div>
-            <div className="text-[12px] text-[#d1d5db]">5 Online Telemedicine slots left.</div>
-          </div>
-
-          {/* User Profile Footer */}
-          <div className="pt-3 border-t border-[#e5e7eb] flex items-center justify-between">
+        {/* Bottom Zone: User Profile Footer */}
+        <div className="space-y-1 pt-4 border-t border-[#e7e5e4]">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <Avatar
-                name={profile?.fullName || user?.displayName || 'Doctor'}
-                src={profile?.avatarUrl || user?.photoURL}
-                size="sm"
-              />
-              <div className="overflow-hidden leading-tight">
-                <div className="text-[14px] font-medium text-[#000000] truncate">
-                  {profile?.fullName || user?.displayName || 'Doctor'}
+              <div className="w-8 h-8 rounded-full bg-[#f4f4f2] border border-[#e7e5e4] grid place-items-center text-xs font-semibold text-[#111111]">
+                {(profile?.fullName || user?.displayName || 'Dr').slice(0, 2).toUpperCase()}
+              </div>
+              <div className="leading-tight overflow-hidden">
+                <div className="text-[13px] font-medium text-[#111111] truncate">
+                  {profile?.fullName || user?.displayName || 'Physician'}
                 </div>
-                <div className="text-[12px] text-[#6e6d6c] truncate">Specialist Physician</div>
+                <div className="text-[11px] text-[#78716c] truncate">BMDC Verified</div>
               </div>
             </div>
+
             <button
               onClick={handleLogout}
-              className="p-1.5 text-[#6e6d6c] hover:text-[#000000] hover:bg-[#ffffff] rounded-[8px] transition-colors"
-              title="Sign Out"
+              className="p-1.5 text-[#78716c] hover:text-[#111111] hover:bg-[#f4f4f2] rounded-md transition-colors"
+              title={t('action.signOut')}
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -182,98 +202,109 @@ export function DoctorLayout() {
         </div>
       </aside>
 
-      {/* ─── Main Workspace ─── */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#ffffff]">
-        <header className="h-16 border-b border-[#e5e7eb] px-4 sm:px-8 flex items-center justify-between bg-[#ffffff] sticky top-0 z-20">
+      {/* ─── Main Content Container ─── */}
+      <div className="flex-1 min-w-0 flex flex-col bg-[#ffffff]">
+        {/* Top Bar (56px) */}
+        <header className="h-14 border-b border-[#e7e5e4] px-4 sm:px-6 lg:px-8 flex items-center justify-between bg-[#ffffff] sticky top-0 z-20">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden p-2 rounded-[12px] text-[#555555] hover:bg-[#f1f0ec]"
+              className="lg:hidden p-2 rounded-lg text-[#57534e] hover:bg-[#f4f4f2] hover:text-[#111111]"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2">
-              <span className="text-[12px] font-bold uppercase tracking-[0.025em] text-[#6e6d6c]">
-                MediSheba BD
-              </span>
-              <span className="text-[#e5e7eb]">/</span>
-              <span className="text-[14px] font-medium text-[#000000]">
-                Doctor Chamber
-              </span>
-            </div>
+
+            <nav className="flex items-center gap-1.5 text-[14px] text-[#78716c]">
+              <span>{t('app_name')}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#d6d3d1]" />
+              <span className="text-[#111111] font-medium">{pageTitle}</span>
+            </nav>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1.5 bg-[#f1f0ec] px-3 py-1 rounded-full text-[12px] font-medium text-[#000000]">
-              <ShieldCheck className="w-4 h-4 text-[#4570ff]" />
-              <span>BMDC Verified</span>
-            </div>
+            <LanguageToggle />
 
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f1f0ec] hover:bg-[#e5e7eb] text-[13px] font-medium text-[#000000] transition"
-            >
-              <Globe className="w-3.5 h-3.5 text-[#4570ff]" />
-              <span>{lang === 'bn' ? 'English' : 'বাংলা'}</span>
-            </button>
+            <div className="w-8 h-8 rounded-full bg-[#f4f4f2] border border-[#e7e5e4] grid place-items-center text-xs font-semibold text-[#111111]">
+              {(profile?.fullName || user?.displayName || 'Dr').slice(0, 2).toUpperCase()}
+            </div>
           </div>
         </header>
 
-        <main className="flex-1 p-4 sm:p-8 max-w-[1200px] w-full mx-auto pb-24 md:pb-8">
+        {/* Content Well */}
+        <main className="p-4 sm:p-6 lg:p-8 max-w-[1120px] w-full mx-auto space-y-6 flex-1">
           <Outlet />
         </main>
       </div>
 
-      {/* ─── Mobile Bottom Navigation ─── */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-[#ffffff] border-t border-[#e5e7eb] z-40 px-2 py-1.5 flex items-center justify-around">
-        <NavLink
-          to="/doctor/dashboard"
-          className={({ isActive }) =>
-            `flex flex-col items-center gap-0.5 py-1 px-3 rounded-[12px] text-[11px] font-medium transition ${
-              isActive ? 'text-[#4570ff]' : 'text-[#6e6d6c]'
-            }`
-          }
-        >
-          <LayoutDashboard className="w-5 h-5" />
-          <span>Overview</span>
-        </NavLink>
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="fixed inset-0 bg-[#000000]/40 backdrop-blur-xs"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="fixed inset-y-0 left-0 w-[280px] bg-[#f7f7f5] border-r border-[#e7e5e4] p-4 flex flex-col justify-between z-10">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#e7e5e4]">
+                <span className="text-[16px] font-semibold text-[#111111]">
+                  {t('app_name')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-1 text-[#78716c] hover:text-[#111111]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
-        <NavLink
-          to="/doctor/queue"
-          className={({ isActive }) =>
-            `flex flex-col items-center gap-0.5 py-1 px-3 rounded-[12px] text-[11px] font-medium transition ${
-              isActive ? 'text-[#4570ff]' : 'text-[#6e6d6c]'
-            }`
-          }
-        >
-          <Users className="w-5 h-5" />
-          <span>Queue</span>
-        </NavLink>
+              <nav className="space-y-1">
+                <NavLink
+                  to="/doctor/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] text-[#57534e]"
+                >
+                  <LayoutDashboard className="w-[18px] h-[18px]" />
+                  <span>{t('nav.dashboard')}</span>
+                </NavLink>
+                <NavLink
+                  to="/doctor/queue"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] text-[#57534e]"
+                >
+                  <Users className="w-[18px] h-[18px]" />
+                  <span>Chamber Queue</span>
+                </NavLink>
+                <NavLink
+                  to="/doctor/appointments"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] text-[#57534e]"
+                >
+                  <Calendar className="w-[18px] h-[18px]" />
+                  <span>{t('nav.appointments')}</span>
+                </NavLink>
+                <NavLink
+                  to="/doctor/prescriptions"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 h-10 px-3 rounded-lg text-[14px] text-[#57534e]"
+                >
+                  <FileText className="w-[18px] h-[18px]" />
+                  <span>{t('nav.prescriptions')}</span>
+                </NavLink>
+              </nav>
+            </div>
 
-        <NavLink
-          to="/doctor/appointments"
-          className={({ isActive }) =>
-            `flex flex-col items-center gap-0.5 py-1 px-3 rounded-[12px] text-[11px] font-medium transition ${
-              isActive ? 'text-[#4570ff]' : 'text-[#6e6d6c]'
-            }`
-          }
-        >
-          <Calendar className="w-5 h-5" />
-          <span>Patients</span>
-        </NavLink>
-
-        <NavLink
-          to="/doctor/slots"
-          className={({ isActive }) =>
-            `flex flex-col items-center gap-0.5 py-1 px-3 rounded-[12px] text-[11px] font-medium transition ${
-              isActive ? 'text-[#4570ff]' : 'text-[#6e6d6c]'
-            }`
-          }
-        >
-          <Clock className="w-5 h-5" />
-          <span>Schedule</span>
-        </NavLink>
-      </nav>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-full h-10 rounded-lg border border-[#e7e5e4] bg-white text-[14px] font-medium text-[#111111]"
+            >
+              {t('action.signOut')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

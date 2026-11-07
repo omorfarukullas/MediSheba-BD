@@ -1,10 +1,13 @@
 import React from 'react';
+import { useLanguageStore } from '../../../stores/language.store';
 import { Card } from '../../../components/ui/Card';
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
-import { Building2, CheckCircle, Clock } from 'lucide-react';
+import { Building2, CheckCircle2, Clock } from 'lucide-react';
 
 export function SuperAdminHospitalsPage() {
+  const { lang } = useLanguageStore();
+
   const hospitals = [
     { id: '1', name: 'Dhaka Medical College & Hospital', city: 'Dhaka', status: 'Approved', beds: 2400 },
     { id: '2', name: 'BSMMU (PG Hospital)', city: 'Dhaka', status: 'Approved', beds: 1800 },
@@ -13,45 +16,55 @@ export function SuperAdminHospitalsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-[1120px] mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-ink">Hospital Verification & Management</h1>
-          <p className="text-[13px] text-ink-secondary">Review and approve hospital accounts and resource tracking credentials</p>
+          <h1 className="text-[28px] font-semibold text-ink leading-tight">
+            {lang === 'bn' ? 'হাসপাতাল অনুমোদন ও ব্যবস্থাপনা' : 'Hospital Verification & Governance'}
+          </h1>
+          <p className="text-sm text-text-2 mt-1">
+            {lang === 'bn'
+              ? 'হাসপাতাল অ্যাকাউন্ট পর্যালোচনা, অনুমোদন এবং প্রাতিষ্ঠানিক সনদ যাচাই।'
+              : 'Review and approve hospital accounts and resource tracking credentials.'}
+          </p>
         </div>
       </div>
 
-      <Card padding="none">
+      <Card padding="none" className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-[14px]">
-            <thead className="bg-ground-muted text-ink-secondary border-b border-rule text-[12px] font-semibold uppercase">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-subtle text-xs text-text-3 font-medium border-b border-border">
               <tr>
-                <th className="py-3 px-4">Hospital Name</th>
-                <th className="py-3 px-4">Location</th>
-                <th className="py-3 px-4">Total Beds</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+                <th className="px-5 py-3">{lang === 'bn' ? 'হাসপাতালের নাম' : 'Hospital Name'}</th>
+                <th className="px-5 py-3">{lang === 'bn' ? 'শহর' : 'Location'}</th>
+                <th className="px-5 py-3">{lang === 'bn' ? 'মোট বেড' : 'Total Beds'}</th>
+                <th className="px-5 py-3">{lang === 'bn' ? 'অনুমোদন অবস্থা' : 'Status'}</th>
+                <th className="px-5 py-3 text-right">{lang === 'bn' ? 'অ্যাকশন' : 'Action'}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-rule/60 text-ink">
+            <tbody className="divide-y divide-border">
               {hospitals.map((h) => (
-                <tr key={h.id} className="hover:bg-ground-muted/40 transition-colors">
-                  <td className="py-3.5 px-4 font-semibold flex items-center gap-2">
+                <tr key={h.id} className="hover:bg-subtle/50 transition-colors h-[52px]">
+                  <td className="px-5 py-3 font-medium text-ink flex items-center gap-2">
                     <Building2 className="w-4 h-4 text-accent" />
-                    {h.name}
+                    <span>{h.name}</span>
                   </td>
-                  <td className="py-3.5 px-4">{h.city}</td>
-                  <td className="py-3.5 px-4">{h.beds}</td>
-                  <td className="py-3.5 px-4">
-                    <Badge variant={h.status === 'Approved' ? 'success' : 'warning'} size="sm">
+                  <td className="px-5 py-3 text-xs text-text-3">{h.city}</td>
+                  <td className="px-5 py-3 font-mono text-xs text-text-2">{h.beds}</td>
+                  <td className="px-5 py-3">
+                    <Badge variant={h.status === 'Approved' ? 'success' : 'warning'}>
                       {h.status}
                     </Badge>
                   </td>
-                  <td className="py-3.5 px-4 text-right">
+                  <td className="px-5 py-3 text-right">
                     {h.status === 'Pending Review' ? (
-                      <Button size="sm" variant="primary">Approve</Button>
+                      <Button size="compact" variant="primary">
+                        {lang === 'bn' ? 'অনুমোদন করুন' : 'Approve'}
+                      </Button>
                     ) : (
-                      <Button size="sm" variant="outline">Manage</Button>
+                      <Button size="compact" variant="secondary">
+                        {lang === 'bn' ? 'পরিচালনা' : 'Manage'}
+                      </Button>
                     )}
                   </td>
                 </tr>
@@ -63,4 +76,3 @@ export function SuperAdminHospitalsPage() {
     </div>
   );
 }
-

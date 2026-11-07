@@ -2,19 +2,23 @@ import React, { useState } from 'react';
 import { trpc } from '../../lib/trpc';
 import { useLanguageStore } from '../../stores/language.store';
 import { useAuthStore } from '../../stores/auth.store';
+import { Card } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { Badge } from '../ui/Badge';
+import { Modal } from '../ui/Modal';
+import { AlertBanner } from '../ui/AlertBanner';
 import { 
   FolderLock, 
   Upload, 
   FileText, 
   Lock, 
-  Unlock, 
-  Eye, 
-  Trash2, 
   ShieldCheck, 
   Plus, 
-  Check, 
-  Share2, 
-  ExternalLink 
+  Eye, 
+  Trash2, 
+  Share2,
+  FileBadge
 } from 'lucide-react';
 
 export function PatientDocumentsView() {
@@ -70,121 +74,132 @@ export function PatientDocumentsView() {
     });
   };
 
+  const filterTabs = [
+    { id: 'ALL', label: lang === 'bn' ? 'সকল রেকর্ড' : 'All Records' },
+    { id: 'PRESCRIPTION', label: lang === 'bn' ? 'প্রেসক্রিপশন' : 'Prescriptions' },
+    { id: 'LAB_REPORT', label: lang === 'bn' ? 'ল্যাব রিপোর্ট' : 'Lab Reports' },
+    { id: 'SCAN', label: lang === 'bn' ? 'এক্স-রে ও স্ক্যান' : 'Imaging / Scans' },
+  ];
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-[1120px] mx-auto space-y-6">
+      {/* ─── Header ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-accent text-xs font-bold uppercase tracking-wider mb-1">
-            <FolderLock className="w-4 h-4" />
-            {lang === 'bn' ? 'রোগীর ডিজিটাল প্রেসক্রিপশন ও রিপোর্ট ভল্ট' : 'Digital Prescription & Report Vault'}
-          </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-ink tracking-tight">
-            {lang === 'bn' ? 'পূর্ববর্তী প্রেসক্রিপশন ও স্বাস্থ্য রেকর্ড' : 'My Prescriptions & Medical Reports'}
+          <h1 className="text-[28px] font-semibold text-ink leading-tight">
+            {lang === 'bn' ? 'প্রেসক্রিপশন ভল্ট ও মেডিকেল রেকর্ড' : 'Prescription Vault & Medical Records'}
           </h1>
-          <p className="text-sm text-ink-secondary mt-1">
+          <p className="text-sm text-text-2 mt-1">
             {lang === 'bn'
-              ? 'পরবর্তী অ্যাপয়েন্টমেন্টের জন্য আপনার রিপোর্ট সংরক্ষণ করুন এবং ডাক্তার দেখতে পারবেন কি না তা সম্পূর্ণ আপনার নিয়ন্ত্রণে রাখুন।'
-              : 'Store previous medical records for future appointments with full privacy controls (Only Me vs Doctor Access).'}
+              ? 'পূর্ববর্তী রিপোর্ট সংরক্ষণ ও চিকিৎসকের সাথে গোপনীয়তা নিয়ন্ত্রণ (শুধুমাত্র আমি বনাম ডাক্তার প্রবেশাধিকার)।'
+              : 'Secure record storage with strict privacy controls (Only Me vs Doctor Access).'}
           </p>
         </div>
 
-        <button
-          onClick={() => setShowUploadModal(true)}
-          className="inline-flex items-center gap-2 bg-accent hover:opacity-90 text-on-accent font-bold px-4 py-2.5 rounded-xl text-sm transition shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
-          <span>{lang === 'bn' ? 'নতুন রিপোর্ট / প্রেসক্রিপশন যোগ করুন' : 'Upload Medical Record'}</span>
-        </button>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-rule pb-3 text-xs font-semibold">
-        {(['ALL', 'PRESCRIPTION', 'LAB_REPORT', 'DISCHARGE_SUMMARY', 'SCAN'] as const).map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setCategoryFilter(cat)}
-            className={`px-3 py-1.5 rounded-lg transition ${
-              categoryFilter === cat 
-                ? 'bg-accent text-on-accent' 
-                : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
-            }`}
+        <div>
+          <Button
+            variant="primary"
+            leftIcon={<Plus className="w-4 h-4" />}
+            onClick={() => setShowUploadModal(true)}
           >
-            {cat === 'ALL' ? (lang === 'bn' ? 'সব রেকর্ড' : 'All Records') : cat.replace('_', ' ')}
-          </button>
-        ))}
+            {lang === 'bn' ? '+ নতুন রেকর্ড যোগ করুন' : '+ Upload Record'}
+          </Button>
+        </div>
       </div>
 
-      {/* Document Grid */}
-      {isLoading ? (
-        <div className="p-16 text-center text-ink-secondary">
-          <FileText className="w-10 h-10 animate-pulse mx-auto mb-2 text-accent" />
-          {lang === 'bn' ? 'প্রেসক্রিপশন ও রিপোর্ট লোড হচ্ছে...' : 'Loading records...'}
-        </div>
-      ) : documents && documents.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* ─── Privacy Policy Alert Banner ─── */}
+      <AlertBanner
+        variant="info"
+        message={
+          lang === 'bn'
+            ? 'গোপনীয়তা তথ্য: "ডাক্তার দেখতে পারবেন" মোডে আপনার নিবন্ধিত চিকিৎসকরা পরামর্শের সুবিধার্থে এই রিপোর্ট দেখতে পারবেন।'
+            : 'Privacy Note: Records marked "Doctor Access" are only visible to certified physicians during active consultations.'
+        }
+      />
+
+      {/* ─── Filter Chips ─── */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        {filterTabs.map((tab) => {
+          const isSelected = categoryFilter === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setCategoryFilter(tab.id)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border ${
+                isSelected
+                  ? 'bg-accent-tint text-accent border-accent'
+                  : 'bg-subtle text-text-2 border-border hover:border-border-strong hover:text-ink'
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ─── Document Cards Grid ─── */}
+      {documents && documents.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {documents
             .filter((d) => categoryFilter === 'ALL' || d.fileType === categoryFilter)
             .map((doc) => {
               const isOnlyMe = doc.visibilityMode === 'ONLY_ME';
               return (
-                <div
-                  key={doc.id}
-                  className="bg-panel border border-rule rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-accent/10 text-accent uppercase">
-                        {doc.fileType.replace('_', ' ')}
-                      </span>
-
-                      {/* Privacy Badge Toggle */}
+                <Card key={doc.id} padding="md" className="flex flex-col justify-between space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <Badge variant="neutral">
+                        {doc.fileType}
+                      </Badge>
                       <button
                         onClick={() => handleToggleVisibility(doc.id, doc.visibilityMode)}
-                        title={lang === 'bn' ? 'ক্লিক করে প্রাইভেসি পরিবর্তন করুন' : 'Click to toggle visibility'}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition shadow-xs ${
+                        className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full border cursor-pointer ${
                           isOnlyMe
-                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 hover:bg-amber-200'
-                            : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 hover:bg-emerald-200'
+                            ? 'bg-subtle text-text-2 border-border'
+                            : 'bg-accent-tint text-accent border-accent/30'
                         }`}
+                        title={lang === 'bn' ? 'ক্লিক করে প্রাইভেসি পরিবর্তন করুন' : 'Click to toggle privacy'}
                       >
                         {isOnlyMe ? (
                           <>
-                            <Lock className="w-3.5 h-3.5" />
-                            <span>{lang === 'bn' ? 'শুধুমাত্র আমি (Only Me)' : 'Only Me'}</span>
+                            <Lock className="w-3 h-3" />
+                            <span>{lang === 'bn' ? 'ব্যক্তিগত (Only Me)' : 'Only Me'}</span>
                           </>
                         ) : (
                           <>
-                            <ShieldCheck className="w-3.5 h-3.5" />
-                            <span>{lang === 'bn' ? 'ডাক্তার দেখতে পারবেন' : 'Doctor Can Access'}</span>
+                            <ShieldCheck className="w-3 h-3" />
+                            <span>{lang === 'bn' ? 'ডাক্তার দেখতে পারবেন' : 'Doctor Access'}</span>
                           </>
                         )}
                       </button>
                     </div>
 
-                    <h3 className="font-bold text-base text-ink line-clamp-1">{doc.title}</h3>
-                    <p className="text-xs text-ink-secondary mt-1">
-                      {lang === 'bn' ? 'সংযুক্ত তারিখ:' : 'Uploaded:'} {new Date(doc.uploadedAt).toLocaleDateString()}
-                    </p>
+                    <div>
+                      <h3 className="font-semibold text-sm text-ink line-clamp-1">{doc.title}</h3>
+                      <p className="text-xs text-text-3 mt-1">
+                        {lang === 'bn' ? 'সংরক্ষিত:' : 'Added:'} {new Date(doc.uploadedAt).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="pt-3 border-t border-rule flex items-center justify-between gap-2">
+                  <div className="pt-3 border-t border-border flex items-center justify-between gap-2">
                     <a
                       href={doc.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 bg-ground-muted hover:bg-ground border border-rule font-semibold text-xs py-2 px-3 rounded-xl text-ink transition"
+                      className="flex-1"
                     >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>{lang === 'bn' ? 'ফাইল দেখুন' : 'View File'}</span>
+                      <Button variant="secondary" size="compact" leftIcon={<Eye className="w-3.5 h-3.5" />} className="w-full">
+                        {lang === 'bn' ? 'ফাইল দেখুন' : 'View File'}
+                      </Button>
                     </a>
 
                     <button
                       onClick={() => handleToggleVisibility(doc.id, doc.visibilityMode)}
-                      className="p-2 rounded-xl border border-rule hover:border-accent text-ink-secondary hover:text-accent transition"
-                      title={lang === 'bn' ? 'প্রাইভেসি পরিবর্তন' : 'Change Visibility'}
+                      className="h-8 w-8 rounded-lg border border-border flex items-center justify-center text-text-3 hover:text-accent hover:border-accent transition-colors"
+                      title={lang === 'bn' ? 'প্রাইভেসি পরিবর্তন' : 'Toggle Visibility'}
                     >
-                      <Share2 className="w-4 h-4" />
+                      <Share2 className="w-3.5 h-3.5" />
                     </button>
 
                     <button
@@ -193,161 +208,139 @@ export function PatientDocumentsView() {
                           deleteMutation.mutate({ documentId: doc.id });
                         }
                       }}
-                      className="p-2 rounded-xl border border-rule hover:border-rose-400 text-ink-secondary hover:text-rose-600 transition"
+                      className="h-8 w-8 rounded-lg border border-border flex items-center justify-center text-text-3 hover:text-danger-text hover:border-danger-border transition-colors"
                       title={lang === 'bn' ? 'মুছে ফেলুন' : 'Delete'}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                </div>
+                </Card>
               );
             })}
         </div>
       ) : (
-        <div className="p-16 text-center bg-panel border border-rule rounded-2xl text-ink-secondary space-y-3">
-          <FileText className="w-12 h-12 mx-auto text-ink-secondary/40" />
-          <h3 className="font-bold text-base text-ink">
+        <Card padding="lg" className="text-center py-12 space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-subtle text-text-3 mx-auto flex items-center justify-center">
+            <FileText className="w-5 h-5 text-text-3" />
+          </div>
+          <h3 className="text-base font-semibold text-ink">
             {lang === 'bn' ? 'কোন প্রেসক্রিপশন বা রিপোর্ট আপলোড করা নেই' : 'No records uploaded yet'}
           </h3>
-          <p className="text-xs max-w-sm mx-auto">
+          <p className="text-xs text-text-3 max-w-sm mx-auto">
             {lang === 'bn'
-              ? 'আপনার পূর্বের প্রেসক্রিপশন, রক্ত পরীক্ষার রিপোর্ট বা এক্স-রে সংরক্ষণ করে রাখুন।'
+              ? 'আপনার পূর্বের প্রেসক্রিপশন, রক্ত পরীক্ষার রিপোর্ট বা এক্স-রে নিরাপদ ভল্টে সংরক্ষণ করে রাখুন।'
               : 'Keep your past prescriptions, lab tests, and scans safely organized.'}
           </p>
-          <button
-            onClick={() => setShowUploadModal(true)}
-            className="inline-flex items-center gap-2 bg-accent text-on-accent font-bold px-4 py-2 rounded-xl text-xs shadow-xs"
-          >
-            <Plus className="w-4 h-4" />
-            <span>{lang === 'bn' ? 'প্রথম ফাইল যোগ করুন' : 'Add First File'}</span>
-          </button>
-        </div>
+          <div>
+            <Button
+              variant="primary"
+              size="compact"
+              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              onClick={() => setShowUploadModal(true)}
+            >
+              {lang === 'bn' ? 'প্রথম ফাইল যোগ করুন' : 'Add First Record'}
+            </Button>
+          </div>
+        </Card>
       )}
 
-      {/* Upload Record Modal */}
+      {/* ─── Upload Record Modal ─── */}
       {showUploadModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-field/80 backdrop-blur-sm px-4">
-          <div className="bg-panel border border-rule rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-xl space-y-5">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-lg text-ink">
-                {lang === 'bn' ? 'প্রেসক্রিপশন / রিপোর্ট সংরক্ষণ' : 'Upload Medical Record'}
-              </h3>
-              <button
-                onClick={() => setShowUploadModal(false)}
-                className="text-ink-secondary hover:text-ink text-sm font-bold"
+        <Modal
+          isOpen={true}
+          onClose={() => setShowUploadModal(false)}
+          title={lang === 'bn' ? 'প্রেসক্রিপশন / রিপোর্ট আপলোড' : 'Upload Medical Record'}
+          maxWidth="max-w-md"
+        >
+          <form onSubmit={handleUploadSubmit} className="space-y-4">
+            <Input
+              label={lang === 'bn' ? 'ডকুমেন্টের শিরোনাম *' : 'Document Title *'}
+              required
+              placeholder={lang === 'bn' ? 'যেমন: ইসিজি রিপোর্ট ২০২৪' : 'e.g. Lipid Profile Oct 2024'}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-text-3 mb-1">
+                {lang === 'bn' ? 'ডকুমেন্টের ধরন' : 'Record Type'}
+              </label>
+              <select
+                value={fileType}
+                onChange={(e) => setFileType(e.target.value)}
+                className="w-full h-10 px-3 text-sm font-medium border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
               >
-                ✕
-              </button>
+                <option value="PRESCRIPTION">{lang === 'bn' ? 'প্রেসক্রিপশন (Prescription)' : 'Prescription'}</option>
+                <option value="LAB_REPORT">{lang === 'bn' ? 'ল্যাব টেস্ট রিপোর্ট (Lab Report)' : 'Lab Report'}</option>
+                <option value="SCAN">{lang === 'bn' ? 'এক্স-রে / এমআরআই স্ক্যান (Imaging)' : 'Imaging / Scan'}</option>
+                <option value="DISCHARGE_LETTER">{lang === 'bn' ? 'হাসপাতাল ছাড়পত্র (Discharge)' : 'Discharge Summary'}</option>
+              </select>
             </div>
 
-            <form onSubmit={handleUploadSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-ink-secondary mb-1">
-                  {lang === 'bn' ? 'ডকুমেন্টের শিরোনাম *' : 'Document Title *'}
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder={lang === 'bn' ? 'যেমন: সিবিসি ও লিপিড প্রোফাইল রিপোর্ট' : 'e.g. CBC & Blood Sugar Report'}
-                  className="w-full border border-rule rounded-xl px-3.5 py-2.5 text-sm bg-ground text-ink focus:outline-none focus:border-accent"
-                />
-              </div>
+            <Input
+              label={lang === 'bn' ? 'ফাইল লিংক / URL *' : 'File URL *'}
+              required
+              type="url"
+              placeholder="https://example.com/report.pdf"
+              value={fileUrl}
+              onChange={(e) => setFileUrl(e.target.value)}
+              helperText={lang === 'bn' ? 'সরাসরি পিডিএফ বা ছবির লিংক দিন' : 'Direct link to PDF or image'}
+            />
 
-              <div>
-                <label className="block text-xs font-semibold text-ink-secondary mb-1">
-                  {lang === 'bn' ? 'ক্যাটাগরি / ধরন' : 'Document Type'}
-                </label>
-                <select
-                  value={fileType}
-                  onChange={(e) => setFileType(e.target.value)}
-                  className="w-full border border-rule rounded-xl px-3.5 py-2.5 text-sm bg-ground text-ink focus:outline-none focus:border-accent"
-                >
-                  <option value="PRESCRIPTION">{lang === 'bn' ? 'প্রেসক্রিপশন' : 'Prescription'}</option>
-                  <option value="LAB_REPORT">{lang === 'bn' ? 'ল্যাব টেস্ট রিপোর্ট' : 'Lab Test Report'}</option>
-                  <option value="DISCHARGE_SUMMARY">{lang === 'bn' ? 'হাসপাতাল ছাড়পত্র' : 'Discharge Summary'}</option>
-                  <option value="SCAN">{lang === 'bn' ? 'এক্স-রে / এমআরআই স্ক্যান' : 'X-Ray / MRI Scan'}</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-ink-secondary mb-1">
-                  {lang === 'bn' ? 'ফাইল লিংক / ক্লাউড স্টোরেজ URL *' : 'File URL / Cloud Storage Link *'}
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={fileUrl}
-                  onChange={(e) => setFileUrl(e.target.value)}
-                  placeholder="https://drive.google.com/... or https://..."
-                  className="w-full border border-rule rounded-xl px-3.5 py-2.5 text-sm bg-ground text-ink focus:outline-none focus:border-accent"
-                />
-              </div>
-
-              {/* Privacy Radio */}
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold text-ink-secondary">
-                  {lang === 'bn' ? 'ভিজিবিলিটি ও নিরাপত্তা নির্ধারণ *' : 'Visibility & Privacy Level *'}
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <label
-                    onClick={() => setVisibilityMode('ONLY_ME')}
-                    className={`p-3 rounded-xl border cursor-pointer flex flex-col justify-between gap-1 transition ${
-                      visibilityMode === 'ONLY_ME'
-                        ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20'
-                        : 'border-rule bg-ground'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 font-bold text-xs text-ink">
-                      <Lock className="w-3.5 h-3.5 text-amber-600" />
-                      <span>{lang === 'bn' ? 'শুধুমাত্র আমি' : 'Only Me'}</span>
-                    </div>
-                    <span className="text-[11px] text-ink-secondary">
-                      {lang === 'bn' ? 'ডাক্তার দেখতে পারবেন না' : 'Hidden from all doctors'}
-                    </span>
-                  </label>
-
-                  <label
-                    onClick={() => setVisibilityMode('DOCTOR_ACCESS')}
-                    className={`p-3 rounded-xl border cursor-pointer flex flex-col justify-between gap-1 transition ${
-                      visibilityMode === 'DOCTOR_ACCESS'
-                        ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20'
-                        : 'border-rule bg-ground'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 font-bold text-xs text-ink">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{lang === 'bn' ? 'ডাক্তার দেখতে পাবেন' : 'Doctor Can Access'}</span>
-                    </div>
-                    <span className="text-[11px] text-ink-secondary">
-                      {lang === 'bn' ? 'অ্যাপয়েন্টমেন্টে ডাক্তার দেখতে পাবেন' : 'Shared during consultation'}
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-3">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-text-3 mb-1">
+                {lang === 'bn' ? 'গোপনীয়তা মোড' : 'Privacy Control'}
+              </label>
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => setShowUploadModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold border border-rule hover:bg-ground"
+                  onClick={() => setVisibilityMode('DOCTOR_ACCESS')}
+                  className={`p-3 rounded-lg border text-left transition-colors ${
+                    visibilityMode === 'DOCTOR_ACCESS'
+                      ? 'bg-accent-tint border-accent text-accent'
+                      : 'bg-canvas border-border text-text-2 hover:border-border-strong'
+                  }`}
                 >
-                  {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+                  <div className="font-semibold text-xs flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>{lang === 'bn' ? 'ডাক্তার প্রবেশ' : 'Doctor Access'}</span>
+                  </div>
+                  <div className="text-[11px] text-text-3 mt-0.5">
+                    {lang === 'bn' ? 'অনুমোদিত ডাক্তার দেখতে পারবেন' : 'Verified doctors can review'}
+                  </div>
                 </button>
+
                 <button
-                  type="submit"
-                  disabled={createMutation.isPending}
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-accent text-on-accent hover:opacity-90 transition disabled:opacity-60"
+                  type="button"
+                  onClick={() => setVisibilityMode('ONLY_ME')}
+                  className={`p-3 rounded-lg border text-left transition-colors ${
+                    visibilityMode === 'ONLY_ME'
+                      ? 'bg-accent-tint border-accent text-accent'
+                      : 'bg-canvas border-border text-text-2 hover:border-border-strong'
+                  }`}
                 >
-                  {createMutation.isPending ? (lang === 'bn' ? 'সংরক্ষণ হচ্ছে...' : 'Saving...') : (lang === 'bn' ? 'সংরক্ষণ করুন' : 'Save Record')}
+                  <div className="font-semibold text-xs flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>{lang === 'bn' ? 'শুধুমাত্র আমি' : 'Only Me'}</span>
+                  </div>
+                  <div className="text-[11px] text-text-3 mt-0.5">
+                    {lang === 'bn' ? 'সম্পূর্ণ ব্যক্তিগত থাকবে' : 'Completely private to you'}
+                  </div>
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+              <Button variant="ghost" size="compact" onClick={() => setShowUploadModal(false)}>
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </Button>
+              <Button variant="primary" size="compact" type="submit" isLoading={createMutation.isPending}>
+                {lang === 'bn' ? 'সংরক্ষণ করুন' : 'Save Record'}
+              </Button>
+            </div>
+          </form>
+        </Modal>
       )}
     </div>
   );
 }
-

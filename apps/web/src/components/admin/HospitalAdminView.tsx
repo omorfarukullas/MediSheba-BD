@@ -2,21 +2,23 @@ import React, { useState } from 'react';
 import { trpc } from '../../lib/trpc';
 import { useLanguageStore } from '../../stores/language.store';
 import { useAuthStore } from '../../stores/auth.store';
+import { Card, StatCard } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { Badge } from '../ui/Badge';
+import { Modal } from '../ui/Modal';
 import { 
   Building2, 
   Bed, 
   Activity, 
   Ambulance as AmbulanceIcon, 
   FileText, 
-  UserCheck, 
   Plus, 
   Edit3, 
   Trash2, 
-  Check, 
-  Clock, 
   Phone, 
-  Save, 
-  RefreshCw 
+  CheckCircle2, 
+  Clock 
 } from 'lucide-react';
 
 export function HospitalAdminView() {
@@ -88,10 +90,6 @@ export function HospitalAdminView() {
     }
   });
 
-  const updateTestMutation = trpc.testPrice.update.useMutation({
-    onSuccess: () => refetch()
-  });
-
   const deleteTestMutation = trpc.testPrice.delete.useMutation({
     onSuccess: () => refetch()
   });
@@ -103,6 +101,16 @@ export function HospitalAdminView() {
       totalCount: editTotal,
       availableCount: editAvailable,
       pricePerDay: res.pricePerDay
+    });
+  };
+
+  const handleAddResourceSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateResourceMutation.mutate({
+      type: newResourceType,
+      totalCount: newTotal,
+      availableCount: newAvailable,
+      pricePerDay: newPrice
     });
   };
 
@@ -120,7 +128,7 @@ export function HospitalAdminView() {
 
   const handleAddTestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!testName || !testPrice || !hospital?.id) return;
+    if (!testName || !hospital?.id) return;
 
     createTestMutation.mutate({
       hospitalId: hospital.id,
@@ -131,431 +139,506 @@ export function HospitalAdminView() {
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="p-16 text-center text-ink-secondary">
-        <Building2 className="w-10 h-10 animate-pulse mx-auto mb-2 text-accent" />
-        {lang === 'bn' ? 'অ্যাডমিন ড্যাশবোর্ড লোড হচ্ছে...' : 'Loading hospital management console...'}
-      </div>
-    );
-  }
+  const totalBeds = hospital?.resources.reduce((acc, r) => acc + r.totalCount, 0) || 0;
+  const availableBeds = hospital?.resources.reduce((acc, r) => acc + r.availableCount, 0) || 0;
+  const readyAmbulances = hospital?.ambulances.filter((a) => a.status === 'AVAILABLE').length || 0;
+  const activeDoctors = hospital?.doctors.length || 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-[1120px] mx-auto space-y-6">
+      {/* ─── Header ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-accent text-xs font-bold uppercase tracking-wider mb-1">
-            <Building2 className="w-4 h-4" />
-            {lang === 'bn' ? 'হাসপাতাল প্রশাসন পোর্টাল' : 'Hospital Management Suite'}
-          </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-ink tracking-tight">
-            {hospital?.name || (lang === 'bn' ? 'হাসপাতাল প্রশাসন' : 'Hospital Administration')}
+          <h1 className="text-[28px] font-semibold text-ink leading-tight">
+            {hospital?.name || (lang === 'bn' ? 'হাসপাতাল প্রশাসন ড্যাশবোর্ড' : 'Hospital Admin Desk')}
           </h1>
-          <p className="text-sm text-ink-secondary mt-1">
+          <p className="text-sm text-text-2 mt-1">
             {lang === 'bn'
-              ? 'বেড ও আইসিইউ প্রাপ্যতা, অ্যাম্বুলেন্স বহর এবং ডায়াগনস্টিক পরীক্ষার মূল্য তালিকা আপডেট করুন।'
-              : 'Live manage beds/ICU/CCU capacity, fleet dispatch, test price catalogs, and affiliated doctors.'}
+              ? 'আইসিইউ বেড ক্যাপাসিটি, অ্যাম্বুলেন্স বহর এবং ডায়াগনস্টিক টেস্ট রেট তদারকি।'
+              : 'Live bed occupancy, emergency ambulance fleets, and diagnostic test transparency.'}
           </p>
         </div>
 
-        {/* Tab switch */}
-        <div className="flex items-center gap-1.5 bg-ground-muted p-1 rounded-2xl border border-rule text-xs font-semibold">
-          <button
-            onClick={() => setAdminTab('resources')}
-            className={`px-3.5 py-2 rounded-xl transition ${
-              adminTab === 'resources' ? 'bg-accent text-on-accent shadow-xs' : 'text-ink-secondary hover:text-ink'
-            }`}
-          >
-            {lang === 'bn' ? 'বেড ও আইসিইউ' : 'Beds & ICU'}
-          </button>
-          <button
-            onClick={() => setAdminTab('ambulances')}
-            className={`px-3.5 py-2 rounded-xl transition ${
-              adminTab === 'ambulances' ? 'bg-accent text-on-accent shadow-xs' : 'text-ink-secondary hover:text-ink'
-            }`}
-          >
-            {lang === 'bn' ? 'অ্যাম্বুলেন্স বহর' : 'Ambulances'}
-          </button>
-          <button
-            onClick={() => setAdminTab('tests')}
-            className={`px-3.5 py-2 rounded-xl transition ${
-              adminTab === 'tests' ? 'bg-accent text-on-accent shadow-xs' : 'text-ink-secondary hover:text-ink'
-            }`}
-          >
-            {lang === 'bn' ? 'টেস্টের মূল্য তালিকা' : 'Test Price List'}
-          </button>
-          <button
-            onClick={() => setAdminTab('doctors')}
-            className={`px-3.5 py-2 rounded-xl transition ${
-              adminTab === 'doctors' ? 'bg-accent text-on-accent shadow-xs' : 'text-ink-secondary hover:text-ink'
-            }`}
-          >
-            {lang === 'bn' ? 'ডাক্তার তালিকা' : 'Doctor Roster'}
-          </button>
+        <div className="flex items-center gap-2">
+          {adminTab === 'resources' && (
+            <Button
+              variant="primary"
+              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={() => setShowAddResource(true)}
+            >
+              {lang === 'bn' ? '+ নতুন বেড ক্যাটাগরি' : '+ Add Bed Category'}
+            </Button>
+          )}
+          {adminTab === 'ambulances' && (
+            <Button
+              variant="primary"
+              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={() => setShowAddAmbulance(true)}
+            >
+              {lang === 'bn' ? '+ নতুন অ্যাম্বুলেন্স' : '+ Add Ambulance'}
+            </Button>
+          )}
+          {adminTab === 'tests' && (
+            <Button
+              variant="primary"
+              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={() => setShowAddTest(true)}
+            >
+              {lang === 'bn' ? '+ নতুন টেস্ট রেট' : '+ Add Diagnostic Test'}
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* TAB 1: Resource Management (Bed, ICU, CCU, Cabin, Ward) */}
-      {adminTab === 'resources' && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold text-lg text-ink">
-              {lang === 'bn' ? 'রিসোর্স ও বেডের প্রাপ্যতা আপডেট' : 'Live Bed & ICU Availability Controls'}
-            </h2>
-            <button
-              onClick={() => setShowAddResource(true)}
-              className="inline-flex items-center gap-1.5 bg-accent text-on-accent font-bold px-3.5 py-2 rounded-xl text-xs hover:opacity-90 shadow-xs"
-            >
-              <Plus className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'নতুন বেড/ওয়ার্ড যোগ করুন' : 'Add Resource Category'}</span>
-            </button>
-          </div>
+      {/* ─── 4 Identical Stat Cards ─── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          label={lang === 'bn' ? 'মোট নিবন্ধিত বেড' : 'Total Bed Capacity'}
+          value={String(totalBeds)}
+          caption={lang === 'bn' ? 'সকল ওয়ার্ড' : 'All Wards & Cabins'}
+        />
+        <StatCard
+          label={lang === 'bn' ? 'খালি প্রস্তুত বেড' : 'Available Beds'}
+          value={String(availableBeds)}
+          caption={lang === 'bn' ? 'লাইভ খালি' : 'Ready for Admission'}
+        />
+        <StatCard
+          label={lang === 'bn' ? 'প্রস্তুত অ্যাম্বুলেন্স' : 'Ready Ambulances'}
+          value={String(readyAmbulances)}
+          caption={lang === 'bn' ? 'অন-ডিউটি' : 'On-Duty Fleet'}
+        />
+        <StatCard
+          label={lang === 'bn' ? 'সংযুক্ত চিকিৎসক' : 'Physicians Roster'}
+          value={String(activeDoctors)}
+          caption={lang === 'bn' ? 'বিএমডিসি অনুমোদিত' : 'BMDC Verified'}
+        />
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {hospital?.resources.map((res) => {
-              const isEditing = editingResourceId === res.id;
-              return (
-                <div key={res.id} className="bg-panel border border-rule rounded-2xl p-5 shadow-xs space-y-4">
+      {/* ─── Page Tabs (Underline Style) ─── */}
+      <div className="flex items-center gap-6 border-b border-border">
+        <button
+          onClick={() => setAdminTab('resources')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            adminTab === 'resources'
+              ? 'border-accent text-ink font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'বেড ও আইসিইউ' : 'Beds & ICU'}
+        </button>
+        <button
+          onClick={() => setAdminTab('ambulances')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            adminTab === 'ambulances'
+              ? 'border-accent text-ink font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'অ্যাম্বুলেন্স বহর' : 'Ambulance Fleet'}
+        </button>
+        <button
+          onClick={() => setAdminTab('tests')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            adminTab === 'tests'
+              ? 'border-accent text-ink font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'ডায়াগনস্টিক টেস্ট' : 'Diagnostic Tests'}
+        </button>
+        <button
+          onClick={() => setAdminTab('doctors')}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+            adminTab === 'doctors'
+              ? 'border-accent text-ink font-semibold'
+              : 'border-transparent text-text-3 hover:text-ink'
+          }`}
+        >
+          {lang === 'bn' ? 'চিকিৎসক তালিকা' : 'Doctor Roster'}
+        </button>
+      </div>
+
+      {/* ─── TAB 1: Resources (Beds & ICU) ─── */}
+      {adminTab === 'resources' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {hospital?.resources.map((res) => {
+            const isEditing = editingResourceId === res.id;
+            return (
+              <Card key={res.id} padding="md" className="space-y-3 flex flex-col justify-between">
+                <div>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-ink">{res.type.replace('_', ' ')}</span>
-                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                      res.availableCount > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                    }`}>
-                      {res.availableCount > 0 ? (lang === 'bn' ? 'খালি আছে' : 'Available') : (lang === 'bn' ? 'পূর্ণ' : 'Full')}
-                    </span>
+                    <span className="font-semibold text-sm text-ink">{res.type.replace('_', ' ')}</span>
+                    <Badge variant={res.availableCount > 0 ? 'success' : 'danger'}>
+                      {res.availableCount > 0 ? (lang === 'bn' ? 'খালি' : 'Available') : (lang === 'bn' ? 'পূর্ণ' : 'Full')}
+                    </Badge>
                   </div>
 
                   {isEditing ? (
-                    <div className="space-y-3 bg-ground p-3 rounded-xl border border-accent">
-                      <div>
-                        <label className="text-[11px] font-semibold text-ink-secondary">{lang === 'bn' ? 'বর্তমান খালি:' : 'Available:'}</label>
-                        <input
-                          type="number"
-                          value={editAvailable}
-                          onChange={(e) => setEditAvailable(Number(e.target.value))}
-                          className="w-full text-xs font-bold border border-rule rounded-lg px-2 py-1 bg-panel text-ink"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-semibold text-ink-secondary">{lang === 'bn' ? 'মোট ক্যাপাসিটি:' : 'Total Capacity:'}</label>
-                        <input
-                          type="number"
-                          value={editTotal}
-                          onChange={(e) => setEditTotal(Number(e.target.value))}
-                          className="w-full text-xs font-bold border border-rule rounded-lg px-2 py-1 bg-panel text-ink"
-                        />
-                      </div>
-                      <div className="flex gap-2 pt-1">
-                        <button
+                    <div className="mt-3 space-y-2 p-2.5 rounded-lg bg-subtle border border-border">
+                      <Input
+                        label={lang === 'bn' ? 'বর্তমান খালি:' : 'Available:'}
+                        type="number"
+                        value={String(editAvailable)}
+                        onChange={(e) => setEditAvailable(Number(e.target.value))}
+                      />
+                      <Input
+                        label={lang === 'bn' ? 'মোট বেড:' : 'Total:'}
+                        type="number"
+                        value={String(editTotal)}
+                        onChange={(e) => setEditTotal(Number(e.target.value))}
+                      />
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          variant="primary"
+                          size="compact"
+                          className="flex-1"
                           onClick={() => handleSaveResourceEdit(res)}
-                          className="flex-1 bg-emerald-600 text-white font-bold py-1.5 rounded-lg text-xs"
                         >
-                          {lang === 'bn' ? 'সংরক্ষণ' : 'Save'}
-                        </button>
-                        <button
+                          {lang === 'bn' ? 'সেভ' : 'Save'}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="compact"
                           onClick={() => setEditingResourceId(null)}
-                          className="px-3 bg-ground-muted text-ink py-1.5 rounded-lg text-xs"
                         >
-                          ✕
-                        </button>
+                          {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+                        </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-2">
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-3xl font-black text-ink">{res.availableCount}</span>
-                        <span className="text-xs text-ink-secondary">{lang === 'bn' ? 'মোট:' : 'Total:'} {res.totalCount}</span>
+                    <div className="mt-3">
+                      <div className="text-3xl font-semibold text-ink">
+                        {res.availableCount}{' '}
+                        <span className="text-xs font-normal text-text-3">/ {res.totalCount} {lang === 'bn' ? 'মোট' : 'total'}</span>
                       </div>
-                      <div className="text-[11px] text-ink-secondary flex justify-between border-t border-rule/50 pt-2">
-                        <span>{lang === 'bn' ? 'দৈনিক ভাড়া:' : 'Daily Rate:'}</span>
-                        <span className="font-bold text-ink">৳ {res.pricePerDay || 0}</span>
-                      </div>
-                      <button
-                        onClick={() => {
-                          setEditingResourceId(res.id);
-                          setEditAvailable(res.availableCount);
-                          setEditTotal(res.totalCount);
-                        }}
-                        className="w-full mt-2 text-xs font-bold text-accent py-1.5 rounded-xl border border-rule hover:bg-ground transition"
-                      >
-                        {lang === 'bn' ? 'সংখ্যা পরিবর্তন করুন' : 'Edit Counts'}
-                      </button>
+                      {res.pricePerDay && (
+                        <div className="text-xs text-text-3 mt-1">
+                          ৳{res.pricePerDay} / {lang === 'bn' ? 'দিন' : 'day'}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              );
-            })}
-          </div>
+
+                {!isEditing && (
+                  <div className="pt-2 border-t border-border">
+                    <Button
+                      variant="secondary"
+                      size="compact"
+                      className="w-full"
+                      leftIcon={<Edit3 className="w-3.5 h-3.5" />}
+                      onClick={() => {
+                        setEditingResourceId(res.id);
+                        setEditAvailable(res.availableCount);
+                        setEditTotal(res.totalCount);
+                      }}
+                    >
+                      {lang === 'bn' ? 'সংখ্যা পরিবর্তন' : 'Update Count'}
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
         </div>
       )}
 
-      {/* TAB 2: Ambulance Fleet Management */}
+      {/* ─── TAB 2: Ambulance Fleet ─── */}
       {adminTab === 'ambulances' && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold text-lg text-ink">
-              {lang === 'bn' ? 'হাসপাতালের অ্যাম্বুলেন্স বহর নিয়ন্ত্রণ' : 'Ambulance Fleet Status & Drivers'}
+        <Card padding="none" className="overflow-hidden">
+          <div className="p-4 border-b border-border bg-subtle">
+            <h2 className="text-sm font-semibold text-ink">
+              {lang === 'bn' ? 'অ্যাম্বুলেন্স বহর ও চালক তালিকা' : 'Registered Ambulances & Drivers'}
             </h2>
-            <button
-              onClick={() => setShowAddAmbulance(true)}
-              className="inline-flex items-center gap-1.5 bg-accent text-on-accent font-bold px-3.5 py-2 rounded-xl text-xs hover:opacity-90 shadow-xs"
-            >
-              <Plus className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'নতুন অ্যাম্বুলেন্স যোগ করুন' : 'Register Ambulance'}</span>
-            </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {hospital?.ambulances.map((amb) => (
-              <div key={amb.id} className="bg-panel border border-rule rounded-2xl p-5 shadow-xs space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-accent">{amb.type} AMBULANCE</span>
-                  <select
-                    value={amb.status}
-                    onChange={(e) => updateAmbulanceMutation.mutate({
-                      ambulanceId: amb.id,
-                      status: e.target.value as any
-                    })}
-                    className="text-[11px] font-bold px-2 py-1 rounded-lg border border-rule bg-ground text-ink"
-                  >
-                    <option value="AVAILABLE">AVAILABLE (প্রস্তুত)</option>
-                    <option value="BUSY">BUSY (ব্যস্ত)</option>
-                    <option value="ON_THE_WAY">ON THE WAY (অন দ্য ওয়ে)</option>
-                    <option value="MAINTENANCE">MAINTENANCE (মেরামত)</option>
-                  </select>
-                </div>
-
-                <div className="font-bold text-base text-ink">{amb.plateNumber}</div>
-                <div className="text-xs text-ink-secondary">
-                  <div>{lang === 'bn' ? 'ড্রাইভার' : 'Driver'}: <strong className="text-ink">{amb.driverName}</strong></div>
-                  <div>{lang === 'bn' ? 'ফোন' : 'Phone'}: <strong className="text-ink">{amb.phone}</strong></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* TAB 3: Diagnostic Test Price List */}
-      {adminTab === 'tests' && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold text-lg text-ink">
-              {lang === 'bn' ? 'ডায়াগনস্টিক টেস্টের মূল্য তালিকা নির্ধারণ' : 'Diagnostic Lab Test Catalog & Pricing'}
-            </h2>
-            <button
-              onClick={() => setShowAddTest(true)}
-              className="inline-flex items-center gap-1.5 bg-accent text-on-accent font-bold px-3.5 py-2 rounded-xl text-xs hover:opacity-90 shadow-xs"
-            >
-              <Plus className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'নতুন টেস্ট যোগ করুন' : 'Add New Test'}</span>
-            </button>
-          </div>
-
-          {hospital?.testPrices && hospital.testPrices.length > 0 ? (
-            <div className="overflow-x-auto border border-rule rounded-2xl bg-panel">
-              <table className="w-full text-left text-xs text-ink">
-                <thead className="bg-ground-muted text-ink-secondary font-bold uppercase tracking-wider border-b border-rule">
-                  <tr>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'টেস্টের নাম' : 'Test Name'}</th>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'বিভাগ' : 'Category'}</th>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'ডেলিভারি সময়' : 'Delivery Hours'}</th>
-                    <th className="py-3 px-4">{lang === 'bn' ? 'নির্ধারিত মূল্য' : 'Official Price (BDT)'}</th>
-                    <th className="py-3 px-4 text-right">{lang === 'bn' ? 'অ্যাকশন' : 'Action'}</th>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-subtle text-xs text-text-3 font-medium border-b border-border">
+                <tr>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'লাইসেন্স প্লেট' : 'Plate / Reg'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'ধরন' : 'Type'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'চালক ও ফোন' : 'Driver & Contact'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'অবস্থা' : 'Status'}</th>
+                  <th className="px-5 py-3 text-right">{lang === 'bn' ? 'অ্যাকশন' : 'Action'}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {hospital?.ambulances.map((amb) => (
+                  <tr key={amb.id} className="hover:bg-subtle/50 transition-colors h-[52px]">
+                    <td className="px-5 py-3 font-mono font-medium text-ink">{amb.plateNumber}</td>
+                    <td className="px-5 py-3">
+                      <Badge variant="neutral">{amb.type}</Badge>
+                    </td>
+                    <td className="px-5 py-3">
+                      <div className="font-medium text-ink">{amb.driverName}</div>
+                      <div className="text-xs text-text-3">{amb.phone}</div>
+                    </td>
+                    <td className="px-5 py-3">
+                      <Badge variant={amb.status === 'AVAILABLE' ? 'success' : 'warning'}>
+                        {amb.status}
+                      </Badge>
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <Button
+                        variant="secondary"
+                        size="compact"
+                        onClick={() => {
+                          const nextStatus = amb.status === 'AVAILABLE' ? 'BUSY' : 'AVAILABLE';
+                          updateAmbulanceMutation.mutate({ ambulanceId: amb.id, status: nextStatus });
+                        }}
+                      >
+                        {amb.status === 'AVAILABLE' ? (lang === 'bn' ? 'ব্যস্ত করুন' : 'Set Busy') : (lang === 'bn' ? 'প্রস্তুত করুন' : 'Set Available')}
+                      </Button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-rule">
-                  {hospital.testPrices.map((test) => (
-                    <tr key={test.id} className="hover:bg-ground/50 transition">
-                      <td className="py-3 px-4 font-semibold text-ink">{test.testName}</td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded-md bg-accent/10 text-accent font-medium">
-                          {test.category}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-ink-secondary">{test.deliveryHours || 24} Hours</td>
-                      <td className="py-3 px-4 font-black text-sm text-accent">৳ {test.price.toLocaleString()}</td>
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={() => {
-                            if (confirm(lang === 'bn' ? 'এই টেস্টটি মুছে ফেলবেন?' : 'Delete this test?')) {
-                              deleteTestMutation.mutate({ id: test.id });
-                            }
-                          }}
-                          className="p-1.5 rounded-lg border border-rule hover:border-rose-400 text-ink-secondary hover:text-rose-600 transition"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="p-16 text-center bg-panel border border-rule rounded-2xl text-ink-secondary">
-              <FileText className="w-10 h-10 mx-auto mb-2 text-ink-secondary/40" />
-              <p>{lang === 'bn' ? 'কোন টেস্ট মূল্য তালিকা এন্ট্রি করা নেই।' : 'No test prices added yet.'}</p>
-            </div>
-          )}
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
 
-      {/* TAB 4: Doctor Roster */}
-      {adminTab === 'doctors' && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold text-lg text-ink">
-              {lang === 'bn' ? 'হাসপাতালের অনুমোদিত ডাক্তার তালিকা' : 'Affiliated Physician Directory'}
+      {/* ─── TAB 3: Diagnostic Tests ─── */}
+      {adminTab === 'tests' && (
+        <Card padding="none" className="overflow-hidden">
+          <div className="p-4 border-b border-border bg-subtle">
+            <h2 className="text-sm font-semibold text-ink">
+              {lang === 'bn' ? 'ডায়াগনস্টিক পরীক্ষার তালিকা ও ফি' : 'Diagnostic Catalog & Prices'}
             </h2>
-            <span className="text-xs font-semibold text-accent">
-              {hospital?.doctors.length || 0} {lang === 'bn' ? 'জন চিকিৎসক' : 'Physicians'}
-            </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {hospital?.doctors.map((doc) => (
-              <div key={doc.id} className="bg-panel border border-rule rounded-2xl p-5 shadow-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                    BMDC: {doc.bmdcNumber}
-                  </span>
-                  <span className="text-xs font-bold text-accent">{doc.status}</span>
-                </div>
-                <h4 className="font-bold text-base text-ink">{doc.user.fullName}</h4>
-                <p className="text-xs text-ink-secondary">{doc.specialization} • {doc.experienceYears} Years Exp</p>
-                <div className="text-xs text-ink-secondary border-t border-rule/50 pt-2 flex justify-between">
-                  <span>{lang === 'bn' ? 'ফি:' : 'Fee:'}</span>
-                  <strong className="text-ink">৳ {doc.consultationFeePhysical} (Physical)</strong>
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-subtle text-xs text-text-3 font-medium border-b border-border">
+                <tr>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'টেস্টের নাম' : 'Test Name'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'ক্যাটাগরি' : 'Category'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'ডেলিভারি সময়' : 'Turnaround'}</th>
+                  <th className="px-5 py-3">{lang === 'bn' ? 'হাসপাতাল ফি' : 'Hospital Fee'}</th>
+                  <th className="px-5 py-3 text-right">{lang === 'bn' ? 'অ্যাকশন' : 'Action'}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {hospital?.testPrices.map((test) => (
+                  <tr key={test.id} className="hover:bg-subtle/50 transition-colors h-[52px]">
+                    <td className="px-5 py-3 font-medium text-ink">{test.testName}</td>
+                    <td className="px-5 py-3 text-xs text-text-3">{test.category}</td>
+                    <td className="px-5 py-3 text-xs text-text-2">{test.deliveryHours || 24} Hours</td>
+                    <td className="px-5 py-3 font-semibold text-ink">৳{test.price.toLocaleString()}</td>
+                    <td className="px-5 py-3 text-right">
+                      <button
+                        onClick={() => {
+                          if (confirm(lang === 'bn' ? 'এই টেস্টটি মুছে ফেলবেন?' : 'Delete this test?')) {
+                            deleteTestMutation.mutate({ id: test.id });
+                          }
+                        }}
+                        className="p-1.5 rounded-lg border border-border text-text-3 hover:text-danger-text hover:border-danger-border transition-colors cursor-pointer"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </div>
+        </Card>
       )}
 
-      {/* Add Test Modal */}
-      {showAddTest && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-field/80 backdrop-blur-sm px-4">
-          <div className="bg-panel border border-rule rounded-2xl p-6 w-full max-w-md shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-base text-ink">{lang === 'bn' ? 'নতুন টেস্ট যোগ করুন' : 'Add Diagnostic Test'}</h3>
-              <button onClick={() => setShowAddTest(false)} className="text-ink-secondary hover:text-ink font-bold">✕</button>
-            </div>
-            <form onSubmit={handleAddTestSubmit} className="space-y-3">
+      {/* ─── TAB 4: Doctor Roster ─── */}
+      {adminTab === 'doctors' && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {hospital?.doctors.map((doc) => (
+            <Card key={doc.id} padding="md" className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Badge variant="neutral">BMDC {doc.bmdcNumber}</Badge>
+                <Badge variant="success">{doc.status}</Badge>
+              </div>
               <div>
-                <label className="text-xs font-semibold text-ink-secondary">{lang === 'bn' ? 'টেস্টের নাম *' : 'Test Name *'}</label>
-                <input
-                  type="text"
-                  required
-                  value={testName}
-                  onChange={(e) => setTestName(e.target.value)}
-                  placeholder="e.g. CBC, Serum Creatinine, MRI Brain"
-                  className="w-full text-xs border border-rule rounded-xl px-3 py-2 bg-ground text-ink"
-                />
+                <h4 className="font-semibold text-sm text-ink">{doc.user.fullName}</h4>
+                <p className="text-xs text-text-3 mt-0.5">{doc.specialization} · {doc.experienceYears} Years Exp</p>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-semibold text-ink-secondary">{lang === 'bn' ? 'ক্যাটাগরি' : 'Category'}</label>
-                  <select
-                    value={testCategory}
-                    onChange={(e) => setTestCategory(e.target.value)}
-                    className="w-full text-xs border border-rule rounded-xl px-3 py-2 bg-ground text-ink"
-                  >
-                    <option value="Blood">Blood (রক্ত পরীক্ষা)</option>
-                    <option value="Urine">Urine (প্রস্রাব পরীক্ষা)</option>
-                    <option value="Radiology">Radiology (এক্স-রে / এমআরআই)</option>
-                    <option value="Cardiology">Cardiology (ইসিজি / ইকো)</option>
-                    <option value="Pathology">Pathology (বায়োপসি)</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-ink-secondary">{lang === 'bn' ? 'মূল্য (BDT) *' : 'Price (BDT) *'}</label>
-                  <input
-                    type="number"
-                    required
-                    value={testPrice}
-                    onChange={(e) => setTestPrice(Number(e.target.value))}
-                    className="w-full text-xs border border-rule rounded-xl px-3 py-2 bg-ground text-ink"
-                  />
-                </div>
+              <div className="pt-2 border-t border-border flex items-center justify-between text-xs text-text-3">
+                <span>{lang === 'bn' ? 'পরামর্শ ফি' : 'Fee'}</span>
+                <span className="font-semibold text-ink">৳{doc.consultationFeePhysical}</span>
               </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setShowAddTest(false)} className="px-4 py-2 text-xs border border-rule rounded-xl">Cancel</button>
-                <button type="submit" className="px-5 py-2 text-xs font-bold bg-accent text-on-accent rounded-xl">Save</button>
-              </div>
-            </form>
-          </div>
+            </Card>
+          ))}
         </div>
       )}
 
-      {/* Add Ambulance Modal */}
+      {/* ─── Modal: Add Resource ─── */}
+      {showAddResource && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowAddResource(false)}
+          title={lang === 'bn' ? 'নতুন বেড / ওয়ার্ড যুক্ত করুন' : 'Add Bed Category'}
+          maxWidth="max-w-md"
+        >
+          <form onSubmit={handleAddResourceSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-text-3 mb-1">
+                {lang === 'bn' ? 'ক্যাটাগরি' : 'Category'}
+              </label>
+              <select
+                value={newResourceType}
+                onChange={(e: any) => setNewResourceType(e.target.value)}
+                className="w-full h-10 px-3 text-sm font-medium border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
+              >
+                <option value="ICU_BED">ICU Bed</option>
+                <option value="CCU_BED">CCU Bed</option>
+                <option value="GENERAL_BED">General Ward</option>
+                <option value="CABIN">Cabin</option>
+                <option value="OPERATION_THEATER">Operation Theater</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                label={lang === 'bn' ? 'মোট সংখ্যা' : 'Total Count'}
+                type="number"
+                value={String(newTotal)}
+                onChange={(e) => setNewTotal(Number(e.target.value))}
+              />
+              <Input
+                label={lang === 'bn' ? 'খালি সংখ্যা' : 'Available Count'}
+                type="number"
+                value={String(newAvailable)}
+                onChange={(e) => setNewAvailable(Number(e.target.value))}
+              />
+            </div>
+
+            <Input
+              label={lang === 'bn' ? 'প্রতিদিনের ভাড়া (BDT ৳)' : 'Cost Per Day (৳)'}
+              type="number"
+              value={String(newPrice)}
+              onChange={(e) => setNewPrice(Number(e.target.value))}
+            />
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-border">
+              <Button variant="ghost" size="compact" onClick={() => setShowAddResource(false)}>
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </Button>
+              <Button variant="primary" size="compact" type="submit">
+                {lang === 'bn' ? 'যোগ করুন' : 'Add Category'}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* ─── Modal: Add Ambulance ─── */}
       {showAddAmbulance && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-field/80 backdrop-blur-sm px-4">
-          <div className="bg-panel border border-rule rounded-2xl p-6 w-full max-w-md shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-base text-ink">{lang === 'bn' ? 'নতুন অ্যাম্বুলেন্স নিবন্ধন' : 'Register Ambulance'}</h3>
-              <button onClick={() => setShowAddAmbulance(false)} className="text-ink-secondary hover:text-ink font-bold">✕</button>
+        <Modal
+          isOpen={true}
+          onClose={() => setShowAddAmbulance(false)}
+          title={lang === 'bn' ? 'নতুন অ্যাম্বুলেন্স নিবন্ধন' : 'Add Ambulance'}
+          maxWidth="max-w-md"
+        >
+          <form onSubmit={handleAddAmbulanceSubmit} className="space-y-4">
+            <Input
+              label={lang === 'bn' ? 'রেজিস্ট্রেশন প্লেট নম্বর *' : 'Plate / Reg Number *'}
+              required
+              placeholder="DHAKA-METRO-CHA-11-2233"
+              value={plateNumber}
+              onChange={(e) => setPlateNumber(e.target.value)}
+            />
+
+            <Input
+              label={lang === 'bn' ? 'চালকের নাম *' : 'Driver Name *'}
+              required
+              value={driverName}
+              onChange={(e) => setDriverName(e.target.value)}
+            />
+
+            <Input
+              label={lang === 'bn' ? 'চালকের ফোন নম্বর *' : 'Driver Contact Phone *'}
+              required
+              placeholder="01XXXXXXXXX"
+              value={driverPhone}
+              onChange={(e) => setDriverPhone(e.target.value)}
+            />
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-text-3 mb-1">
+                {lang === 'bn' ? 'অ্যাম্বুলেন্স ধরন' : 'Ambulance Type'}
+              </label>
+              <select
+                value={ambulanceType}
+                onChange={(e: any) => setAmbulanceType(e.target.value)}
+                className="w-full h-10 px-3 text-sm font-medium border border-border rounded-lg bg-canvas text-ink focus:outline-none focus:border-accent"
+              >
+                <option value="ICU">ICU Ambulance</option>
+                <option value="AC">AC Ambulance</option>
+                <option value="NON_AC">Non-AC Ambulance</option>
+                <option value="FREEZER">Freezer Ambulance</option>
+              </select>
             </div>
-            <form onSubmit={handleAddAmbulanceSubmit} className="space-y-3">
-              <div>
-                <label className="text-xs font-semibold text-ink-secondary">{lang === 'bn' ? 'ড্রাইভারের নাম *' : 'Driver Name *'}</label>
-                <input
-                  type="text"
-                  required
-                  value={driverName}
-                  onChange={(e) => setDriverName(e.target.value)}
-                  className="w-full text-xs border border-rule rounded-xl px-3 py-2 bg-ground text-ink"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-ink-secondary">{lang === 'bn' ? 'ড্রাইভারের ফোন নম্বর *' : 'Phone Number *'}</label>
-                <input
-                  type="tel"
-                  required
-                  value={driverPhone}
-                  onChange={(e) => setDriverPhone(e.target.value)}
-                  placeholder="01XXXXXXXXX"
-                  className="w-full text-xs border border-rule rounded-xl px-3 py-2 bg-ground text-ink"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-semibold text-ink-secondary">{lang === 'bn' ? 'গাড়ির নাম্বার প্লেট *' : 'Plate Number *'}</label>
-                  <input
-                    type="text"
-                    required
-                    value={plateNumber}
-                    onChange={(e) => setPlateNumber(e.target.value)}
-                    placeholder="Dhaka Metro-Ch..."
-                    className="w-full text-xs border border-rule rounded-xl px-3 py-2 bg-ground text-ink"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-ink-secondary">{lang === 'bn' ? 'অ্যাম্বুলেন্স ধরন' : 'Type'}</label>
-                  <select
-                    value={ambulanceType}
-                    onChange={(e) => setAmbulanceType(e.target.value as any)}
-                    className="w-full text-xs border border-rule rounded-xl px-3 py-2 bg-ground text-ink"
-                  >
-                    <option value="ICU">ICU</option>
-                    <option value="AC">AC</option>
-                    <option value="NON_AC">Non-AC</option>
-                    <option value="FREEZER">Freezer</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setShowAddAmbulance(false)} className="px-4 py-2 text-xs border border-rule rounded-xl">Cancel</button>
-                <button type="submit" className="px-5 py-2 text-xs font-bold bg-accent text-on-accent rounded-xl">Save</button>
-              </div>
-            </form>
-          </div>
-        </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-border">
+              <Button variant="ghost" size="compact" onClick={() => setShowAddAmbulance(false)}>
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </Button>
+              <Button variant="primary" size="compact" type="submit">
+                {lang === 'bn' ? 'যোগ করুন' : 'Save Ambulance'}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* ─── Modal: Add Test ─── */}
+      {showAddTest && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowAddTest(false)}
+          title={lang === 'bn' ? 'নতুন টেস্ট যোগ করুন' : 'Add Diagnostic Test'}
+          maxWidth="max-w-md"
+        >
+          <form onSubmit={handleAddTestSubmit} className="space-y-4">
+            <Input
+              label={lang === 'bn' ? 'টেস্টের নাম *' : 'Test Name *'}
+              required
+              placeholder="e.g. CBC Complete Blood Count"
+              value={testName}
+              onChange={(e) => setTestName(e.target.value)}
+            />
+
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                label={lang === 'bn' ? 'ক্যাটাগরি' : 'Category'}
+                value={testCategory}
+                onChange={(e) => setTestCategory(e.target.value)}
+              />
+              <Input
+                label={lang === 'bn' ? 'ডেলিভারি (ঘণ্টা)' : 'Hours'}
+                type="number"
+                value={String(deliveryHours)}
+                onChange={(e) => setDeliveryHours(Number(e.target.value))}
+              />
+            </div>
+
+            <Input
+              label={lang === 'bn' ? 'হাসপাতাল ফি (BDT ৳) *' : 'Official Hospital Fee (৳) *'}
+              type="number"
+              required
+              value={String(testPrice)}
+              onChange={(e) => setTestPrice(Number(e.target.value))}
+            />
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-border">
+              <Button variant="ghost" size="compact" onClick={() => setShowAddTest(false)}>
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </Button>
+              <Button variant="primary" size="compact" type="submit">
+                {lang === 'bn' ? 'সংরক্ষণ করুন' : 'Add Test'}
+              </Button>
+            </div>
+          </form>
+        </Modal>
       )}
     </div>
   );
 }
-
