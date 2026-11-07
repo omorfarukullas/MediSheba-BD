@@ -138,7 +138,17 @@ Phase 5: Production Build & Verification [██████████] 100% (
   - [x] `Avatar.tsx`: Image avatar with fallback to initials, size scale, status indicators (`online`, `busy`, `offline`).
   - [x] `StatusDot.tsx`: Live pulse dot with variant colors and labels.
   - [x] Barrel export file `index.ts`.
-- [ ] **Phase 2: React Router & Role-Based Navigation Routing**
+- [x] **Phase 2: React Router & Role-Based Navigation Routing**
+  - [x] Configured React Router v7 `createBrowserRouter` in `apps/web/src/router.tsx`.
+  - [x] Built `RouteGuards.tsx`: `ProtectedRoute` (Firebase token validation), `RoleGuard` (Strict enum authorization check), `PublicOnlyRoute` (redirects logged-in users away from auth forms).
+  - [x] Built global `ErrorBoundary.tsx` catching React render exceptions with live reload & home fallback.
+  - [x] Built accessible `NotFoundPage.tsx` for wildcard (`*`) routes.
+  - [x] Populated public views: `/` (`PublicLandingPage`), `/emergency` (`EmergencyAmbulanceView`), `/login`, `/register`, `/onboarding`.
+  - [x] Populated patient views: `/patient/dashboard`, `/patient/doctors`, `/patient/appointments`, `/patient/documents`, `/patient/telemedicine`, `/patient/vitals`, `/patient/resources`.
+  - [x] Populated doctor views: `/doctor/dashboard`, `/doctor/queue`, `/doctor/appointments`, `/doctor/slots`, `/doctor/prescriptions`, `/doctor/earnings`.
+  - [x] Populated hospital admin views: `/admin/dashboard`, `/admin/resources`, `/admin/ambulances`, `/admin/doctors`, `/admin/tests`.
+  - [x] Populated super admin views: `/super-admin/dashboard`, `/super-admin/hospitals`, `/super-admin/audit`.
+  - [x] Streamlined `App.tsx` from 1,131 lines into a clean `<RouterProvider router={router} />` root (9 lines).
 - [ ] **Phase 3: Per-Role Layout Shells (Sidebar + Mobile Bottom Navigation)**
 - [ ] **Phase 4: Public Landing Page Revamp**
 - [ ] **Phase 5: Patient Portal Migration to Real tRPC Data**

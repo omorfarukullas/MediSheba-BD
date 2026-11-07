@@ -10,9 +10,22 @@ import {
   onAuthStateChanged,
   type User,
 } from '../lib/firebase';
+import { UserRole } from '@medisheba/types';
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string;
+  role: UserRole;
+  avatarUrl?: string | null;
+  patientId?: string | null;
+  doctorId?: string | null;
+  hospitalId?: string | null;
+}
 
 interface AuthState {
   user: User | null;
+  profile: UserProfile | null;
   token: string | null;
   loading: boolean;
   // actions
@@ -21,21 +34,38 @@ interface AuthState {
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<string | null>;
+  setProfile: (profile: UserProfile | null) => void;
   _setUser: (user: User | null) => void;
   _setToken: (token: string | null) => void;
   _setLoading: (loading: boolean) => void;
 }
 
+export const getRoleDashboardUrl = (role?: UserRole | null): string => {
+  switch (role) {
+    case UserRole.DOCTOR:
+      return '/doctor/dashboard';
+    case UserRole.HOSPITAL_ADMIN:
+      return '/admin/dashboard';
+    case UserRole.SUPER_ADMIN:
+      return '/super-admin/dashboard';
+    case UserRole.PATIENT:
+    default:
+      return '/patient/dashboard';
+  }
+};
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
+      profile: null,
       token: null,
       loading: true,
 
       _setUser: (user) => set({ user }),
       _setToken: (token) => set({ token }),
       _setLoading: (loading) => set({ loading }),
+      setProfile: (profile) => set({ profile }),
 
       loginWithGoogle: async () => {
         const user = await signInWithGoogle();
@@ -57,7 +87,7 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         await logout();
-        set({ user: null, token: null });
+        set({ user: null, profile: null, token: null });
       },
 
       refreshToken: async () => {
@@ -68,7 +98,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'medisheba-auth',
-      partialize: (state) => ({ token: state.token }), // only persist token
+      partialize: (state) => ({ token: state.token, profile: state.profile }),
     }
   )
 );
@@ -83,7 +113,7 @@ onAuthStateChanged(auth, async (user) => {
   } else {
     store._setUser(null);
     store._setToken(null);
+    store.setProfile(null);
   }
   store._setLoading(false);
 });
-
