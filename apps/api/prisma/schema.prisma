@@ -77,6 +77,28 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum DocumentVisibility {
+  ONLY_ME
+  DOCTOR_ACCESS
+  PUBLIC
+}
+
+enum TelemedicineStatus {
+  SCHEDULED
+  WAITING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum EmergencyStatus {
+  PENDING
+  ACCEPTED
+  DISPATCHED
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id            String         @id @default(uuid())
   firebaseUid   String         @unique
@@ -155,6 +177,8 @@ model Hospital {
   resources   HospitalResource[]
   ambulances  Ambulance[]
   admins      HospitalAdmin[]
+  testPrices  TestPriceList[]
+  emergencyRequests EmergencyRequest[]
 }
 
 model HospitalAdmin {
@@ -188,6 +212,10 @@ model Ambulance {
   status      AmbulanceStatus @default(AVAILABLE)
   rating      Float           @default(0)
   location    String?
+  latitude    Float?
+  longitude   Float?
+  locationTrack AmbulanceLocation?
+  emergencyRequests EmergencyRequest[]
 }
 
 model DoctorSlot {
@@ -220,6 +248,7 @@ model Appointment {
   prescription     Prescription?
   queue            Queue?
   payment          Payment?
+  telemedicineSession TelemedicineSession?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
@@ -264,14 +293,16 @@ model Prescription {
 }
 
 model Document {
-  id         String   @id @default(uuid())
-  patientId  String
-  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  title      String
-  fileUrl    String
-  fileType   String
-  isPrivate  Boolean  @default(false)
-  uploadedAt DateTime @default(now())
+  id             String             @id @default(uuid())
+  patientId      String
+  patient        Patient            @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  title          String
+  fileUrl        String
+  fileType       String
+  visibilityMode DocumentVisibility @default(ONLY_ME)
+  sharedDoctorIds String[]          @default([])
+  isPrivate      Boolean            @default(false)
+  uploadedAt     DateTime           @default(now())
 }
 
 model Review {
@@ -307,4 +338,60 @@ model Vitals {
   oxygenLevel   Float?
   recordedAt    DateTime @default(now())
 }
+
+model TestPriceList {
+  id            String   @id @default(uuid())
+  hospitalId    String
+  hospital      Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  testName      String
+  category      String   // "Blood", "Urine", "Radiology", "Cardiology", "Pathology", "Biochemistry"
+  description   String?
+  price         Float
+  deliveryHours Int?     @default(24)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model TelemedicineSession {
+  id            String             @id @default(uuid())
+  appointmentId String             @unique
+  appointment   Appointment        @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  roomId        String             @unique
+  status        TelemedicineStatus @default(SCHEDULED)
+  startedAt     DateTime?
+  endedAt       DateTime?
+  doctorNotes   String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+}
+
+model EmergencyRequest {
+  id               String          @id @default(uuid())
+  callerName       String?
+  callerPhone      String
+  latitude         Float
+  longitude        Float
+  addressText      String?
+  patientCondition String?
+  status           EmergencyStatus @default(PENDING)
+  hospitalId       String?
+  hospital         Hospital?       @relation(fields: [hospitalId], references: [id])
+  ambulanceId      String?
+  ambulance        Ambulance?      @relation(fields: [ambulanceId], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model AmbulanceLocation {
+  id          String    @id @default(uuid())
+  ambulanceId String    @unique
+  ambulance   Ambulance @relation(fields: [ambulanceId], references: [id], onDelete: Cascade)
+  latitude    Float
+  longitude   Float
+  heading     Float?
+  speed       Float?
+  updatedAt   DateTime  @updatedAt
+}
+
 

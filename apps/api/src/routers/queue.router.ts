@@ -1,6 +1,7 @@
 import { router, publicProcedure, protectedProcedure } from '../trpc.js';
 import { prisma } from '../lib/prisma.js';
 import { UpdateQueueStatusSchema } from '@medisheba/zod-schemas';
+import { broadcastQueueUpdate } from '../services/socket.service.js';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -84,7 +85,54 @@ export const queueRouter = router({
         });
       }
 
+      // Broadcast live update over WebSocket to all watching patients
+      broadcastQueueUpdate({
+        doctorId: queueItem.doctorId,
+        currentSerial: input.status === 'IN_CONSULTATION' || input.status === 'CALLED' ? queueItem.position : undefined,
+        calledAppointmentId: queueItem.appointmentId,
+        timestamp: new Date().toISOString()
+      });
+
       return { success: true, queue: updated };
+    }),
+
+  // Doctor reorders smart queue (e.g. prioritize emergency or postpone)
+  reorderQueue: protectedProcedure
+    .input(
+      z.object({
+        doctorId: z.string().uuid(),
+        queueItems: z.array(
+          z.object({
+            id: z.string().uuid(),
+            position: z.number().int().positive()
+          })
+        )
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const doctor = await prisma.doctor.findFirst({
+        where: { id: input.doctorId }
+      });
+
+      if (!doctor || (doctor.userId !== ctx.user.id && ctx.user.role !== 'SUPER_ADMIN')) {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Unauthorized to reorder this queue' });
+      }
+
+      await prisma.$transaction(
+        input.queueItems.map((item) =>
+          prisma.queue.update({
+            where: { id: item.id },
+            data: { position: item.position }
+          })
+        )
+      );
+
+      broadcastQueueUpdate({
+        doctorId: input.doctorId,
+        timestamp: new Date().toISOString()
+      });
+
+      return { success: true };
     })
 });
 

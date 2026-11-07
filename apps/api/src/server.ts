@@ -1,11 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { appRouter } from './router.js';
 import { createContext } from './trpc.js';
+import { initSocketServer } from './services/socket.service.js';
 import pino from 'pino';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -57,8 +59,14 @@ app.use(
   })
 );
 
-app.listen(PORT, () => {
+const httpServer = http.createServer(app);
+
+// Initialize Socket.io WebSocket server
+initSocketServer(httpServer);
+
+httpServer.listen(PORT, () => {
   logger.info(`🏥 MediSheba BD API Server running on http://localhost:${PORT}`);
   logger.info(`⚡ tRPC endpoint available at http://localhost:${PORT}/trpc`);
+  logger.info(`🔌 Realtime WebSocket Server initialized on port ${PORT}`);
 });
 

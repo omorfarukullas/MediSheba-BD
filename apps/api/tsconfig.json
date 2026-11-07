@@ -5,8 +5,12 @@
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
     "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@medisheba/types": ["../../packages/types/src/index.ts"],
+      "@medisheba/zod-schemas": ["../../packages/zod-schemas/src/index.ts"]
+    },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true

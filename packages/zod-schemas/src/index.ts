@@ -85,3 +85,73 @@ export const LlamaChatPromptSchema = z.object({
   lang: z.enum(['en', 'bn']).default('bn')
 });
 
+export const DocumentVisibilitySchema = z.enum(['ONLY_ME', 'DOCTOR_ACCESS', 'PUBLIC']);
+
+export const CreateDocumentSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  fileUrl: z.string().url('Valid file URL is required'),
+  fileType: z.string().default('PRESCRIPTION'),
+  visibilityMode: DocumentVisibilitySchema.default('ONLY_ME'),
+  sharedDoctorIds: z.array(z.string()).default([])
+});
+
+export const UpdateDocumentVisibilitySchema = z.object({
+  documentId: z.string().uuid(),
+  visibilityMode: DocumentVisibilitySchema,
+  sharedDoctorIds: z.array(z.string()).default([])
+});
+
+export const CreateTestPriceSchema = z.object({
+  hospitalId: z.string().uuid(),
+  testName: z.string().min(1, 'Test name is required'),
+  category: z.string().min(1, 'Category is required'),
+  description: z.string().optional(),
+  price: z.number().positive('Price must be greater than 0'),
+  deliveryHours: z.number().int().positive().default(24)
+});
+
+export const UpdateTestPriceSchema = z.object({
+  id: z.string().uuid(),
+  testName: z.string().optional(),
+  category: z.string().optional(),
+  description: z.string().optional(),
+  price: z.number().positive().optional(),
+  deliveryHours: z.number().int().positive().optional(),
+  isActive: z.boolean().optional()
+});
+
+export const CreateEmergencyRequestSchema = z.object({
+  callerName: z.string().optional(),
+  callerPhone: z.string().min(11, 'Mobile phone number is required'),
+  latitude: z.number(),
+  longitude: z.number(),
+  addressText: z.string().optional(),
+  patientCondition: z.string().optional()
+});
+
+export const UpdateEmergencyStatusSchema = z.object({
+  id: z.string().uuid(),
+  status: z.enum(['PENDING', 'ACCEPTED', 'DISPATCHED', 'COMPLETED', 'CANCELLED']),
+  ambulanceId: z.string().uuid().optional()
+});
+
+export const UpdateAmbulanceLocationSchema = z.object({
+  ambulanceId: z.string().uuid(),
+  latitude: z.number(),
+  longitude: z.number(),
+  heading: z.number().optional(),
+  speed: z.number().optional()
+});
+
+export const CreateTelemedicineSessionSchema = z.object({
+  appointmentId: z.string().uuid()
+});
+
+export const UpdateResourceAvailabilitySchema = z.object({
+  id: z.string().uuid(),
+  availableCount: z.number().min(0),
+  totalCount: z.number().min(0).optional(),
+  pricePerDay: z.number().optional()
+});
+
+

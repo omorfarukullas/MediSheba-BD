@@ -55,6 +55,28 @@ export enum AmbulanceStatus {
   MAINTENANCE = 'MAINTENANCE'
 }
 
+export enum DocumentVisibility {
+  ONLY_ME = 'ONLY_ME',
+  DOCTOR_ACCESS = 'DOCTOR_ACCESS',
+  PUBLIC = 'PUBLIC'
+}
+
+export enum TelemedicineStatus {
+  SCHEDULED = 'SCHEDULED',
+  WAITING = 'WAITING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+
+export enum EmergencyStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  DISPATCHED = 'DISPATCHED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+
 export interface UserProfile {
   id: string;
   firebaseUid: string;
@@ -107,5 +129,61 @@ export interface MedicineItem {
 
 export interface LanguagePreference {
   lang: 'en' | 'bn';
+}
+
+export interface TestPriceItem {
+  id: string;
+  hospitalId: string;
+  testName: string;
+  category: string;
+  description?: string | null;
+  price: number;
+  deliveryHours?: number | null;
+  isActive: boolean;
+}
+
+export interface EmergencyRequestItem {
+  id: string;
+  callerName?: string | null;
+  callerPhone: string;
+  latitude: number;
+  longitude: number;
+  addressText?: string | null;
+  patientCondition?: string | null;
+  status: EmergencyStatus;
+  hospitalId?: string | null;
+  ambulanceId?: string | null;
+  createdAt: string;
+}
+
+export interface AmbulanceLocationItem {
+  ambulanceId: string;
+  latitude: number;
+  longitude: number;
+  heading?: number | null;
+  speed?: number | null;
+  updatedAt: string;
+}
+
+export interface TelemedicineSessionItem {
+  id: string;
+  appointmentId: string;
+  roomId: string;
+  status: TelemedicineStatus;
+  startedAt?: string | null;
+  endedAt?: string | null;
+  doctorNotes?: string | null;
+}
+
+export interface DocumentItem {
+  id: string;
+  patientId: string;
+  title: string;
+  fileUrl: string;
+  fileType: string;
+  visibilityMode: DocumentVisibility;
+  sharedDoctorIds: string[];
+  isPrivate: boolean;
+  uploadedAt: string;
 }
 

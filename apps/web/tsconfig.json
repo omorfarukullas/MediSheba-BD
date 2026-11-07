@@ -11,6 +11,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@medisheba/types": ["../../packages/types/src/index.ts"],
+      "@medisheba/zod-schemas": ["../../packages/zod-schemas/src/index.ts"]
+    },
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,

@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import { useLanguageStore } from './stores/language.store';
 import { useAuthStore } from './stores/auth.store';
 import { trpc } from './lib/trpc';
+import { EmergencyAmbulanceView } from './components/patient/EmergencyAmbulanceView';
+import { HospitalResourcesView } from './components/patient/HospitalResourcesView';
+import { LiveQueueTrackerView } from './components/patient/LiveQueueTrackerView';
+import { PatientDocumentsView } from './components/patient/PatientDocumentsView';
+import { TelemedicineRoomView } from './components/patient/TelemedicineRoomView';
+import { DoctorPortalView } from './components/doctor/DoctorPortalView';
+import { HospitalAdminView } from './components/admin/HospitalAdminView';
 import { 
   Activity, 
   ArrowRight,
@@ -19,7 +26,10 @@ import {
   ShieldCheck, 
   Sparkles,
   User,
-  UserCheck 
+  UserCheck,
+  FolderLock,
+  Video,
+  Building2
 } from 'lucide-react';
 
 // ─── Auth Modal (Sign In / Register) ──────────────────────────────────────────
@@ -128,7 +138,8 @@ function AuthModal({ onClose }: { onClose: () => void }) {
 export function App() {
   const { lang, t, toggleLanguage } = useLanguageStore();
   const { user, logout } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'home' | 'doctors' | 'queue' | 'ai' | 'payment'>('home');
+  type AppTab = 'home' | 'doctors' | 'queue' | 'hospitals' | 'emergency' | 'documents' | 'telemedicine' | 'doctor_portal' | 'admin_portal' | 'ai' | 'payment';
+  const [activeTab, setActiveTab] = useState<AppTab>('home');
   const [aiMessage, setAiMessage] = useState('');
   const [selectedPayment, setSelectedPayment] = useState<'bkash' | 'nagad' | 'rocket'>('bkash');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -318,10 +329,10 @@ export function App() {
             </div>
 
             {/* Navigation Tabs */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden xl:flex items-center gap-1">
               <button 
                 onClick={() => setActiveTab('home')} 
-                className={`px-3.5 py-2 rounded-panel text-[14px] font-semibold transition duration-interaction ${
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction ${
                   activeTab === 'home' 
                     ? 'bg-accent/10 text-accent font-bold' 
                     : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
@@ -331,35 +342,101 @@ export function App() {
               </button>
               <button 
                 onClick={() => setActiveTab('doctors')} 
-                className={`px-3.5 py-2 rounded-panel text-[14px] font-semibold transition duration-interaction ${
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction ${
                   activeTab === 'doctors' 
                     ? 'bg-accent/10 text-accent font-bold' 
                     : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
                 }`}
               >
-                {lang === 'bn' ? 'ডাক্তার খুঁজুন' : 'Find Doctor'}
+                {lang === 'bn' ? 'ডাক্তার' : 'Doctors'}
               </button>
               <button 
                 onClick={() => setActiveTab('queue')} 
-                className={`px-3.5 py-2 rounded-panel text-[14px] font-semibold transition duration-interaction flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction flex items-center gap-1 ${
                   activeTab === 'queue' 
                     ? 'bg-accent/10 text-accent font-bold' 
                     : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
                 }`}
               >
-                <Clock className="w-4 h-4 text-accent" />
+                <Clock className="w-3.5 h-3.5 text-accent" />
                 {lang === 'bn' ? 'লাইভ সিরিয়াল' : 'Live Serial'}
               </button>
               <button 
+                onClick={() => setActiveTab('hospitals')} 
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction flex items-center gap-1 ${
+                  activeTab === 'hospitals' 
+                    ? 'bg-accent/10 text-accent font-bold' 
+                    : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
+                }`}
+              >
+                <Hospital className="w-3.5 h-3.5 text-accent" />
+                {lang === 'bn' ? 'বেড ও টেস্ট' : 'Beds & Tests'}
+              </button>
+              <button 
+                onClick={() => setActiveTab('emergency')} 
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-bold transition duration-interaction flex items-center gap-1 ${
+                  activeTab === 'emergency' 
+                    ? 'bg-red-600 text-white shadow-xs' 
+                    : 'text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping inline-block" />
+                {lang === 'bn' ? 'জরুরি অ্যাম্বুলেন্স' : 'Emergency 999'}
+              </button>
+              <button 
+                onClick={() => setActiveTab('documents')} 
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction flex items-center gap-1 ${
+                  activeTab === 'documents' 
+                    ? 'bg-accent/10 text-accent font-bold' 
+                    : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
+                }`}
+              >
+                <FolderLock className="w-3.5 h-3.5 text-accent" />
+                {lang === 'bn' ? 'প্রেসক্রিপশন ভল্ট' : 'My Records'}
+              </button>
+              <button 
+                onClick={() => setActiveTab('telemedicine')} 
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction flex items-center gap-1 ${
+                  activeTab === 'telemedicine' 
+                    ? 'bg-accent/10 text-accent font-bold' 
+                    : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
+                }`}
+              >
+                <Video className="w-3.5 h-3.5 text-accent" />
+                {lang === 'bn' ? 'ভিডিও কল' : 'Telemedicine'}
+              </button>
+              <button 
+                onClick={() => setActiveTab('doctor_portal')} 
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction flex items-center gap-1 ${
+                  activeTab === 'doctor_portal' 
+                    ? 'bg-accent/10 text-accent font-bold' 
+                    : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
+                }`}
+              >
+                <UserCheck className="w-3.5 h-3.5 text-accent" />
+                {lang === 'bn' ? 'ডাক্তার প্যানেল' : 'Doctor Portal'}
+              </button>
+              <button 
+                onClick={() => setActiveTab('admin_portal')} 
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction flex items-center gap-1 ${
+                  activeTab === 'admin_portal' 
+                    ? 'bg-accent/10 text-accent font-bold' 
+                    : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
+                }`}
+              >
+                <Building2 className="w-3.5 h-3.5 text-accent" />
+                {lang === 'bn' ? 'হাসপাতাল অ্যাডমিন' : 'Hospital Admin'}
+              </button>
+              <button 
                 onClick={() => setActiveTab('ai')} 
-                className={`px-3.5 py-2 rounded-panel text-[14px] font-semibold transition duration-interaction flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-panel text-[13px] font-semibold transition duration-interaction flex items-center gap-1 ${
                   activeTab === 'ai' 
                     ? 'bg-accent/10 text-accent font-bold' 
                     : 'text-ink-secondary hover:text-ink hover:bg-ground-muted'
                 }`}
               >
-                <Sparkles className="w-4 h-4 text-accent" />
-                {lang === 'bn' ? 'এআই ডাক্তার সহকারী' : 'AI Assistant'}
+                <Sparkles className="w-3.5 h-3.5 text-accent" />
+                {lang === 'bn' ? 'এআই' : 'AI'}
               </button>
             </nav>
 
@@ -842,93 +919,26 @@ export function App() {
             </div>
           )}
 
-          {/* TAB: LIVE QUEUE STATUS */}
-          {activeTab === 'queue' && (
-            <div className="max-w-2xl mx-auto px-4 md:px-8 py-10 space-y-6">
-              
-              <div className="text-center space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-rule bg-emerald-50 text-[13px] font-bold text-emerald-800">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                  {lang === 'bn' ? 'চেম্বারের লাইভ ডিসপ্লে' : 'Live Chamber Monitor'}
-                </div>
-                <h2 className="font-display text-3xl font-extrabold text-ink tracking-tight">
-                  {lang === 'bn' ? 'ডাক্তারের চেম্বার সিরিয়াল বোর্ড' : 'Live Chamber Queue Board'}
-                </h2>
-                <p className="text-ink-secondary text-[14px]">
-                  {lang === 'bn' ? 'অধ্যাপক ডা. মোঃ রফিকুল ইসলাম — ঢাকা মেডিকেল কলেজ হাসপাতাল (রুম ৪০২)' : 'Prof. Dr. Md. Rafiqul Islam — Room 402, DMCH'}
-                </p>
-              </div>
+          {/* TAB: LIVE QUEUE STATUS (SOCKET.IO POWERED) */}
+          {activeTab === 'queue' && <LiveQueueTrackerView />}
 
-              {/* Main Digital Token Display Card */}
-              <div className="bg-panel border-2 border-accent rounded-panel p-6 shadow-md space-y-6">
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  
-                  {/* Current In Chamber */}
-                  <div className="p-6 rounded-panel bg-emerald-50 border border-emerald-200 text-center space-y-2">
-                    <span className="text-[12px] font-bold text-emerald-800 uppercase tracking-wider block">
-                      {lang === 'bn' ? 'বর্তমানে ভেতরে আছেন' : 'In Doctor Room'}
-                    </span>
-                    <div className="font-display text-6xl font-black text-emerald-700 py-1">
-                      14
-                    </div>
-                    <span className="inline-block bg-emerald-600 text-white text-[12px] font-semibold px-3 py-1 rounded-full">
-                      {lang === 'bn' ? 'পরামর্শ চলছে' : 'In Consultation'}
-                    </span>
-                  </div>
+          {/* TAB: HOSPITAL RESOURCES & TEST PRICES */}
+          {activeTab === 'hospitals' && <HospitalResourcesView />}
 
-                  {/* Your Serial */}
-                  <div className="p-6 rounded-panel bg-blue-50 border border-blue-200 text-center space-y-2">
-                    <span className="text-[12px] font-bold text-blue-800 uppercase tracking-wider block">
-                      {lang === 'bn' ? 'আপনার সিরিয়াল টোকেন' : 'Your Serial Token'}
-                    </span>
-                    <div className="font-display text-6xl font-black text-blue-700 py-1">
-                      18
-                    </div>
-                    <span className="inline-block bg-blue-600 text-white text-[12px] font-semibold px-3 py-1 rounded-full">
-                      {lang === 'bn' ? 'সামনে ৪ জন রোগী' : '4 Patients Ahead'}
-                    </span>
-                  </div>
+          {/* TAB: EMERGENCY AMBULANCE ACCESS (NO LOGIN REQUIRED) */}
+          {activeTab === 'emergency' && <EmergencyAmbulanceView />}
 
-                </div>
+          {/* TAB: PATIENT PRESCRIPTIONS & REPORT VAULT */}
+          {activeTab === 'documents' && <PatientDocumentsView />}
 
-                {/* Estimate */}
-                <div className="bg-ground-muted border border-rule rounded-panel p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-ink">
-                    <Clock className="w-5 h-5 text-accent" />
-                    <span className="text-[14px] font-semibold">
-                      {lang === 'bn' ? 'আনুমানিক অপেক্ষার সময়:' : 'Estimated Wait Time:'}
-                    </span>
-                  </div>
-                  <span className="font-display font-extrabold text-xl text-accent">
-                    {lang === 'bn' ? '২০ - ২৫ মিনিট' : '20 - 25 Mins'}
-                  </span>
-                </div>
+          {/* TAB: TELEMEDICINE VIDEO CONSULTATION */}
+          {activeTab === 'telemedicine' && <TelemedicineRoomView />}
 
-                {/* Friendly Advice for Patient */}
-                <div className="space-y-2 text-[13px] text-ink-secondary bg-ground border border-rule rounded-panel p-4">
-                  <p className="font-bold text-ink">
-                    📌 {lang === 'bn' ? 'রোগী ও স্বজনদের জন্য জরুরি নির্দেশনা:' : 'Important Instructions:'}
-                  </p>
-                  <ul className="list-disc list-inside space-y-1">
-                    <li>{lang === 'bn' ? 'আপনার সিরিয়াল ১৭ নম্বর থাকা অবস্থায় ৪০২ নম্বর রুমের সামনে উপস্থিত থাকুন।' : 'Be present outside Room 402 when Serial #17 is in room.'}</li>
-                    <li>{lang === 'bn' ? 'পূর্বের প্রেসক্রিপশন ও সব টেস্টের রিপোর্ট সাথে রাখুন।' : 'Keep previous prescriptions and test reports ready.'}</li>
-                  </ul>
-                </div>
+          {/* TAB: DOCTOR PORTAL & SMART QUEUE CONTROL */}
+          {activeTab === 'doctor_portal' && <DoctorPortalView />}
 
-                <div className="text-center pt-2">
-                  <button 
-                    onClick={() => setActiveTab('doctors')}
-                    className="text-accent hover:underline text-[14px] font-semibold"
-                  >
-                    ← {lang === 'bn' ? 'অন্য চিকিৎসকের সিরিয়াল দেখুন' : 'Check another doctor chamber'}
-                  </button>
-                </div>
-
-              </div>
-
-            </div>
-          )}
+          {/* TAB: HOSPITAL ADMINISTRATION */}
+          {activeTab === 'admin_portal' && <HospitalAdminView />}
 
           {/* TAB: LLAMA / QWEN AI HEALTH ASSISTANT */}
           {activeTab === 'ai' && (
