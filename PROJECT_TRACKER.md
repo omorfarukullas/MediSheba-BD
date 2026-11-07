@@ -149,7 +149,12 @@ Phase 5: Production Build & Verification [██████████] 100% (
   - [x] Populated hospital admin views: `/admin/dashboard`, `/admin/resources`, `/admin/ambulances`, `/admin/doctors`, `/admin/tests`.
   - [x] Populated super admin views: `/super-admin/dashboard`, `/super-admin/hospitals`, `/super-admin/audit`.
   - [x] Streamlined `App.tsx` from 1,131 lines into a clean `<RouterProvider router={router} />` root (9 lines).
-- [ ] **Phase 3: Per-Role Layout Shells (Sidebar + Mobile Bottom Navigation)**
+- [x] **Phase 3: Per-Role Layout Shells (Sidebar + Mobile Bottom Navigation)**
+  - [x] Built `PatientLayout.tsx`: Left desktop sidebar (260px) + mobile slide-out drawer + 5-tab mobile bottom navigation + persistent Emergency 999 FAB.
+  - [x] Built `DoctorLayout.tsx`: BMDC certification header badge + quick doctor queue and consultation navigation + mobile drawer & bottom nav.
+  - [x] Built `AdminLayout.tsx`: Hospital administration management layout for Beds, ICU, Fleet, Doctors, and Diagnostic Test Pricing.
+  - [x] Built `SuperAdminLayout.tsx`: Platform control console layout with hospital approvals and audit logging.
+  - [x] Updated `router.tsx` to mount nested children inside their respective role layouts with active route highlighting.
 - [ ] **Phase 4: Public Landing Page Revamp**
 - [ ] **Phase 5: Patient Portal Migration to Real tRPC Data**
 - [ ] **Phase 6: Doctor Portal Dedicated Views**

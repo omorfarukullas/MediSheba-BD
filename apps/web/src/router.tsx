@@ -7,6 +7,12 @@ import { ProtectedRoute, RoleGuard, PublicOnlyRoute } from './components/shared/
 import { ErrorBoundary } from './components/shared/ErrorBoundary';
 import { NotFoundPage } from './components/shared/NotFoundPage';
 
+// Layout Shells
+import { PatientLayout } from './components/layout/PatientLayout';
+import { DoctorLayout } from './components/layout/DoctorLayout';
+import { AdminLayout } from './components/layout/AdminLayout';
+import { SuperAdminLayout } from './components/layout/SuperAdminLayout';
+
 // Public Views
 import { PublicLandingPage } from './app/page';
 import { EmergencyAmbulanceView } from './components/patient/EmergencyAmbulanceView';
@@ -88,349 +94,171 @@ export const router = createBrowserRouter([
     ),
   },
 
-  // ─── Patient Routes ───
+  // ─── Patient Nested Routes ───
   {
     path: '/patient',
     element: (
       <ProtectedRoute>
         <RoleGuard allowedRoles={[UserRole.PATIENT]}>
-          <Navigate to="/patient/dashboard" replace />
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/patient/dashboard',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.PATIENT]}>
           <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <PatientDashboardPage />
-            </div>
+            <PatientLayout />
           </ErrorBoundary>
         </RoleGuard>
       </ProtectedRoute>
     ),
-  },
-  {
-    path: '/patient/doctors',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.PATIENT]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <PatientDoctorsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/patient/appointments',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.PATIENT]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <PatientAppointmentsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/patient/documents',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.PATIENT]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <PatientDocumentsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/patient/telemedicine',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.PATIENT]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <PatientTelemedicinePage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/patient/vitals',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.PATIENT]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <PatientVitalsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/patient/resources',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.PATIENT]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <PatientResourcesPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/patient/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
+        element: <PatientDashboardPage />,
+      },
+      {
+        path: 'doctors',
+        element: <PatientDoctorsPage />,
+      },
+      {
+        path: 'appointments',
+        element: <PatientAppointmentsPage />,
+      },
+      {
+        path: 'documents',
+        element: <PatientDocumentsPage />,
+      },
+      {
+        path: 'telemedicine',
+        element: <PatientTelemedicinePage />,
+      },
+      {
+        path: 'vitals',
+        element: <PatientVitalsPage />,
+      },
+      {
+        path: 'resources',
+        element: <PatientResourcesPage />,
+      },
+    ],
   },
 
-  // ─── Doctor Routes ───
+  // ─── Doctor Nested Routes ───
   {
     path: '/doctor',
     element: (
       <ProtectedRoute>
         <RoleGuard allowedRoles={[UserRole.DOCTOR]}>
-          <Navigate to="/doctor/dashboard" replace />
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/doctor/dashboard',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.DOCTOR]}>
           <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <DoctorDashboardPage />
-            </div>
+            <DoctorLayout />
           </ErrorBoundary>
         </RoleGuard>
       </ProtectedRoute>
     ),
-  },
-  {
-    path: '/doctor/queue',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.DOCTOR]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <DoctorQueuePage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/doctor/appointments',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.DOCTOR]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <DoctorAppointmentsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/doctor/slots',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.DOCTOR]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <DoctorSlotsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/doctor/prescriptions',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.DOCTOR]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <DoctorPrescriptionsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/doctor/earnings',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.DOCTOR]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <DoctorEarningsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/doctor/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
+        element: <DoctorDashboardPage />,
+      },
+      {
+        path: 'queue',
+        element: <DoctorQueuePage />,
+      },
+      {
+        path: 'appointments',
+        element: <DoctorAppointmentsPage />,
+      },
+      {
+        path: 'slots',
+        element: <DoctorSlotsPage />,
+      },
+      {
+        path: 'prescriptions',
+        element: <DoctorPrescriptionsPage />,
+      },
+      {
+        path: 'earnings',
+        element: <DoctorEarningsPage />,
+      },
+    ],
   },
 
-  // ─── Hospital Admin Routes ───
+  // ─── Hospital Admin Nested Routes ───
   {
     path: '/admin',
     element: (
       <ProtectedRoute>
         <RoleGuard allowedRoles={[UserRole.HOSPITAL_ADMIN]}>
-          <Navigate to="/admin/dashboard" replace />
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/admin/dashboard',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.HOSPITAL_ADMIN]}>
           <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <AdminDashboardPage />
-            </div>
+            <AdminLayout />
           </ErrorBoundary>
         </RoleGuard>
       </ProtectedRoute>
     ),
-  },
-  {
-    path: '/admin/resources',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.HOSPITAL_ADMIN]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <AdminResourcesPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/admin/ambulances',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.HOSPITAL_ADMIN]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <AdminAmbulancesPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/admin/doctors',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.HOSPITAL_ADMIN]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <AdminDoctorsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/admin/tests',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.HOSPITAL_ADMIN]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <AdminTestsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/admin/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
+        element: <AdminDashboardPage />,
+      },
+      {
+        path: 'resources',
+        element: <AdminResourcesPage />,
+      },
+      {
+        path: 'ambulances',
+        element: <AdminAmbulancesPage />,
+      },
+      {
+        path: 'doctors',
+        element: <AdminDoctorsPage />,
+      },
+      {
+        path: 'tests',
+        element: <AdminTestsPage />,
+      },
+    ],
   },
 
-  // ─── Super Admin Routes ───
+  // ─── Super Admin Nested Routes ───
   {
     path: '/super-admin',
     element: (
       <ProtectedRoute>
         <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
-          <Navigate to="/super-admin/dashboard" replace />
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/super-admin/dashboard',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
           <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <SuperAdminDashboardPage />
-            </div>
+            <SuperAdminLayout />
           </ErrorBoundary>
         </RoleGuard>
       </ProtectedRoute>
     ),
-  },
-  {
-    path: '/super-admin/hospitals',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <SuperAdminHospitalsPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/super-admin/audit',
-    element: (
-      <ProtectedRoute>
-        <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              <SuperAdminAuditPage />
-            </div>
-          </ErrorBoundary>
-        </RoleGuard>
-      </ProtectedRoute>
-    ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/super-admin/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
+        element: <SuperAdminDashboardPage />,
+      },
+      {
+        path: 'hospitals',
+        element: <SuperAdminHospitalsPage />,
+      },
+      {
+        path: 'audit',
+        element: <SuperAdminAuditPage />,
+      },
+    ],
   },
 
-  // ─── 404 Catch All ───
+  // ─── Wildcard 404 Route ───
   {
     path: '*',
     element: <NotFoundPage />,

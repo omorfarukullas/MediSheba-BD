@@ -125,3 +125,4 @@ export function OnboardingPage() {
     </div>
   );
 }
+

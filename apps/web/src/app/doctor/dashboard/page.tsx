@@ -8,3 +8,4 @@ export function DoctorDashboardPage() {
     </div>
   );
 }
+

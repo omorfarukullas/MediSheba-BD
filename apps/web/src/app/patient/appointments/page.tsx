@@ -8,3 +8,4 @@ export function PatientAppointmentsPage() {
     </div>
   );
 }
+
